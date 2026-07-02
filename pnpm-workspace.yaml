@@ -24,6 +24,8 @@ catalog:
   "@vue/reactivity": latest
   "@vueuse/core": latest
   nanoid: latest
+  vue: ^3.5.39
+  '@vitejs/plugin-vue': ^6.0.7
 
 overrides:
   vite: "catalog:"
