@@ -2,16 +2,29 @@ packages:
   - apps/*
   - packages/*
   - tools/*
-  - scripts/*
+  - scripts/
 
 catalogMode: prefer
 
 catalog:
+  # 工具链
   "@types/node": ^24
   typescript: ^5
   vite: npm:@voidzero-dev/vite-plus-core@latest
   vitest: 4.1.9
   vite-plus: latest
+
+  # node 依赖
+  tinyglobby: latest # 代替fast-glob 的一个最新的库
+  "picocolors": latest # 控制台打印颜色
+  "shelljs": latest # 操作文件，执行命令的库
+
+  # 组件库依赖
+  "@vue/shared": latest
+  "@vue/reactivity": latest
+  "@vueuse/core": latest
+  nanoid: latest
+
 overrides:
   vite: "catalog:"
   vitest: "catalog:"

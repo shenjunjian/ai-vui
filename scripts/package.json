@@ -10,7 +10,7 @@
   "type": "module",
   "scripts": {
     "test": "vp test",
-    "dev": "node bin/index.ts"
+    "dev": "node create-component/index.ts"
   },
   "dependencies": {
     "bingo": "^0.9.3",
@@ -18,7 +18,11 @@
   },
   "devDependencies": {
     "@types/node": "catalog:",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "@vue/shared": "catalog:",
+    "tinyglobby": "catalog:",
+    "picocolors": "catalog:",
+    "shelljs": "catalog:"
   },
   "engines": {
     "node": ">=22.18.0"
