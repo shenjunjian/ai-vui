@@ -10,8 +10,8 @@
 ## 目录结构
 
 - apps/site 组件官网
-- packages/theme-css 与框架无关的 css 库，基于场景实现
-- packages/vue-next 组件库
+- packages/scene-theme 与框架无关的 css 库，基于场景实现
+- packages/vai 组件库
 - scripts/ 公共脚本
 
 ## 开发规范
