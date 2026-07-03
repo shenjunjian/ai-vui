@@ -27,5 +27,5 @@
 
 ```
 # 添加一个组件
-vp create add-component -- --rawName button  --directory  vue-next/src/components/button
+vp create add-component -- --rawName button  --directory  vai/src/components/button
 ```
