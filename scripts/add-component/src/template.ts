@@ -2,7 +2,7 @@ import { createTemplate } from "bingo";
 import fs from "fs";
 import path from "path";
 import { z } from "zod";
-import { camelize, capitalize } from "../common/index.ts";
+import { camelize, capitalize } from "scripts-common";
 
 export default createTemplate({
   // Define your options using Zod schemas
@@ -37,12 +37,17 @@ export default createTemplate({
           result[entry.name.replace("name", options.rawName)] = content;
         }
       }
+
+      console.log("readDirectoryFiles result= ", result);
       return result;
     }
 
+    console.log("produce will return ");
+
     return {
       // see https://www.create.bingo/build/concepts/creations#files
-      files: readDirectoryFiles(path.join(__dirname, "component-template")),
+      // 通过 vp create 启动时，当前路径为ai-vui\packages\
+      files: readDirectoryFiles("../scripts/add-component/src/component-template"),
     };
   },
 });

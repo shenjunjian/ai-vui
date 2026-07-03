@@ -2,7 +2,7 @@ packages:
   - apps/*
   - packages/*
   - tools/*
-  - scripts/
+  - scripts/*
 
 catalogMode: prefer
 
@@ -13,6 +13,7 @@ catalog:
   vite: npm:@voidzero-dev/vite-plus-core@latest
   vitest: 4.1.9
   vite-plus: latest
+  tsx: latest # 直接在Node下运行 ts 文件，代替esno的新工具。 执行 scripts 中的命令
 
   # node 依赖
   tinyglobby: latest # 代替fast-glob 的一个最新的库
@@ -25,7 +26,7 @@ catalog:
   "@vueuse/core": latest
   nanoid: latest
   vue: ^3.5.39
-  '@vitejs/plugin-vue': ^6.0.7
+  "@vitejs/plugin-vue": ^6.0.7
 
 overrides:
   vite: "catalog:"
@@ -37,3 +38,5 @@ peerDependencyRules:
   allowedVersions:
     vite: "*"
     vitest: "*"
+allowBuilds:
+  esbuild: false

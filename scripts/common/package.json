@@ -1,16 +1,18 @@
 {
-  "name": "ai-vui-scripts",
+  "name": "scripts-common",
   "version": "0.0.0",
   "private": true,
   "description": "通用的nodejs构建脚本",
   "keywords": [
     "vite-plus-generator"
   ],
-  "bin": "./bin/index.ts",
   "type": "module",
+  "main": "index.ts",
+  "types": "index.ts",
+  "module": "index.ts",
   "scripts": {
     "test": "vp test",
-    "dev": "node create-component/index.ts"
+    "create-component": "tsx create-component/index.mts"
   },
   "dependencies": {
     "bingo": "^0.9.3",
@@ -22,7 +24,8 @@
     "@vue/shared": "catalog:",
     "tinyglobby": "catalog:",
     "picocolors": "catalog:",
-    "shelljs": "catalog:"
+    "shelljs": "catalog:",
+    "tsx": "catalog:"
   },
   "engines": {
     "node": ">=22.18.0"
