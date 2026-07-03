@@ -21,11 +21,11 @@
 
 ## 全局命令
 
-当前工程使用 `vp create vite:monorepo`创建的，vp文档在`node_modules/vite-plus/docs` 或者在线地址： https://viteplus.dev/guide/.本项目支持 `vp`的全部命令。
+当前工程使用 `vp create vite:monorepo`创建的，vp文档在`node_modules/vite-plus/docs` 或者在线地址： https://viteplus.dev/guide/，本项目支持 `vp`的全部命令。
 
 以下为本仓库增加的命令：
 
 ```
 # 添加一个组件
-vp create add-component -- --rawName button  --directory  vue-next/src/button
+vp create add-component -- --rawName button  --directory  vue-next/src/components/button
 ```

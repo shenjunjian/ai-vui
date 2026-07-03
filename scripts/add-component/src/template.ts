@@ -42,8 +42,6 @@ export default createTemplate({
       return result;
     }
 
-    console.log("produce will return ");
-
     return {
       // see https://www.create.bingo/build/concepts/creations#files
       // 通过 vp create 启动时，当前路径为ai-vui\packages\
