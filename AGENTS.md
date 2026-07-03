@@ -5,7 +5,7 @@
 - 将 CSS 场景化来复用重复的 CSS 代码, 请参阅 `./rules/css.md`
 - Vue 组件有统一的组件结构，使用状态驱动, 请参阅 `./rules/vue-component.md`
 - 公共逻辑抽取到 hooks 目录，尽量复用它们。
-- 尽量使用最前沿的浏览器 API， 比如 dialog, popover API，不考虑向下兼容。
+- 尽量使用最前沿的浏览器 API， CSS特性， 比如 dialog, popover API，不考虑向下兼容。
 
 ## 目录结构
 
