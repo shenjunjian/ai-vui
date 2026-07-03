@@ -1,0 +1,11 @@
+/* 场景化主题库入口
+ * 1. 声明层级顺序（从低到高）
+ * 2. 依次 @import 各层
+ */
+
+@layer sc-base, sc-icons, sc-component, sc-utils;
+
+@import "./layers/base.less";
+@import "./layers/icons.less";
+@import "./layers/component.less";
+@import "./layers/utils.less";
