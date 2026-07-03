@@ -25,8 +25,12 @@ catalog:
   "@vue/reactivity": latest
   "@vueuse/core": latest
   nanoid: latest
-  vue: ^3.5.39
+
+  # vue 相关
   "@vitejs/plugin-vue": ^6.0.7
+  "@vue/tsconfig": latest
+  vue-tsc: latest
+  vue: latest
 
 overrides:
   vite: "catalog:"
