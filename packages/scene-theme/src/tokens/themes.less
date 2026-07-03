@@ -1,1 +1,29 @@
-// tokens/themes.less —— 阶段 3.3 落地（[data-theme="dark"] 切换 + 暗色变量）
+/* tokens/themes.less
+ * 主题切换机制：通过 html 根节点 data-theme 属性切换
+ * - light：默认（不写 data-theme）
+ * - dark：data-theme="dark"
+ * - auto：跟随系统 prefers-color-scheme
+ *
+ * API 约定：
+ * - 由 ConfigProvider（待实现）通过 document.documentElement 注入 data-theme
+ * - 用户也可手动加属性，无需等待 ConfigProvider
+ */
+
+:root {
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+}
+
+/* 自动跟随系统（仅当用户未显式指定） */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-theme="dark"]) {
+    color-scheme: dark;
+  }
+}

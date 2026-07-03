@@ -1,43 +1,43 @@
 {
   "name": "scene-theme",
   "version": "0.0.0",
-  "description": "A starter for creating a TypeScript package.",
-  "homepage": "https://github.com/author/library#readme",
-  "bugs": {
-    "url": "https://github.com/author/library/issues"
-  },
+  "description": "Scene-based CSS theme library powered by Less.",
   "license": "MIT",
-  "author": "Author Name <author.name@mail.com>",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/author/library.git"
-  },
-  "files": [
-    "dist"
-  ],
   "type": "module",
+  "sideEffects": [
+    "**/*.less",
+    "**/*.css"
+  ],
   "exports": {
-    ".": "./dist/index.mjs",
+    ".": "./src/index.less",
+    "./reset": "./src/base/reset.less",
+    "./tokens/colors": "./src/tokens/colors.less",
+    "./components/button": "./src/components/button/index.less",
+    "./components/link": "./src/components/link/index.less",
+    "./components/tag": "./src/components/tag/index.less",
+    "./components/modal": "./src/components/modal/index.less",
+    "./components/input": "./src/components/input/index.less",
     "./package.json": "./package.json"
   },
+  "files": [
+    "src"
+  ],
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
-    "build": "vp pack",
-    "dev": "vp pack --watch",
+    "build": "lessc src/index.less dist/index.css --no-js",
+    "dev": "lessc --watch src/index.less dist/index.css",
+    "lint": "stylelint \"src/**/*.less\"",
     "test": "vp test",
     "check": "vp check",
-    "prepublishOnly": "vp run build"
+    "prepublishOnly": "pnpm run build"
   },
   "devDependencies": {
-    "@types/node": "^25.6.2",
-    "@typescript/native-preview": "7.0.0-dev.20260509.2",
-    "bumpp": "^11.1.0",
     "less": "catalog:",
+    "postcss-less": "catalog:",
     "stylelint": "catalog:",
     "stylelint-config-standard": "catalog:",
-    "typescript": "^6.0.3",
     "vite-plus": "catalog:"
   }
 }

@@ -1,1 +1,26 @@
-// scenes/layout.less —— 阶段 3.4 落地（.s-flexr / .s-flexc / .s-gridstack / .s-list / .s-listitem）
+/* scenes/layout.less
+ * 布局场景原子：.s-flexr（水平 flex 居中）/ .s-flexc（垂直 flex 居中）/ .s-gridstack（自适应网格）/ .s-list（垂直列表）/ .s-listitem（列表项）
+ * 双重身份：真实 CSS 类 + Less mixin
+ */
+
+.s-flexr {
+  @withSize: true;
+  .mixin-flex-align(inline-flex, row);
+}
+
+.s-flexc {
+  @withSize: true;
+  .mixin-flex-align(inline-flex, column);
+}
+
+.s-gridstack {
+  .mixin-grid-stack();
+}
+
+.s-list {
+  .mixin-list();
+}
+
+.s-listitem {
+  .mixin-list-item();
+}

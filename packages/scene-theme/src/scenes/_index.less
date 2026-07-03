@@ -1,5 +1,7 @@
 /* scenes 聚合入口
  * 场景原子（s-* / s-live-*），既为真实 CSS 类，也为 Less mixin
+ *
+ * 注意：scenes/icon.less 单独在 @layer sc-icons 中被 index.less 引入（更高优先级），不在此处引入
  */
 
 @import "./background.less";
@@ -9,7 +11,6 @@
 @import "./padding.less";
 @import "./margin.less";
 @import "./radius.less";
-@import "./icon.less";
 @import "./cursor.less";
 @import "./shadow.less";
 @import "./underline.less";

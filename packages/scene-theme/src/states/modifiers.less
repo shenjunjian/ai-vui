@@ -1,1 +1,42 @@
-// states/modifiers.less —— 阶段 3 落地（.st-bold / .st-thin / .st-italic / .st-round / .st-circle / .st-icon / .st-rect）
+/* states/modifiers.less
+ * 修饰状态类：字体粗细 / 斜体 / 圆角变体 / 图标方形
+ *   .st-bold / .st-thin（字体粗细）
+ *   .st-italic（斜体）
+ *   .st-icon（1em 方形图标）
+ *   .st-round（胶囊圆角） / .st-circle（正圆） / .st-rect（无圆角）
+ */
+
+.st-bold {
+  font-weight: var(--s-fw-bold);
+}
+.st-thin {
+  font-weight: var(--s-fw-thin);
+}
+.st-italic {
+  font-style: italic;
+}
+
+/* 1em 方形图标（与 .s-icon 一致，便于在 DOM 上单独使用） */
+.st-icon {
+  width: 1em;
+  height: 1em;
+  aspect-ratio: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 胶囊圆角（max radius） */
+.st-round {
+  border-radius: var(--s-radius-round);
+}
+
+/* 正圆（用于头像） */
+.st-circle {
+  border-radius: 50%;
+}
+
+/* 无圆角（强制 0） */
+.st-rect {
+  border-radius: 0;
+}

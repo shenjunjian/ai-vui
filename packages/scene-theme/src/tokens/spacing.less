@@ -1,1 +1,28 @@
-// tokens/spacing.less —— 阶段 3 落地
+/* tokens/spacing.less
+ * padding / gap / 组件专属间距
+ */
+
+:root {
+  /* padding（控制内边距：垂直 水平） */
+  --s-pad-xs: 2px 8px;
+  --s-pad-sm: 4px 12px;
+  --s-pad-md: 6px 16px;
+  --s-pad-lg: 8px 20px;
+
+  /* gap（flex/grid 间距） */
+  --s-gap-xs: 4px;
+  --s-gap-sm: 8px;
+  --s-gap-md: 12px;
+  --s-gap-lg: 16px;
+  --s-gap-xl: 24px;
+
+  /* 按钮 */
+  --s-button-gap: 8px;
+  --s-button-overshoot: -4px; /* icon 紧贴边缘时回收的间距 */
+
+  /* 通用边距 */
+  --s-margin-xs: 4px;
+  --s-margin-sm: 8px;
+  --s-margin-md: 12px;
+  --s-margin-lg: 16px;
+}

@@ -1,1 +1,26 @@
-// base/global.less —— 阶段 3 落地（scrollbar、::placeholder、::selection、dialog::backdrop）
+/* base/global.less
+ * 全局样式（scrollbar / 现代滚动条 / 图片 / 链接基础）
+ */
+
+@layer sc-base {
+  /* 现代滚动条（直接使用，不做 -webkit- 降级） */
+  html {
+    scrollbar-color: var(--s-norm-bd) transparent;
+    scrollbar-width: thin;
+  }
+
+  /* 图片默认行为 */
+  img,
+  svg,
+  video,
+  canvas {
+    display: block;
+    max-width: 100%;
+  }
+
+  /* 链接默认（不强制下划线，由 .s-hoverunderline 等场景类按需启用） */
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+}

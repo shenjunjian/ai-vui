@@ -1,1 +1,39 @@
-// tokens/sizes.less —— 阶段 3 落地
+/* tokens/sizes.less
+ * 组件尺寸 + 圆角 + 阴影 + 动画 + outline
+ */
+
+:root {
+  /* 控件高度（按钮 / 输入框 / 选择器等） */
+  --s-size-control-xs: 24px;
+  --s-size-control-sm: 28px;
+  --s-size-control-md: 32px;
+  --s-size-control-lg: 40px;
+
+  /* 圆角 */
+  --s-radius-sm: 2px;
+  --s-radius-md: 4px;
+  --s-radius-lg: 8px;
+  --s-radius-round: 9999px;
+
+  /* 阴影 */
+  --s-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --s-shadow-md: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --s-shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.12);
+  --s-shadow-hover: 0 2px 12px rgba(0, 0, 0, 0.1);
+  --s-shadow-active: 0 1px 4px rgba(0, 0, 0, 0.08);
+
+  /* outline（焦点光晕） */
+  --s-outline-width: 2px;
+  --s-outline-style: solid;
+  --s-outline: var(--s-info);
+  --s-outline-offset: 2px;
+
+  /* 动画时长 */
+  --s-ani-time-fast: 0.1s;
+  --s-ani-time-base: 0.2s;
+  --s-ani-time-slow: 0.4s;
+
+  /* 过渡 */
+  --s-transition-base: all var(--s-ani-time-base) ease;
+  --s-transition-color: color, background-color, border-color var(--s-ani-time-base) ease;
+}

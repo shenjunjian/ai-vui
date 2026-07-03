@@ -1,1 +1,148 @@
-// tokens/colors.less —— 阶段 3.2 落地
+/* tokens/colors.less
+ * 系统色 + 主题色变量（8 变体：base / hover / active / plain / plain-hover / plain-active / disabled / bg-disabled）
+ * --it-* 局部桥接变量见 mixin 内部使用
+ *
+ * 主题色：control（Windows 控件灰）、dark（黑色）、success、info（品牌主）、warn、error、invalid（验证错误）
+ * 命名：--s-{theme}、--s-{theme}-hover、--s-{theme}-active、--s-{theme}-plain 等
+ */
+
+:root {
+  /* 中性文本/边框/背景 */
+  --s-norm: #191919;
+  --s-norm-secondary: #595959; /* 次级文字色（用于 .st-secondary） */
+  --s-norm-inv: #ffffff;       /* 反转文本（深色背景上的字） */
+  --s-norm-hover: #1476ff;
+  --s-norm-active: #084cac;
+  --s-norm-bg: #f5f5f5;
+  --s-norm-white-bg: #ffffff;
+  --s-norm-bg-hover: #9cc0f3;
+  --s-norm-bg-active: #80b0f3;
+  --s-norm-bd: #c2c2c2;
+  --s-norm-disabled: #c2c2c2;
+  --s-norm-bd-disabled: #dbdbdb;
+  --s-norm-bg-disabled: #f0f0f0;
+
+  /* ctrl 控件色（Windows 风格灰色） */
+  --s-ctrl-text: #212121;
+  --s-ctrl-bg: #f0f0f0;
+  --s-ctrl-bg-hover: #e5e5e5;
+  --s-ctrl-bg-active: #d6d6d6;
+  --s-ctrl-bd: #7b7b7b;
+  --s-ctrl-bd-hover: #e5e5e5;
+  --s-ctrl-bd-active: #333333;
+  --s-ctrl-disabled: #dbdbdb;
+  --s-ctrl-bg-disabled: #dbdbdb;
+  --s-ctrl-bd-disabled: #dbdbdb;
+
+  /* 主题色（每个 8 个变体） */
+  --s-dark: #191919;
+  --s-dark-hover: #3a3a3a;
+  --s-dark-active: #0d0d0d;
+  --s-dark-plain: #f5f5f5;
+  --s-dark-plain-hover: #fafafa;
+  --s-dark-plain-active: #e8e8e8;
+  --s-dark-disabled: #bfbfbf;
+  --s-dark-bg-disabled: #f5f5f5;
+
+  --s-success: #5cb300;
+  --s-success-hover: #6ec700;
+  --s-success-active: #4a9100;
+  --s-success-plain: #f0f9e6;
+  --s-success-plain-hover: #f5fce9;
+  --s-success-plain-active: #e8f5d9;
+  --s-success-disabled: #bfbfbf;
+  --s-success-bg-disabled: #f0f5eb;
+
+  --s-info: #1476ff;
+  --s-info-hover: #3d8bff;
+  --s-info-active: #005ce6;
+  --s-info-plain: #e6f2ff;
+  --s-info-plain-hover: #f0f7ff;
+  --s-info-plain-active: #d6ebff;
+  --s-info-disabled: #bfbfbf;
+  --s-info-bg-disabled: #eaf2fb;
+
+  --s-warn: #ff8800;
+  --s-warn-hover: #ff9922;
+  --s-warn-active: #e67a00;
+  --s-warn-plain: #fff7e6;
+  --s-warn-plain-hover: #fffbf0;
+  --s-warn-plain-active: #ffefd6;
+  --s-warn-disabled: #bfbfbf;
+  --s-warn-bg-disabled: #f5ede0;
+
+  --s-error: #f23030;
+  --s-error-hover: #ff4d4d;
+  --s-error-active: #d92020;
+  --s-error-plain: #ffe6e6;
+  --s-error-plain-hover: #fff0f0;
+  --s-error-plain-active: #ffd6d6;
+  --s-error-disabled: #bfbfbf;
+  --s-error-bg-disabled: #f5e8e8;
+
+  --s-invalid: #f23030;
+  --s-invalid-hover: #f76f6c;
+  --s-invalid-active: #f23030;
+  --s-invalid-plain: #fff1f0;
+  --s-invalid-plain-hover: #fff1f0;
+  --s-invalid-plain-active: #faddda;
+  --s-invalid-disabled: #c2c2c2;
+  --s-invalid-bg-disabled: #f1e5e5;
+}
+
+[data-theme="dark"] {
+  --s-norm: #f5f5f5;
+  --s-norm-secondary: #a6a6a6;
+  --s-norm-inv: #191919;
+  --s-norm-bg: #1f1f1f;
+  --s-norm-white-bg: #2a2a2a;
+  --s-norm-bg-hover: #2a2a2a;
+  --s-norm-bg-active: #383838;
+  --s-norm-bd: #303030;
+  --s-norm-disabled: #434343;
+  --s-norm-bd-disabled: #2a2a2a;
+  --s-norm-bg-disabled: #262626;
+
+  --s-ctrl-bg: #2a2a2a;
+  --s-ctrl-bg-hover: #383838;
+  --s-ctrl-bg-active: #434343;
+  --s-ctrl-bd: #434343;
+  --s-ctrl-bd-hover: #595959;
+  --s-ctrl-bd-active: #7b7b7b;
+  --s-ctrl-disabled: #434343;
+  --s-ctrl-bg-disabled: #262626;
+  --s-ctrl-bd-disabled: #2a2a2a;
+
+  --s-dark: #f5f5f5;
+  --s-dark-hover: #ffffff;
+  --s-dark-active: #d6d6d6;
+  --s-dark-plain: #2a2a2a;
+  --s-dark-plain-hover: #303030;
+  --s-dark-plain-active: #1f1f1f;
+  --s-dark-disabled: #434343;
+  --s-dark-bg-disabled: #262626;
+
+  --s-info: #1668dc;
+  --s-info-hover: #3d8bff;
+  --s-info-active: #005ce6;
+  --s-info-plain: #112a45;
+  --s-info-plain-hover: #15315b;
+  --s-info-plain-active: #0d2138;
+  --s-info-bg-disabled: #1a2a3a;
+
+  --s-success: #49aa19;
+  --s-success-plain: #162312;
+  --s-success-bg-disabled: #1a2a14;
+
+  --s-warn: #d89614;
+  --s-warn-plain: #2b2113;
+  --s-warn-bg-disabled: #2a2314;
+
+  --s-error: #dc4446;
+  --s-error-plain: #2a1213;
+  --s-error-bg-disabled: #2a1717;
+
+  --s-invalid: #dc4446;
+  --s-invalid-plain: #2a1213;
+  --s-invalid-bg-disabled: #2a1717;
+}

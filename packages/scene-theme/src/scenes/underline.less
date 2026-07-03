@@ -1,1 +1,12 @@
-// scenes/underline.less —— 阶段 3 落地（.s-underline / .s-hoverunderline）
+/* scenes/underline.less
+ * 下划线场景原子：.s-underline（始终显示）/ .s-hoverunderline（hover 时显示）
+ * 双重身份：真实 CSS 类 + Less mixin
+ */
+
+.s-underline {
+  .mixin-underline();
+}
+
+.s-hoverunderline {
+  .mixin-underline-hover();
+}

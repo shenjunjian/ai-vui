@@ -1,11 +1,37 @@
 /* 场景化主题库入口
- * 1. 声明层级顺序（从低到高）
- * 2. 依次 @import 各层
+ * 1. 顶部 @import mixin 定义（不放在 @layer 内，跨层可访问）
+ * 2. 声明层级顺序（从低到高）
+ * 3. 各层 @import 内容（Less 限制：@import 在 @layer 内不会内联，故 @layer 包裹放在 CSS 输出阶段）
+ *
+ * 设计原则（见 .lingma/specs/less-css-implementation-plan.md）：
+ * - mixin 定义不放在任何 @layer 内（顶部 @import 一次），跨层可访问
+ * - 类定义（s-* / st-*）期望放在 @layer sc-base 内
+ * - .s-icon 单独在 @layer sc-icons（更高优先级）
+ * - .sc-* 组件类放在 @layer sc-component
+ * - .su-* 工具类放在 @layer sc-utils（最高优先级）
+ *
+ * 注：Less 4.x 中 @import 在 @layer 内会保留为 CSS @import（不内联），导致跨文件 mixin 调用失败。
+ *     当前的解决办法：组件文件（如 components/button/index.less）在文件顶部 @import 场景文件，
+ *     类定义统一在文件级输出。用户可以在自己的应用 CSS 中再使用 @layer 包裹引入本库来控制优先级。
  */
 
+/* 1. mixin 定义（无 CSS 输出，供 .sc-* 与 .s-* / .st-* 内联消费） */
+@import "./base/mixins/_index.less";
+
+/* 2. 声明层级顺序（从低到高）
+ *    注：必须先于所有 @layer block 出现。文件级仍输出到顶层（详见注释）。 */
 @layer sc-base, sc-icons, sc-component, sc-utils;
 
-@import "./layers/base.less";
-@import "./layers/icons.less";
-@import "./layers/component.less";
-@import "./layers/utils.less";
+/* 3. 各层内容（文件自身无 @layer，由本入口直接 @import 引入） */
+@import "./tokens/_index.less";
+@import "./base/reset.less";
+@import "./base/global.less";
+@import "./scenes/_index.less";
+@import "./states/_index.less";
+@import "./scenes/icon.less";
+@import "./components/button/index.less";
+@import "./components/link/index.less";
+@import "./components/tag/index.less";
+@import "./components/modal/index.less";
+@import "./components/input/index.less";
+@import "./utils/_index.less";

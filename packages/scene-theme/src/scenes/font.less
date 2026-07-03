@@ -1,1 +1,13 @@
-// scenes/font.less —— 阶段 3 落地（.s-font / .s-livefont）
+/* scenes/font.less
+ * 字体场景原子：.s-font（基础）/ .s-livefont（响应，含 size 阶梯）
+ * 双重身份：真实 CSS 类 + Less mixin
+ */
+
+.s-font {
+  .mixin-font();
+}
+
+.s-livefont {
+  @withSize: true;
+  .mixin-font();
+}

@@ -1,1 +1,52 @@
-// scenes/background.less —— 阶段 3.4 落地（.s-bg / .s-livebg / .s-plainbg / .s-whitebg / .s-ctrlbg）
+/* scenes/background.less
+ * 背景色场景原子：.s-bg（静态）/ .s-livebg（响应）/ .s-plainbg（朴素浅色）/ .s-liveplainbg（响应朴素）/ .s-whitebg（纯白）/ .s-ctrlbg（控件灰）
+ * 双重身份：既为真实 CSS 类（DOM 可直用），又为 Less mixin（被 .sc-* 组件类内联消费）
+ *
+ * mixin 复用自 base/mixins/box-mixin.less（被 index.less 顶部全局 @import 一次）
+ * 通过 @withHover / @withActive / @withDisabled / @withTheme 局部变量控制输出
+ *
+ * 注：本文件不在内部用 @layer 包裹，因 Less 中 @layer 是作用域边界，
+ *     跨 @layer 的 mixin 调用（场景类被 .sc-btn 内联）将失败。
+ *     @layer 优先级由 index.less 在 sc-base 内集中包裹。
+ */
+
+.s-bg {
+  @withHover: false;
+  @withActive: false;
+  @withDisabled: true;
+  @withTheme: true;
+  .mixin-bg-color();
+}
+
+.s-livebg {
+  @withHover: true;
+  @withActive: true;
+  @withDisabled: true;
+  @withTheme: true;
+  .mixin-bg-color();
+}
+
+.s-plainbg {
+  @withHover: false;
+  @withActive: false;
+  @withTheme: true;
+  .mixin-plain-bg-color();
+}
+
+.s-liveplainbg {
+  @withHover: true;
+  @withActive: true;
+  @withTheme: true;
+  .mixin-plain-bg-color();
+}
+
+.s-whitebg {
+  background-color: var(--s-norm-white-bg);
+}
+
+.s-ctrlbg {
+  @withHover: true;
+  @withActive: true;
+  @withDisabled: true;
+  .mixin-control-bg-color();
+}

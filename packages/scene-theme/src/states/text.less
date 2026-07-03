@@ -1,1 +1,16 @@
-// states/text.less —— 阶段 3 落地（.st-secondary / .st-ellipsis）
+/* states/text.less
+ * 文字状态类：.st-secondary（次级文字色） / .st-ellipsis（单行省略）
+ * 配合 .s-txt / .s-livetxt 叠加使用
+ */
+
+/* 次级文字色（占位、说明文字） */
+.st-secondary {
+  color: var(--s-norm-secondary);
+}
+
+/* 单行省略号（与 mixin-ellipsis 等价） */
+.st-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

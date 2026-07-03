@@ -1,0 +1,25 @@
+{
+  "extends": "stylelint-config-standard",
+  "customSyntax": "postcss-less",
+  "rules": {
+    "selector-class-pattern": [
+      "^(s-|st-|sc-|su-)[a-z0-9-]+$",
+      { "message": "类名必须以 s- / st- / sc- / su- 开头" }
+    ],
+    "import-notation": null,
+    "custom-property-pattern": null,
+    "at-rule-no-unknown": [true, { "ignoreAtRules": ["layer"] }],
+    "no-descending-specificity": null,
+    "no-duplicate-selectors": null,
+    "rule-empty-line-before": null,
+    "declaration-empty-line-before": null,
+    "color-function-alias-notation": null,
+    "color-function-notation": null,
+    "alpha-value-notation": null,
+    "color-hex-length": null,
+    "custom-property-empty-line-before": null,
+    "selector-not-notation": null,
+    "value-keyword-case": null
+  },
+  "ignoreFiles": ["dist/**/*", "node_modules/**/*"]
+}

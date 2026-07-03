@@ -1,1 +1,12 @@
-// scenes/icon.less —— 阶段 3 落地（.s-icon）
+/* scenes/icon.less
+ * 图标场景原子：.s-icon（方形图标基础容器）
+ * 双重身份：真实 CSS 类 + Less mixin
+ *
+ * 现代 CSS 特性：aspect-ratio: 1（不依赖固定 width/height）
+ *
+ * icon 单独在 sc-icons 层（更高优先级）— 由 index.less 通过 @layer sc-icons { @import } 包裹
+ */
+
+.s-icon {
+  .mixin-icon();
+}

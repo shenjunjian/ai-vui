@@ -1,1 +1,52 @@
-// base/mixins/extra-mixin.less —— 阶段 3 落地（过渡/省略号/下划线/原子工厂）
+/* base/mixins/extra-mixin.less
+ * 辅助 mixin：过渡 / 省略号 / 下划线 / 文本换行 / 不可压缩
+ */
+
+/* 过渡（基色 / 背景 / 边框） */
+.mixin-transition() {
+  transition: var(--s-transition-color);
+}
+.mixin-transition(@props) {
+  transition: @props var(--s-ani-time-base) ease;
+}
+
+/* 单行省略号 */
+.mixin-ellipsis() {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 多行省略（-webkit-，现代浏览器特性，直接使用） */
+.mixin-ellipsis-lines(@n) {
+  display: -webkit-box;
+  -webkit-line-clamp: @n;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* hover 下划线 */
+.mixin-underline-hover() {
+  text-decoration: none;
+  &:not(.st-disabled, :disabled, [disabled]):hover {
+    text-decoration: underline;
+  }
+}
+
+/* 强制显示下划线 */
+.mixin-underline() {
+  text-decoration-line: underline;
+  text-underline-offset: 2px;
+}
+
+/* flex / grid 子项不被压缩 */
+.mixin-item-noshrink() {
+  flex-shrink: 0;
+  flex-grow: 0;
+}
+
+/* 文本换行控制 */
+.mixin-nowrap() {
+  text-wrap-mode: nowrap;
+  white-space-collapse: collapse;
+}
