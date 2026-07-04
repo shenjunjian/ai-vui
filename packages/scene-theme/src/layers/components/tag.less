@@ -1,0 +1,112 @@
+// Tag Component Styles
+@layer s-component {
+  // Main tag class
+  .sc-tag {
+    // Base styles
+    font-family: var(--s-font-family);
+    font-size: var(--s-font-size-sm);
+    line-height: var(--s-line-height-sm);
+    font-weight: var(--s-font-weight-normal);
+    padding: 2px 8px;
+    border: 1px solid var(--s-color-control-border);
+    border-radius: var(--s-border-radius-sm);
+    background-color: var(--s-color-control-bg);
+    color: var(--s-color-control-text);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-gap-xs);
+    white-space: nowrap;
+
+    // Size variants
+    &.st-xs {
+      font-size: var(--s-font-size-xs);
+      padding: 1px 6px;
+    }
+
+    &.st-sm {
+      font-size: var(--s-font-size-sm);
+      padding: 2px 8px;
+    }
+
+    &.st-md {
+      font-size: var(--s-font-size-md);
+      padding: 4px 10px;
+    }
+
+    &.st-lg {
+      font-size: var(--s-font-size-lg);
+      padding: 6px 12px;
+    }
+
+    // Theme color variants
+    &.st-control {
+      background-color: var(--s-color-control-bg);
+      color: var(--s-color-control-text);
+      border-color: var(--s-color-control-border);
+    }
+
+    &.st-dark {
+      background-color: var(--s-color-dark-bg);
+      color: var(--s-color-dark-text);
+      border-color: var(--s-color-dark-border);
+    }
+
+    &.st-success {
+      background-color: var(--s-color-success-bg);
+      color: var(--s-color-success-text);
+      border-color: var(--s-color-success-border);
+    }
+
+    &.st-info {
+      background-color: var(--s-color-info-bg);
+      color: var(--s-color-info-text);
+      border-color: var(--s-color-info-border);
+    }
+
+    &.st-warn {
+      background-color: var(--s-color-warn-bg);
+      color: var(--s-color-warn-text);
+      border-color: var(--s-color-warn-border);
+    }
+
+    &.st-error {
+      background-color: var(--s-color-error-bg);
+      color: var(--s-color-error-text);
+      border-color: var(--s-color-error-border);
+    }
+
+    // Plain variant
+    &.sc-plain-tag {
+      background-color: transparent;
+    }
+
+    // Round variant
+    &.sc-round-tag {
+      border-radius: 9999px;
+    }
+
+    // Sub-elements
+    &__icon {
+      width: 14px;
+      height: 14px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    &__close {
+      width: 14px;
+      height: 14px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      opacity: 0.6;
+      transition: opacity 0.2s;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+}

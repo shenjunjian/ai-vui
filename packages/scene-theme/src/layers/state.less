@@ -1,0 +1,135 @@
+// State Classes
+// Modifiers that overlay on scene classes
+
+@layer s-base {
+  // Size states
+  .st-xs {
+    --s-font-size-current: var(--s-font-size-xs);
+    --s-padding-current: var(--s-padding-xs);
+    --s-line-height-current: var(--s-line-height-xs);
+    --s-border-radius-current: var(--s-border-radius-xs);
+    --s-gap-current: var(--s-gap-xs);
+
+    font-size: var(--s-font-size-xs);
+    line-height: var(--s-line-height-xs);
+    padding: var(--s-padding-xs);
+  }
+
+  .st-sm {
+    --s-font-size-current: var(--s-font-size-sm);
+    --s-padding-current: var(--s-padding-sm);
+    --s-line-height-current: var(--s-line-height-sm);
+    --s-border-radius-current: var(--s-border-radius-sm);
+    --s-gap-current: var(--s-gap-sm);
+
+    font-size: var(--s-font-size-sm);
+    line-height: var(--s-line-height-sm);
+    padding: var(--s-padding-sm);
+  }
+
+  .st-md {
+    --s-font-size-current: var(--s-font-size-md);
+    --s-padding-current: var(--s-padding-md);
+    --s-line-height-current: var(--s-line-height-md);
+    --s-border-radius-current: var(--s-border-radius-md);
+    --s-gap-current: var(--s-gap-md);
+
+    font-size: var(--s-font-size-md);
+    line-height: var(--s-line-height-md);
+    padding: var(--s-padding-md);
+  }
+
+  .st-lg {
+    --s-font-size-current: var(--s-font-size-lg);
+    --s-padding-current: var(--s-padding-lg);
+    --s-line-height-current: var(--s-line-height-lg);
+    --s-border-radius-current: var(--s-border-radius-lg);
+    --s-gap-current: var(--s-gap-lg);
+
+    font-size: var(--s-font-size-lg);
+    line-height: var(--s-line-height-lg);
+    padding: var(--s-padding-lg);
+  }
+
+  // Theme color states
+  .st-control {
+    --s-color-text-current: var(--s-color-control-text);
+    --s-color-bg-current: var(--s-color-control-bg);
+    --s-color-border-current: var(--s-color-control-border);
+    --s-color-hover-bg-current: var(--s-color-control-hover-bg);
+    --s-color-active-bg-current: var(--s-color-control-active-bg);
+  }
+
+  .st-dark {
+    --s-color-text-current: var(--s-color-dark-text);
+    --s-color-bg-current: var(--s-color-dark-bg);
+    --s-color-border-current: var(--s-color-dark-border);
+    --s-color-hover-bg-current: var(--s-color-dark-hover-bg);
+    --s-color-active-bg-current: var(--s-color-dark-active-bg);
+  }
+
+  .st-success {
+    --s-color-text-current: var(--s-color-success-text);
+    --s-color-bg-current: var(--s-color-success-bg);
+    --s-color-border-current: var(--s-color-success-border);
+    --s-color-hover-bg-current: var(--s-color-success-hover-bg);
+    --s-color-active-bg-current: var(--s-color-success-active-bg);
+  }
+
+  .st-info {
+    --s-color-text-current: var(--s-color-info-text);
+    --s-color-bg-current: var(--s-color-info-bg);
+    --s-color-border-current: var(--s-color-info-border);
+    --s-color-hover-bg-current: var(--s-color-info-hover-bg);
+    --s-color-active-bg-current: var(--s-color-info-active-bg);
+  }
+
+  .st-warn {
+    --s-color-text-current: var(--s-color-warn-text);
+    --s-color-bg-current: var(--s-color-warn-bg);
+    --s-color-border-current: var(--s-color-warn-border);
+    --s-color-hover-bg-current: var(--s-color-warn-hover-bg);
+    --s-color-active-bg-current: var(--s-color-warn-active-bg);
+  }
+
+  .st-error {
+    --s-color-text-current: var(--s-color-error-text);
+    --s-color-bg-current: var(--s-color-error-bg);
+    --s-color-border-current: var(--s-color-error-border);
+    --s-color-hover-bg-current: var(--s-color-error-hover-bg);
+    --s-color-active-bg-current: var(--s-color-error-active-bg);
+  }
+
+  // Font weight states
+  .st-bold {
+    font-weight: var(--s-font-weight-bold);
+  }
+
+  .st-thin {
+    font-weight: var(--s-font-weight-thin);
+  }
+
+  // Shape states
+  .st-round {
+    border-radius: 9999px;
+  }
+
+  .st-circle {
+    border-radius: 50%;
+  }
+
+  // Plain state - transparent background with border and text color
+  .st-plain {
+    background-color: transparent !important;
+  }
+
+  // Disabled state class (use with component classes)
+  .st-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  // Hover and active states are typically handled in component classes
+  // using :hover and :active pseudo-classes
+}

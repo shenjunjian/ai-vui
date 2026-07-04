@@ -1,0 +1,119 @@
+// Link Component Styles
+@layer s-component {
+  // Main link class
+  .sc-link {
+    // Base styles
+    font-family: var(--s-font-family);
+    font-size: var(--s-font-size-md);
+    line-height: var(--s-line-height-md);
+    font-weight: var(--s-font-weight-normal);
+    color: var(--s-color-info-text);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-gap-xs);
+    transition: color 0.2s ease;
+
+    // Size variants
+    &.st-xs {
+      font-size: var(--s-font-size-xs);
+    }
+
+    &.st-sm {
+      font-size: var(--s-font-size-sm);
+    }
+
+    &.st-md {
+      font-size: var(--s-font-size-md);
+    }
+
+    &.st-lg {
+      font-size: var(--s-font-size-lg);
+    }
+
+    // Theme color variants
+    &.st-control {
+      color: var(--s-color-control-text);
+
+      &:hover:not(:disabled) {
+        color: var(--s-color-control-hover-bg);
+      }
+    }
+
+    &.st-dark {
+      color: var(--s-color-dark-text);
+
+      &:hover:not(:disabled) {
+        opacity: 0.8;
+      }
+    }
+
+    &.st-success {
+      color: var(--s-color-success-text);
+
+      &:hover:not(:disabled) {
+        color: var(--s-color-success-hover-bg);
+      }
+    }
+
+    &.st-info {
+      color: var(--s-color-info-text);
+
+      &:hover:not(:disabled) {
+        color: var(--s-color-info-hover-bg);
+      }
+    }
+
+    &.st-warn {
+      color: var(--s-color-warn-text);
+
+      &:hover:not(:disabled) {
+        color: var(--s-color-warn-hover-bg);
+      }
+    }
+
+    &.st-error {
+      color: var(--s-color-error-text);
+
+      &:hover:not(:disabled) {
+        color: var(--s-color-error-hover-bg);
+      }
+    }
+
+    // Underline variant
+    &.sc-link-underline {
+      text-decoration: underline;
+
+      &:hover:not(:disabled) {
+        text-decoration: none;
+      }
+    }
+
+    // Plain variant - less prominent
+    &.sc-link-plain {
+      opacity: 0.8;
+
+      &:hover:not(:disabled) {
+        opacity: 1;
+      }
+    }
+
+    // Hover state
+    &:hover:not(:disabled) {
+      opacity: 0.8;
+    }
+
+    // Active state
+    &:active:not(:disabled) {
+      opacity: 0.6;
+    }
+
+    // Disabled state
+    &:disabled,
+    &.st-disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+  }
+}

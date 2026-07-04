@@ -1,0 +1,209 @@
+// Button Component Styles
+@layer s-component {
+  // Main button class - combines scene classes
+  .sc-btn {
+    // Base styles from scene classes
+    font-family: var(--s-font-family);
+    font-size: var(--s-font-size-md);
+    line-height: var(--s-line-height-md);
+    font-weight: var(--s-font-weight-normal);
+    padding: var(--s-padding-md);
+    border: 1px solid var(--s-color-control-border);
+    border-radius: var(--s-border-radius-md);
+    background-color: var(--s-color-control-bg);
+    color: var(--s-color-control-text);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--s-gap-sm);
+    transition: all 0.2s ease;
+    user-select: none;
+    white-space: nowrap;
+
+    // Size variants via state classes
+    &.st-xs {
+      font-size: var(--s-font-size-xs);
+      padding: var(--s-padding-xs);
+      gap: var(--s-gap-xs);
+    }
+
+    &.st-sm {
+      font-size: var(--s-font-size-sm);
+      padding: var(--s-padding-sm);
+      gap: var(--s-gap-sm);
+    }
+
+    &.st-md {
+      font-size: var(--s-font-size-md);
+      padding: var(--s-padding-md);
+      gap: var(--s-gap-md);
+    }
+
+    &.st-lg {
+      font-size: var(--s-font-size-lg);
+      padding: var(--s-padding-lg);
+      gap: var(--s-gap-lg);
+    }
+
+    // Theme color variants
+    &.st-control {
+      background-color: var(--s-color-control-bg);
+      color: var(--s-color-control-text);
+      border-color: var(--s-color-control-border);
+
+      &:hover:not(:disabled) {
+        background-color: var(--s-color-control-hover-bg);
+      }
+
+      &:active:not(:disabled) {
+        background-color: var(--s-color-control-active-bg);
+      }
+    }
+
+    &.st-dark {
+      background-color: var(--s-color-dark-bg);
+      color: var(--s-color-dark-text);
+      border-color: var(--s-color-dark-border);
+
+      &:hover:not(:disabled) {
+        background-color: var(--s-color-dark-hover-bg);
+      }
+
+      &:active:not(:disabled) {
+        background-color: var(--s-color-dark-active-bg);
+      }
+    }
+
+    &.st-success {
+      background-color: var(--s-color-success-bg);
+      color: var(--s-color-success-text);
+      border-color: var(--s-color-success-border);
+
+      &:hover:not(:disabled) {
+        background-color: var(--s-color-success-hover-bg);
+      }
+
+      &:active:not(:disabled) {
+        background-color: var(--s-color-success-active-bg);
+      }
+    }
+
+    &.st-info {
+      background-color: var(--s-color-info-bg);
+      color: var(--s-color-info-text);
+      border-color: var(--s-color-info-border);
+
+      &:hover:not(:disabled) {
+        background-color: var(--s-color-info-hover-bg);
+      }
+
+      &:active:not(:disabled) {
+        background-color: var(--s-color-info-active-bg);
+      }
+    }
+
+    &.st-warn {
+      background-color: var(--s-color-warn-bg);
+      color: var(--s-color-warn-text);
+      border-color: var(--s-color-warn-border);
+
+      &:hover:not(:disabled) {
+        background-color: var(--s-color-warn-hover-bg);
+      }
+
+      &:active:not(:disabled) {
+        background-color: var(--s-color-warn-active-bg);
+      }
+    }
+
+    &.st-error {
+      background-color: var(--s-color-error-bg);
+      color: var(--s-color-error-text);
+      border-color: var(--s-color-error-border);
+
+      &:hover:not(:disabled) {
+        background-color: var(--s-color-error-hover-bg);
+      }
+
+      &:active:not(:disabled) {
+        background-color: var(--s-color-error-active-bg);
+      }
+    }
+
+    // Plain variant - transparent background
+    &.sc-plain-btn {
+      background-color: transparent;
+
+      &:hover:not(:disabled) {
+        background-color: var(--s-color-control-hover-bg);
+      }
+    }
+
+    // Ghost variant - no border
+    &.sc-ghost-btn {
+      border-color: transparent;
+      background-color: transparent;
+
+      &:hover:not(:disabled) {
+        background-color: var(--s-color-control-hover-bg);
+      }
+    }
+
+    // Text variant - no border, no background
+    &.sc-text-btn {
+      border-color: transparent;
+      background-color: transparent;
+      padding-left: 4px;
+      padding-right: 4px;
+
+      &:hover:not(:disabled) {
+        background-color: var(--s-color-control-hover-bg);
+      }
+    }
+
+    // Link variant - with underline
+    &.sc-link-btn {
+      border-color: transparent;
+      background-color: transparent;
+      text-decoration: underline;
+      padding-left: 4px;
+      padding-right: 4px;
+
+      &:hover:not(:disabled) {
+        text-decoration: none;
+      }
+    }
+
+    // Disabled state
+    &:disabled,
+    &.st-disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    // Sub-elements
+    &__icon {
+      width: var(--s-size-md);
+      height: var(--s-size-md);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    &__loading {
+      display: inline-block;
+      animation: spin 1s linear infinite;
+    }
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+}

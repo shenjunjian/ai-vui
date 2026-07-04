@@ -1,0 +1,197 @@
+// Modal/Dialog Component Styles
+// Based on native <dialog> element
+@layer s-component {
+  // Main modal class
+  .sc-modal {
+    // Base dialog styles
+    border: none;
+    border-radius: var(--s-border-radius-lg);
+    background-color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 0;
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+
+    // Size variants
+    &.st-xs {
+      width: 320px;
+    }
+
+    &.st-sm {
+      width: 480px;
+    }
+
+    &.st-md {
+      width: 640px;
+    }
+
+    &.st-lg {
+      width: 800px;
+    }
+
+    // Header section
+    &__header {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--s-spacing-md);
+      border-bottom: 1px solid var(--s-color-control-border);
+      gap: var(--s-spacing-sm);
+    }
+
+    // Title in header
+    &__title {
+      font-family: var(--s-font-family);
+      font-size: var(--s-font-size-lg);
+      line-height: var(--s-line-height-lg);
+      font-weight: var(--s-font-weight-bold);
+      color: var(--s-color-control-text);
+      flex: 1;
+    }
+
+    // Close button in header
+    &__close {
+      width: var(--s-size-md);
+      height: var(--s-size-md);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: var(--s-color-control-text);
+      opacity: 0.6;
+      transition: opacity 0.2s;
+      border-radius: var(--s-border-radius-sm);
+
+      &:hover {
+        opacity: 1;
+        background-color: var(--s-color-control-hover-bg);
+      }
+    }
+
+    // Body section
+    &__body {
+      padding: var(--s-spacing-md);
+      overflow-y: auto;
+      flex: 1;
+      color: var(--s-color-control-text);
+      font-size: var(--s-font-size-md);
+      line-height: var(--s-line-height-md);
+    }
+
+    // Footer section
+    &__footer {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-end;
+      padding: var(--s-spacing-md);
+      border-top: 1px solid var(--s-color-control-border);
+      gap: var(--s-spacing-sm);
+    }
+
+    // Backdrop styling (using ::backdrop pseudo-element)
+    &::backdrop {
+      background-color: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(2px);
+    }
+
+    // Animation support using @starting-style
+    &[open] {
+      animation: modal-enter 0.2s ease-out;
+    }
+
+    &::backdrop {
+      animation: backdrop-enter 0.2s ease-out;
+    }
+  }
+
+  // Enter animation
+  @keyframes modal-enter {
+    from {
+      opacity: 0;
+      transform: scale(0.95) translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  @keyframes backdrop-enter {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  // Dark mode support for modal
+  @media (prefers-color-scheme: dark) {
+    .sc-modal {
+      background-color: #2a2a2a;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+
+      &__header {
+        border-bottom-color: var(--s-color-control-border);
+      }
+
+      &__title {
+        color: var(--s-color-control-text);
+      }
+
+      &__close {
+        color: var(--s-color-control-text);
+
+        &:hover {
+          background-color: var(--s-color-control-hover-bg);
+        }
+      }
+
+      &__body {
+        color: var(--s-color-control-text);
+      }
+
+      &__footer {
+        border-top-color: var(--s-color-control-border);
+      }
+    }
+  }
+
+  .su-dark {
+    .sc-modal {
+      background-color: #2a2a2a;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+
+      &__header {
+        border-bottom-color: var(--s-color-control-border);
+      }
+
+      &__title {
+        color: var(--s-color-control-text);
+      }
+
+      &__close {
+        color: var(--s-color-control-text);
+
+        &:hover {
+          background-color: var(--s-color-control-hover-bg);
+        }
+      }
+
+      &__body {
+        color: var(--s-color-control-text);
+      }
+
+      &__footer {
+        border-top-color: var(--s-color-control-border);
+      }
+    }
+  }
+}

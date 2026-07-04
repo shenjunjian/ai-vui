@@ -1,13 +1,18 @@
 <template>
-  <div ref="rootRef" class="tiny-button">
+  <button
+    ref="rootRef"
+    class="sc-btn"
+    :class="[sizeClass, themeClass, { 'st-disabled': disabled }]"
+    :disabled="disabled"
+  >
     <slot v-bind="{ state, api, props }">Button</slot>
-  </div>
+  </button>
 </template>
 
 <script setup lang="ts">
 import useVm from "./button.vm.ts";
 import "./button.less";
-import { useTemplateRef } from "vue";
+import { useTemplateRef, computed } from "vue";
 
 defineOptions({ name: "TinyButton" });
 
@@ -44,6 +49,29 @@ const slots = defineSlots<{
     props: ButtonProps;
   }): any;
 }>();
+
+// Computed classes for scene-theme integration
+const sizeClass = computed(() => {
+  const sizeMap: Record<string, string> = {
+    xs: "st-xs",
+    sm: "st-sm",
+    md: "st-md",
+    lg: "st-lg",
+  };
+  return sizeMap[props.size] || "st-md";
+});
+
+const themeClass = computed(() => {
+  const themeMap: Record<string, string> = {
+    default: "st-control",
+    dark: "st-dark",
+    success: "st-success",
+    info: "st-info",
+    warn: "st-warn",
+    error: "st-error",
+  };
+  return themeMap[props.theme] || "st-control";
+});
 
 const refs = {
   rootRef: useTemplateRef("rootRef"),

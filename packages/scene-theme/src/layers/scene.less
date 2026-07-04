@@ -1,0 +1,112 @@
+// Scene Classes
+// Reusable CSS property groups based on usage scenarios
+
+@layer s-base {
+  // Font scene - typography properties
+  .s-font {
+    font-family: var(--s-font-family);
+    font-size: var(--s-font-size-md);
+    line-height: var(--s-line-height-md);
+    font-weight: var(--s-font-weight-normal);
+  }
+
+  // Background color scene
+  .s-bg {
+    background-color: var(--s-color-control-bg);
+  }
+
+  // Text color scene
+  .s-text {
+    color: var(--s-color-control-text);
+  }
+
+  // Border scene
+  .s-bd {
+    border: 1px solid var(--s-color-control-border);
+    border-radius: var(--s-border-radius-md);
+  }
+
+  // Padding scene
+  .s-pad {
+    padding: var(--s-padding-md);
+  }
+
+  // Flex row layout scene
+  .s-flexr {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--s-gap-sm);
+  }
+
+  // Ellipsis scene - text truncation
+  .s-ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  // Cursor scene
+  .s-cursor {
+    cursor: pointer;
+  }
+
+  // Icon square scene - for icons and avatars
+  .s-iconish {
+    width: var(--s-size-md);
+    height: var(--s-size-md);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  // Display block scene
+  .s-block {
+    display: block;
+  }
+
+  // Display inline-block scene
+  .s-inline-block {
+    display: inline-block;
+  }
+
+  // Text align center
+  .s-text-center {
+    text-align: center;
+  }
+
+  // Text align left
+  .s-text-left {
+    text-align: left;
+  }
+
+  // Text align right
+  .s-text-right {
+    text-align: right;
+  }
+
+  // Overflow hidden
+  .s-overflow-hidden {
+    overflow: hidden;
+  }
+
+  // Position relative
+  .s-relative {
+    position: relative;
+  }
+
+  // Position absolute
+  .s-absolute {
+    position: absolute;
+  }
+
+  // Width 100%
+  .s-w-full {
+    width: 100%;
+  }
+
+  // Height 100%
+  .s-h-full {
+    height: 100%;
+  }
+}

@@ -1,0 +1,22 @@
+// Scene Theme - Main Entry Point
+// Layer declaration: s-base (lower priority) < s-component (higher priority)
+@layer s-base, s-component;
+
+// Import tokens
+@import "./tokens/colors.less";
+@import "./tokens/sizes.less";
+@import "./tokens/spacing.less";
+@import "./tokens/typography.less";
+
+// Import base styles
+@import "./base/reset.less";
+
+// Import scene and state classes (s-base layer)
+@import "./layers/scene.less";
+@import "./layers/state.less";
+
+// Import component classes (s-component layer)
+@import "./layers/components/button.less";
+@import "./layers/components/tag.less";
+@import "./layers/components/link.less";
+@import "./layers/components/modal.less";

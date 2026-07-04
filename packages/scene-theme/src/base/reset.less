@@ -1,0 +1,99 @@
+// Reset Styles
+// Global reset and base styles
+
+@layer s-base {
+  // Box sizing reset
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  // Body defaults
+  body {
+    font-family: var(--s-font-family);
+    font-size: var(--s-font-size-md);
+    line-height: var(--s-line-height-md);
+    color: var(--s-color-control-text);
+    background-color: #ffffff;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  // Responsive images
+  img,
+  picture,
+  video,
+  canvas,
+  svg {
+    display: block;
+    max-width: 100%;
+  }
+
+  // Inherit fonts for form controls
+  input,
+  button,
+  textarea,
+  select {
+    font: inherit;
+    color: inherit;
+  }
+
+  // Remove list styles
+  ul,
+  ol {
+    list-style: none;
+  }
+
+  // Link defaults
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  // Custom scrollbar
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--s-color-control-bg);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--s-color-control-border);
+    border-radius: 4px;
+
+    &:hover {
+      background: var(--s-color-control-hover-bg);
+    }
+  }
+
+  // Placeholder styles
+  ::placeholder {
+    color: var(--s-color-control-border);
+    opacity: 1;
+  }
+
+  // Selection styles
+  ::selection {
+    background-color: var(--s-color-info-bg);
+    color: var(--s-color-info-text);
+  }
+
+  // Focus outline
+  :focus-visible {
+    outline: 2px solid var(--s-color-info-border);
+    outline-offset: 2px;
+  }
+
+  // Button reset
+  button {
+    border: none;
+    background: none;
+    cursor: pointer;
+  }
+}

@@ -1,0 +1,106 @@
+// Color Tokens
+// Base color variables for theming system
+
+:root {
+  // Control theme (gray, like Windows controls)
+  --s-color-control-text: #333333;
+  --s-color-control-bg: #f5f5f5;
+  --s-color-control-border: #d9d9d9;
+  --s-color-control-hover-bg: #e8e8e8;
+  --s-color-control-active-bg: #d0d0d0;
+
+  // Dark theme
+  --s-color-dark-text: #ffffff;
+  --s-color-dark-bg: #1a1a1a;
+  --s-color-dark-border: #404040;
+  --s-color-dark-hover-bg: #2a2a2a;
+  --s-color-dark-active-bg: #333333;
+
+  // Success theme (green)
+  --s-color-success-text: #52c41a;
+  --s-color-success-bg: #f6ffed;
+  --s-color-success-border: #b7eb8f;
+  --s-color-success-hover-bg: #d9f7be;
+  --s-color-success-active-bg: #b7eb8f;
+
+  // Info theme (blue)
+  --s-color-info-text: #1890ff;
+  --s-color-info-bg: #e6f7ff;
+  --s-color-info-border: #91d5ff;
+  --s-color-info-hover-bg: #bae7ff;
+  --s-color-info-active-bg: #91d5ff;
+
+  // Warn theme (orange)
+  --s-color-warn-text: #faad14;
+  --s-color-warn-bg: #fffbe6;
+  --s-color-warn-border: #ffe58f;
+  --s-color-warn-hover-bg: #fff1b8;
+  --s-color-warn-active-bg: #ffe58f;
+
+  // Error theme (red)
+  --s-color-error-text: #ff4d4f;
+  --s-color-error-bg: #fff2f0;
+  --s-color-error-border: #ffccc7;
+  --s-color-error-hover-bg: #ffccc7;
+  --s-color-error-active-bg: #ffa39e;
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  :root {
+    --s-color-control-text: #ffffff;
+    --s-color-control-bg: #2a2a2a;
+    --s-color-control-border: #404040;
+    --s-color-control-hover-bg: #333333;
+    --s-color-control-active-bg: #404040;
+
+    --s-color-success-bg: #162312;
+    --s-color-success-border: #274916;
+    --s-color-success-hover-bg: #1d3217;
+    --s-color-success-active-bg: #274916;
+
+    --s-color-info-bg: #111d2c;
+    --s-color-info-border: #15395b;
+    --s-color-info-hover-bg: #142d45;
+    --s-color-info-active-bg: #15395b;
+
+    --s-color-warn-bg: #2b2111;
+    --s-color-warn-border: #594214;
+    --s-color-warn-hover-bg: #423311;
+    --s-color-warn-active-bg: #594214;
+
+    --s-color-error-bg: #2a1215;
+    --s-color-error-border: #5c2023;
+    --s-color-error-hover-bg: #42171a;
+    --s-color-error-active-bg: #5c2023;
+  }
+}
+
+// Manual dark mode class override
+.su-dark {
+  --s-color-control-text: #ffffff;
+  --s-color-control-bg: #2a2a2a;
+  --s-color-control-border: #404040;
+  --s-color-control-hover-bg: #333333;
+  --s-color-control-active-bg: #404040;
+
+  --s-color-success-bg: #162312;
+  --s-color-success-border: #274916;
+  --s-color-success-hover-bg: #1d3217;
+  --s-color-success-active-bg: #274916;
+
+  --s-color-info-bg: #111d2c;
+  --s-color-info-border: #15395b;
+  --s-color-info-hover-bg: #142d45;
+  --s-color-info-active-bg: #15395b;
+
+  --s-color-warn-bg: #2b2111;
+  --s-color-warn-border: #594214;
+  --s-color-warn-hover-bg: #423311;
+  --s-color-warn-active-bg: #594214;
+
+  --s-color-error-bg: #2a1215;
+  --s-color-error-border: #5c2023;
+  --s-color-error-hover-bg: #42171a;
+  --s-color-error-active-bg: #5c2023;
+}

@@ -12,11 +12,12 @@
     ".": "./src/index.less",
     "./reset": "./src/base/reset.less",
     "./tokens/colors": "./src/tokens/colors.less",
-    "./components/button": "./src/components/button/index.less",
-    "./components/link": "./src/components/link/index.less",
-    "./components/tag": "./src/components/tag/index.less",
-    "./components/modal": "./src/components/modal/index.less",
-    "./components/input": "./src/components/input/index.less",
+    "./layers/scene": "./src/layers/scene.less",
+    "./layers/state": "./src/layers/state.less",
+    "./components/button": "./src/layers/components/button.less",
+    "./components/link": "./src/layers/components/link.less",
+    "./components/tag": "./src/layers/components/tag.less",
+    "./components/modal": "./src/layers/components/modal.less",
     "./package.json": "./package.json"
   },
   "files": [
