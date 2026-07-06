@@ -1,0 +1,55 @@
+{
+  "name": "scene-theme",
+  "version": "0.0.0",
+  "description": "A starter for creating a TypeScript package.",
+  "homepage": "https://github.com/author/library#readme",
+  "bugs": {
+    "url": "https://github.com/author/library/issues"
+  },
+  "license": "MIT",
+  "author": "Author Name <author.name@mail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/author/library.git"
+  },
+  "style": "./src/index.less",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "style": "./dist/index.css",
+      "default": "./dist/index.mjs"
+    },
+    "./style.less": "./src/index.less",
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "vite-dev": "node --use-system-ca node_modules/.bin/vite",
+    "dev": "vp pack --watch",
+    "build": "vp pack && build:less && build:css",
+    "build:less": "lessc src/index.less dist/index.css",
+    "build:css": "cleancss -d -O2 mergeSemantically:on -o dist/index.min.css dist/index.css",
+    "check": "vp check",
+    "prepublishOnly": "vp run build"
+  },
+  "dependencies": {
+    "clean-css": "catalog:",
+    "clean-css-cli": "catalog:",
+    "less": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@typescript/native-preview": "catalog:",
+    "bumpp": "catalog:",
+    "typescript": "catalog:",
+    "vite-plus": "catalog:"
+  }
+}

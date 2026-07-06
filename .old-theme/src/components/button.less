@@ -1,0 +1,146 @@
+@import "./atom.less";
+
+.mixin-reset-button() {
+  appearance: none;
+  outline: none;
+  border: none;
+  text-align: center;
+  touch-action: manipulation; //允许浏览器处理滚动和缩放操作，但禁用其他非标准手势,可以减少浏览器在用户点击屏幕时延迟生成点击事件的需要
+  user-select: none; // 禁止选中文本。 button 标签自身禁止选中，此处强调一下，是避免用户把 .sc-button 使用在div上。
+  text-wrap-mode: nowrap;
+  white-space-collapse: collapse;
+}
+
+.mixin-init-button() {
+  .mixin-reset-button();
+
+  // 图标+文字
+  .sc-flexr();
+  & {
+    gap: var(--sv-button-gap);
+  }
+
+  // 这些值，在不同规范适配时，大概率会不同。所以抽取了相应的 --sv 变量
+  --it-pad: var(--sv-button-pad-md) !important;
+  --it-pad-xs: var(--sv-button-pad-xs) !important;
+  --it-pad-sm: var(--sv-button-pad-sm) !important;
+  --it-pad-md: var(--sv-button-pad-md) !important;
+  --it-pad-lg: var(--sv-button-pad-lg) !important;
+
+  // 场景2：内部的span 默认具有省略号
+  & span {
+    .mixin-ellipsis();
+  }
+
+  // 场景3：当限制宽度时，内部的 i, svg, img 不允许被缩小
+  & :is(i, svg, img) {
+    .mixin-item-noshrink();
+  }
+
+  // 视觉校正
+  & :is(i, svg, img) {
+    &:first-child {
+      margin-left: var(--sv-button-overshoot);
+    }
+    &:last-child {
+      margin-right: var(--sv-button-overshoot);
+    }
+  }
+}
+/** 按钮类 --- 普通按钮 */
+.sc-btn {
+  .mixin-init-button();
+
+  .sc-livefont();
+  .sc-livepad();
+  .sc-ctrltxt();
+  .sc-ctrlbg();
+  .sc-ctrlbd();
+  .sc-cursor();
+  .sc-shadow();
+}
+
+// 按钮类 --- 主题按钮
+.sc-theme-btn {
+  .mixin-init-button();
+
+  .sc-livefont();
+  .sc-livepad();
+  .sc-whitetxt();
+  .sc-livebg();
+  .sc-livebd();
+  .sc-cursor();
+  .sc-shadow();
+}
+
+// 按钮类 --- 朴素按钮
+.sc-plain-btn {
+  .mixin-init-button();
+
+  .sc-livefont();
+  .sc-livepad();
+  .sc-livetxt();
+  .sc-liveplainbg(); // TODO:
+  .sc-livebd();
+  .sc-cursor();
+  .sc-shadow();
+}
+// 按钮类 --- 幽灵按钮
+.sc-ghost-btn {
+  .mixin-init-button();
+
+  .sc-livefont();
+  .sc-livepad();
+  .sc-livetxt();
+  .sc-livebd();
+  .sc-cursor();
+  .sc-shadow();
+
+  background-color: transparent !important;
+}
+
+// icon 按钮
+.sc-icon-btn {
+  .mixin-reset-button();
+
+  .sc-icon();
+  .sc-livefont();
+  .sc-txt();
+  .sc-livebg();
+  .sc-livebd();
+  .sc-cursor();
+  .sc-shadow();
+}
+
+.sc-icon-plain-btn {
+  .mixin-reset-button();
+
+  .sc-icon();
+  .sc-livefont();
+  .sc-livetxt();
+  .sc-liveplainbg();
+  .sc-livebd();
+  .sc-cursor();
+  .sc-shadow();
+}
+
+// 链接按钮
+.sc-link-btn {
+  .mixin-reset-button();
+
+  .sc-livepad();
+  .sc-livefont();
+  .sc-livetxt();
+  .sc-cursor();
+  .sc-shadow();
+
+  .sc-hoverlink();
+
+  &.st-back {
+    .sc-liveplainbg();
+  }
+
+  &:not(.st-back) {
+    background-color: transparent !important;
+  }
+}

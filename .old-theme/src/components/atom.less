@@ -1,0 +1,174 @@
+// 原子类名，用于构建复杂类名
+@import "../common/mixins/index.less";
+
+// 字体样式
+.sc-font {
+  @withSize: false;
+  .mixin-font();
+}
+
+.sc-livefont {
+  @withSize: true;
+  .mixin-font();
+}
+// 内边距样式
+.sc-pad {
+  @withSize: false;
+  .mixin-padding();
+}
+.sc-livepad {
+  @withSize: true;
+  .mixin-padding();
+}
+
+// 内边距样式
+.sc-margin {
+  @withSize: false;
+  .mixin-margin();
+}
+.sc-livemargin {
+  @withSize: true;
+  .mixin-margin();
+}
+
+// 文字颜色样式
+.sc-txt {
+  @withHover: false;
+  @withActive: false;
+  @withDisabled: true;
+  @withTheme: true;
+  .mixin-text-color();
+}
+.sc-livetxt {
+  @withHover: true;
+  @withActive: true;
+  @withDisabled: true;
+  @withTheme: true;
+  .mixin-text-color();
+}
+
+.sc-whitetxt {
+  .mixin-white-text-color();
+}
+
+.sc-ctrltxt {
+  .mixin-control-text-color();
+}
+
+// 背景样式
+.sc-bg {
+  @withHover: false;
+  @withActive: false;
+  @withDisabled: true;
+  @withTheme: true;
+  .mixin-bg-color();
+}
+.sc-livebg {
+  @withHover: true;
+  @withActive: true;
+  @withDisabled: true;
+  @withTheme: true;
+  .mixin-bg-color();
+}
+
+.sc-plainbg {
+  @withHover: false;
+  @withActive: false;
+  @withDisabled: true;
+  @withTheme: true;
+  .mixin-plain-bg-color();
+}
+.sc-liveplainbg {
+  @withHover: true;
+  @withActive: true;
+  @withDisabled: true;
+  @withTheme: true;
+  .mixin-plain-bg-color();
+}
+
+.sc-whitebg {
+  .mixin-white-bg-color();
+}
+
+.sc-ctrlbg {
+  @withHover: true;
+  @withActive: true;
+  .mixin-control-bg-color();
+}
+
+// 边框样式
+.sc-bd {
+  @withHover: false;
+  @withActive: false;
+  @withDisabled: true;
+  @withTheme: true;
+  @withSize: true;
+  .mixin-border();
+  .mixin-border-radius();
+}
+.sc-livebd {
+  @withHover: true;
+  @withActive: true;
+  @withDisabled: true;
+  @withTheme: true;
+  @withSize: true;
+  .mixin-border();
+  .mixin-border-radius();
+}
+
+.sc-ctrlbd {
+  @withHover: true;
+  @withActive: true;
+  @withSize: true;
+  .mixin-control-bd-color();
+  .mixin-border-radius();
+}
+// 图标样式
+.sc-icon {
+  @withSize: true;
+  .mixin-icon();
+}
+
+// 光标样式
+.sc-cursor {
+  @withDisabled: true;
+  .mixin-cursor();
+}
+// 阴影样式
+.sc-shadow {
+  @withHover: false;
+  .mixin-box-shadow();
+}
+.sc-liveshadow {
+  @withHover: true;
+  .mixin-box-shadow();
+}
+// 链接样式
+.sc-underline {
+  .mixin-underline();
+}
+.sc-hoverunderline {
+  .mixin-hover-underline();
+}
+
+// *************** 布局原子 ***************
+.sc-flexr {
+  @withSize: true;
+  .mixin-flex-align(inline-flex,row);
+}
+
+.sc-flexc {
+  @withSize: true;
+  .mixin-flex-align(inline-flex,column);
+}
+
+.sc-gridstack {
+  .mixin-grid-stack();
+}
+.sc-list {
+  .mixin-list();
+}
+
+.sc-listitem {
+  .mixin-list-item();
+}

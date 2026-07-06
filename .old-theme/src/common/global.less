@@ -1,0 +1,50 @@
+/* 滚动条标准属性: chrome121+, ff64+ */
+@supports (scrollbar-width: auto) {
+  *:not(.st-native) {
+    scrollbar-color: var(--sv-scroll-thumb) var(--sv-scroll-track);
+    scrollbar-width: var(--sv-scroll-width);
+  }
+}
+
+/* 历史滚动条 ::-webkit-scrollbar-*  */
+@supports selector(::-webkit-scrollbar) {
+  *:not(.st-native)::-webkit-scrollbar-thumb {
+    background: var(--sv-scroll-thumb);
+  }
+
+  *:not(.st-native)::-webkit-scrollbar-track {
+    background: var(--sv-scroll-track);
+  }
+
+  *:not(.st-native)::-webkit-scrollbar {
+    max-width: var(--sv-scroll-width-legacy);
+    max-height: var(--sv-scroll-width-legacy);
+  }
+}
+
+/* 占位文本色 */
+::placeholder {
+  color: var(--sv-placeholder-text);
+}
+
+/* 选中颜色和背景色 */
+::selection {
+  color: var(--sv-selection-text);
+  background-color: var(--sv-selection-bg);
+}
+
+/** 遮罩层  */
+dialog[open]::backdrop {
+  background-color: var(--sv-bg-mask);
+  backdrop-filter: blur(var(--sv-bg-mask-blur));
+}
+
+// 弹出popover层
+[popover]:not(:popover-open) {
+  display: none !important;
+}
+
+[popover] {
+  overflow: visible !important; // 浏览器默认auto 会造成小三角不正确
+  padding: 0 !important; // 浏览器默认 0.25em
+}

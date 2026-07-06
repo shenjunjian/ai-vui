@@ -1,0 +1,335 @@
+/**
+  * 通用变量， 其它规范只覆盖这些即可！
+ */
+:root {
+  // #region gap  用于flex, 或元素间距
+  --sv-gap-xs: 0px; // ⭐
+  --sv-gap-sm: 4px; // ⭐
+  --sv-gap-md: 8px; // ⭐ 默认：8px
+  --sv-gap-lg: 16px; // ⭐
+
+  // #region 边框/圆角
+  // #region 边框/圆角
+  --sv-border-style: solid; // ⭐
+  --sv-border-width: 1px; // ⭐
+  --sv-outline: #91caff; // ⭐
+  --sv-outline-style: solid; // ⭐
+  --sv-outline-width: 2px; // ⭐
+  --sv-outline-offset: 2px; // ⭐
+
+  --sv-br-xs: 2px; // ⭐
+  --sv-br-sm: 4px; // ⭐
+  --sv-br-md: 6px; // ⭐
+  --sv-br-lg: 8px; // ⭐
+  --sv-br-round: 9999px; // ⭐
+  //#endregion
+
+  /*
+  尺寸系统按button, 带border,高度从小到大为：  24/28/32/40
+  24 : fs=12  lh=18 px=32  py=4  bd=2
+  28 : fs=12  lh=18 px=32 py=8  bd=2
+  32 : fs=14  lh=22 px=48 py=8  bd=2
+  40 : fs=16  lh=24 px=64 py=14  bd=2    // 和云规范改了一点
+
+  其它组件，比如 modal,tag, tooltip 都需要定制自己的padding
+*/
+
+  //#region 尺寸高度， button , input, checkbox, 仅图标.... 都是统一高度，便于对齐
+  --sv-size-xs: 20px; // ⭐
+  --sv-size-sm: 24px; // ⭐
+  --sv-size-md: 32px; // ⭐
+  --sv-size-lg: 40px; // ⭐
+
+  //#endregion
+
+  //#region 默认 pad
+  --sv-pad-xs: 2px 4px; // ⭐
+  --sv-pad-sm: 4px 8px; // ⭐
+  --sv-pad-md: 4px 8px; // ⭐
+  --sv-pad-lg: 7px 12px; // ⭐
+
+  // margin
+  --sv-margin-xs: 8px; // ⭐
+  --sv-margin-sm: 12px; // ⭐
+  --sv-margin-md: 16px; // ⭐
+  --sv-margin-lg: 24px; // ⭐
+
+  //#endregion
+
+  // #region 字体/行高/字重
+  --sv-font:
+    "HarmonyOSHans", "Segoe UI", Arial, "Microsoft YaHei", -apple-system, BlinkMacSystemFont,
+    "Helvetica Neue", "Helvetica", "PingFang SC", "Roboto", "Noto Sans", sans-serif,
+    "HMOSColorEmojiCompat", "HMOSColorEmojiFlags", "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  --sv-fs-xs: 12px; // ⭐
+  --sv-fs-sm: 12px; // ⭐
+  --sv-fs-md: 14px; // ⭐ 正常文本
+  --sv-fs-lg: 16px; // ⭐
+
+  --sv-lh-xs: 18px; // ⭐
+  --sv-lh-sm: 18px; // ⭐
+  --sv-lh-md: 22px; // ⭐
+  --sv-lh-lg: 24px; // ⭐
+
+  --sv-fw-normal: normal; // ⭐
+  --sv-fw-bold: bold; // ⭐
+  --sv-fw-thin: lighter; //
+  // #endregion
+
+  //#region  主题色
+  // 在一个通用区域中，一共有3个颜色： text,bg, border 需要处理。
+  // 默认主题+ 每个主题， 都有一系列状态变化。 3 X 状态值 = 所有需要的颜色值
+  // 但实际上，有很多颜色值可以共享使用， 比如 朴素文字色=边框色=实心背景色  hover bg色= hover 朴素文本色
+  // 为了避免膨胀，我们可以给它指定一个标准色系：
+  // 1、主色系----边框，朴素字,背景 ------------ 标准
+  // 2、反转字色 ---- 在fill 背景时的文本色  --- 白色
+  // 3、hover主色系 ---- hover主色系  --------  略浅
+  // 4、active主色系 ---- active主色系  ------- 略深
+
+  // 5、朴素背景 ---- 朴素背景色  -------------  很浅
+  // 6、朴素背景hover ------------------------  再很浅 ----- 不区分active，disabled 朴素背景了
+
+  // 7、禁用文本色 -----字，边框------------------灰色
+  // 8、禁用背景色 -----------------------------很浅很浅
+
+  // 默认
+  --sv-norm: #191919; // 文字色
+  --sv-norm-secondary: #595959; // 次级文字色
+  --sv-norm-inv: #fff; // 反转文本色
+  --sv-norm-hover: #1476ff; // 文字色hover  边框hover
+  --sv-norm-active: #084cac; // 文字色active 边框active
+  --sv-norm-bg: #f5f5f5; // 背景色
+  --sv-norm-white-bg: #fff; // 纯白背景色
+  --sv-norm-bg-hover: #9cc0f3; // 背景hover
+  --sv-norm-bg-active: #80b0f3; // 背景active
+  --sv-norm-bd: #c2c2c2; // 边框色
+  --sv-norm-disabled: #c2c2c2; // 文字色disabled,
+  --sv-norm-bd-disabled: #dbdbdb; // 边框禁用色
+  --sv-norm-bg-disabled: #f0f0f0; // 背景禁用色
+
+  // ctrl 色
+  --sv-ctrl-text: #212121; // 控件文字色
+  --sv-ctrl-bg: #f0f0f0; //  控件背景色
+  --sv-ctrl-bg-hover: #e5e5e5; //  控件背景色
+  --sv-ctrl-bg-active: #d6d6d6; //  控件背景色
+  --sv-ctrl-bd: #7b7b7b; //  控件边框色
+  --sv-ctrl-bd-hover: #e5e5e5; //  控件边框色
+  --sv-ctrl-bd-active: #333333; //  控件边框色
+  --sv-ctrl-focus-outline: #0078d4; //  控件边框色 TODO: 为其它主题也增加这个
+  --sv-ctrl-disabled: #dbdbdb; //  禁用文本
+  --sv-ctrl-bg-disabled: #dbdbdb; //  禁用bg
+  --sv-ctrl-bd-disabled: #dbdbdb; //  禁用bd
+
+  // 主题色
+  --sv-dark: #191919; // 朴素文本色，无背景文本色。 主题背景色, 主题边框色
+  --sv-dark-hover: #3a3a3a; // 朴素文本色hover,无背景文本色hover，主题背景色hover，主题边框色hover
+  --sv-dark-active: #0d0d0d; // 朴素文本色active, 无背景文本色active，主题背景色active，主题边框色active
+  --sv-dark-plain: #f5f5f5; // 朴素背景色
+  --sv-dark-plain-hover: #fafafa; // 朴素背景色hover,
+  --sv-dark-plain-active: #e8e8e8; // 朴素背景色active
+  --sv-dark-disabled: #bfbfbf; // 禁用文本色, 禁用边框色
+  --sv-dark-bg-disabled: #f5f5f5; // 禁用背景色
+
+  --sv-success: #5cb300;
+  --sv-success-hover: #6ec700; // 比基础色亮一些
+  --sv-success-active: #4a9100; // 比基础色暗一些
+  --sv-success-plain: #f0f9e6; // 更淡的绿色背景
+  --sv-success-plain-hover: #f5fce9; // plain hover 更亮
+  --sv-success-plain-active: #e8f5d9; // plain active 稍暗
+  --sv-success-disabled: #bfbfbf;
+  --sv-success-bg-disabled: #f0f5eb;
+
+  --sv-info: #1476ff;
+  --sv-info-hover: #3d8bff; // 比基础色亮一些
+  --sv-info-active: #005ce6; // 比基础色暗一些
+  --sv-info-plain: #e6f2ff; // 更淡的蓝色背景
+  --sv-info-plain-hover: #f0f7ff; // plain hover 更亮
+  --sv-info-plain-active: #d6ebff; // plain active 稍暗
+  --sv-info-disabled: #bfbfbf;
+  --sv-info-bg-disabled: #eaf2fb;
+
+  --sv-warn: #ff8800;
+  --sv-warn-hover: #ff9922; // 比基础色亮一些
+  --sv-warn-active: #e67a00; // 比基础色暗一些
+  --sv-warn-plain: #fff7e6; // 更淡的橙色背景
+  --sv-warn-plain-hover: #fffbf0; // plain hover 更亮
+  --sv-warn-plain-active: #ffefd6; // plain active 稍暗
+  --sv-warn-disabled: #bfbfbf;
+  --sv-warn-bg-disabled: #f5ede0;
+
+  --sv-error: #f23030;
+  --sv-error-hover: #ff4d4d; // 比基础色亮一些
+  --sv-error-active: #d92020; // 比基础色暗一些
+  --sv-error-plain: #ffe6e6; // 更淡的红色背景
+  --sv-error-plain-hover: #fff0f0; // plain hover 更亮
+  --sv-error-plain-active: #ffd6d6; // plain active 稍暗
+  --sv-error-disabled: #bfbfbf;
+  --sv-error-bg-disabled: #f5e8e8;
+
+  --sv-invalid: #f23030;
+  --sv-invalid-hover: #f76f6c;
+  --sv-invalid-active: #f23030;
+  --sv-invalid-plain: #fff1f0;
+  --sv-invalid-plain-hover: #fff1f0;
+  --sv-invalid-plain-active: #faddda;
+  --sv-invalid-disabled: #c2c2c2;
+  --sv-invalid-bg-disabled: #f1e5e5;
+
+  //#endregion
+
+  //#region tooltip
+  --sv-button-pad-xs: 2px 16px; // ⭐
+  --sv-button-pad-sm: 4px 16px; // ⭐
+  --sv-button-pad-md: 4px 24px; // ⭐
+  --sv-button-pad-lg: 7px 32px; // ⭐
+
+  --sv-button-gap: 8px; // 图标与文字的间距
+  --sv-button-overshoot: -4px; // 视觉校正。 前后有icon时，感觉偏向文字的位置，此时需要使用margin校验
+  //#endregion
+
+  //#region input
+  --sv-input-hover: #191919; // hover 或 focus-within时， 边框和文字色
+  --sv-input-bg-disabled-light: #efefef4d; //  input禁用时背景色（light) 【chrome浏览器默认】
+  --sv-input-bg-disabled-dark: #3b3b3b4d; //  input禁用时背景色（dark)
+
+  --sv-input-bi-padx-xs: 6px; // input 前后插槽的padding-x
+  --sv-input-bi-padx-sm: 8px; //
+  --sv-input-bi-padx-md: 12px; //
+  --sv-input-bi-padx-lg: 12px; //
+
+  --sv-input-bi-child-gap: 4px; // input 前后插槽有多个元素时，元素的gap值
+  //#endregion
+
+  //#region tooltip
+  --sv-tooltip-box-size: 12px; // 三角所在的div大小。  tip的三角形是使用 div模拟的
+  --sv-tooltip-box-radius: 2px; // 三角的圆角
+  //#endregion
+
+  //#region tag
+  --sv-tag-pad-xs: 2px 4px; // tag 的pad
+  --sv-tag-pad-sm: 4px 8px;
+  --sv-tag-pad-md: 4px 8px;
+  --sv-tag-pad-lg: 7px 12px;
+  --sv-tag-gap: 4px; //  tag 的文字与关闭标签的间距
+  --sv-tag-close-plain: #808080; //  朴素标签的关闭色
+  --sv-tag-close-plain-hover: #191919; //  朴素标签的关闭悬浮色
+  --sv-tag-close-theme: #fff; //  主题标签的关闭色
+  --sv-tag-close-theme-hover: #e7e7e7; //  主题标签的关闭色
+  --sv-tag-close-mr: -4px; // 视觉校正margin-right。 （当显示关闭时，左右margin相同，会感觉整体偏左）
+  //#endregion
+
+  //#region switch
+  --sv-switch-width-xs: 32px; // 容器宽度. 容器高度为统一高度
+  --sv-switch-width-sm: 40px;
+  --sv-switch-width-md: 48px;
+  --sv-switch-width-lg: 60px;
+
+  --sv-switch-track-xs: 16px; // 轨道高度(1px bd)： 不能等于容器，否则显得特别大
+  --sv-switch-track-sm: 20px;
+  --sv-switch-track-md: 24px;
+  --sv-switch-track-lg: 28px;
+
+  --sv-switch-thumb-xs: 12px; // 圆圈大小
+  --sv-switch-thumb-sm: 16px;
+  --sv-switch-thumb-md: 20px;
+  --sv-switch-thumb-lg: 24px;
+
+  --sv-switch-thumb-press-scale: 1.5; // 圆圈按压时，伸长系数。
+
+  --sv-switch-track-bg: #f5f5f5; // 轨道，不设置主题色时的颜色
+  --sv-switch-track-bg-hover: #f5f5f5; // 轨道，不设置主题色时的颜色
+  --sv-switch-track-bd: #c2c2c2; // 轨道，不设置主题色时的颜色
+  --sv-switch-track-bd-hover: #c2c2c2; // 轨道，不设置主题色时的颜色
+
+  --sv-switch-thumb-gap-xs: 1px; //圆圈与左右2边的 gap, 要保证圆弧吻合
+  --sv-switch-thumb-gap-sm: 2px;
+  --sv-switch-thumb-gap-md: 3px;
+  --sv-switch-thumb-gap-lg: 4px;
+
+  //#endregion
+
+  //#region options / option
+  --sv-options-max-height: 240px; // 下拉面板的最大高度
+  --sv-options-width: 144px; // 下拉面板的宽度
+
+  --sv-option-pad-xs: 3px 4px; // 选项的padding
+  --sv-option-pad-sm: 5px 8px;
+  --sv-option-pad-md: 5px 12px;
+  --sv-option-pad-lg: 8px 16px;
+  --sv-option-gap: 4px; // option内部，文字与图标的间距
+
+  --sv-option-icon-xs: 16px; // 选项图标的大小。 因为opentiny/icons 有2像素安全边距
+  --sv-option-icon-sm: 16px;
+  --sv-option-icon-md: 18px;
+  --sv-option-icon-lg: 20px;
+
+  --sv-option-control: #c2c2c2; // 无主题下的icon
+  --sv-option-control-hover: #dbdbdb;
+  --sv-option-control-checked: #1476ff;
+  --sv-option-control-checked-hover: #4191fa;
+  //#endregion
+
+  //#region link
+  --sv-link-line-offset: 0.2em; // 下划线的偏移量
+  //#endregion
+
+  //#region iconish
+  --sv-iconish-bd-pad: 2px; // bd变体时的padding值
+  //#endregion
+
+  //#region modal
+  --sv-modal-button-gap: 8px; // 按钮的间距
+  --sv-modal-hander-size: 10px; // drawer时， 可拖动的手柄的宽度或高度
+  //#endregion
+
+  //#region 动画时长 utils  component
+  --sv-ani-time: 0.3s; // 比如select箭头翻转
+  --sv-ani-time-fast: 1s; //  st-fast
+  --sv-ani-time-slow: 3s; //  st-slow
+  //#endregion
+
+  // #region 波浪 utils
+  --sv-wave-light: #fafafa;
+  --sv-wave-dark: #ebebeb;
+  //#endregion
+
+  // #region 背景进度条  utils
+  --sv-bg-process: #000;
+  --sv-bg-process-opacity: 0.2;
+  //#endregion
+  // #region 毛玻璃  utils
+  --su-glass-blur: 3px; // 模糊的程度
+  //#endregion
+
+  // #region 滚动条  global
+  --sv-scroll-thumb: #dbdbdb; // 滚动条滑块
+  --sv-scroll-track: #fff; // 滚动条轨道
+  --sv-scroll-width: thin;
+  --sv-scroll-width-legacy: 12px;
+  // #endregion
+
+  // #region 占位  global
+  --sv-placeholder-text: #808080; // 占位色
+  // #endregion
+
+  // #region 选中颜色和背景色  global
+  --sv-selection-text: #ffffff; // 选择文本的文本色
+  --sv-selection-bg: #1476ff; // ⭐ 选择文本的背景色
+  // #endregion
+
+  // #region 通用的遮罩层  TODO: 未使用到呢
+  --sv-bg-mask: rgba(0, 0, 0, 0.2); // 单蒙层 30%
+  --sv-bg-mask-blur: 3px; // 背景毛玻璃
+  // #endregion
+
+  // #region 阴影
+  --sv-shadow: 0px 4px 16px 0px rgba(0, 0, 0, 0.08); // ⭐ 正常阴影
+  --sv-shadow-hover: 0px 4px 16px 0px rgba(0, 0, 0, 0.16); // ⭐ 云规范没有，不代表其它没有
+  // #endregion
+
+  // #region 光标
+  --sv-cursor: pointer;
+  --sv-cursor-disabled: not-allowed;
+  // #endregion
+}

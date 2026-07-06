@@ -1,0 +1,493 @@
+// 多一种变量，用户定制时多一种选择。 大部分工程 error === invalid, 但有的工程可以配置为有差异的颜色
+@themeList: dark, success, info, warn, error, invalid;
+@sizeList: xs, sm, md, lg;
+
+// @withSize: false;
+// @withBorder: true;  // 元素有border的尺寸， 只处理mixin-padding()
+
+// @withTheme: false;
+// //@withNormalText: false;   // 仅针对：当有主题色但没有背景时， 文本就不需要反色了,也不支持 st-plain了。
+
+// // @withWhiteBg: false; // 纯白色背景， 不支持hover, active了。 禁用仍然为禁用背景色
+// @withHover: false;
+// @withActive: false;
+// @withDisabled: false;
+
+//#region  可尺寸混入的
+.mixin-font() {
+  --it-font: var(--sv-font);
+  --it-fs: var(--sv-fs-md);
+  --it-lh: var(--sv-lh-md);
+  --it-fw: var(--sv-fw-normal);
+  font-family: var(--it-font);
+  font-size: var(--it-fs);
+  line-height: var(--it-lh);
+  font-weight: var(--it-fw);
+
+  &.st-bold {
+    --it-fw-bold: var(--sv-fw-bold);
+    font-weight: var(--it-fw-bold);
+  }
+  &.st-thin {
+    --it-fw-thin: var(--sv-fw-thin);
+    font-weight: var(--it-fw-thin);
+  }
+  &.st-italic {
+    font-style: italic;
+  }
+}
+
+.mixin-font() when (@withSize =true) {
+  each(@sizeList, {
+        &.st-@{value} {
+            --it-fs-@{value}:~'var(--sv-fs-@{value})';
+            --it-lh-@{value}:~'var(--sv-lh-@{value})';
+
+            font-size:~'var(--it-fs-@{value})';
+            line-height:~'var(--it-lh-@{value})';
+        }
+    });
+}
+
+.mixin-padding() {
+  --it-pad: var(--sv-pad-md);
+  padding: var(--it-pad);
+}
+
+.mixin-padding() when ( @withSize =true) {
+  each(@sizeList, {
+        &.st-@{value} {
+            --it-pad-@{value}:~'var(--sv-pad-@{value})';
+            padding:~'var(--it-pad-@{value})';
+        }
+    });
+}
+
+.mixin-margin() {
+  --it-mg: var(--sv-margin-md);
+  margin: var(--it-mg);
+}
+
+.mixin-margin() when ( @withSize =true) {
+  each(@sizeList, {
+        &.st-@{value} {
+            --it-mg-@{value}:~'var(--sv-margin-@{value})';
+            margin:~'var(--it-mg-@{value})';
+        }
+    });
+}
+
+//#endregion
+
+//#region 可颜色混入的
+// -----------------------  ctrl  ------------------------------
+.mixin-control-text-color() {
+  --it-text: var(--sv-ctrl-text);
+  color: var(--it-text);
+}
+
+.mixin-control-bg-color() {
+  --it-bg: var(--sv-ctrl-bg);
+  background-color: var(--it-bg);
+
+  &.st-disabled,
+  &:disabled,
+  &[disabled] {
+    --it-bg-disabled: var(--sv-ctrl-bg-disabled);
+    background-color: var(--it-bg-disabled);
+  }
+}
+
+.mixin-control-bg-color() when (@withHover =true) {
+  &:not(.st-disabled, :disabled, [disabled]):hover {
+    --it-bg-hover: var(--sv-ctrl-bg-hover);
+    background-color: var(--it-bg-hover);
+  }
+}
+.mixin-control-bg-color() when (@withActive =true) {
+  &:not(.st-disabled, :disabled, [disabled]):is(.st-active, :active) {
+    --it-bg-active: var(--sv-ctrl-bg-active);
+    background-color: var(--it-bg-active);
+  }
+}
+
+.mixin-control-bd-color() {
+  --it-bd-width: var(--sv-border-width);
+  --it-bd-style: solid;
+  --it-bd: var(--sv-ctrl-bd);
+
+  border-width: var(--it-bd-width);
+  border-style: var(--it-bd-style);
+  border-color: var(--it-bd);
+
+  &.st-disabled,
+  &:disabled,
+  &[disabled] {
+    --it-bd-disabled: var(--sv-ctrl-bd-disabled);
+    border-color: var(--it-bd-disabled);
+  }
+}
+
+.mixin-control-bd-color() when (@withHover =true) {
+  &:not(.st-disabled, :disabled, [disabled]):hover {
+    --it-bd-hover: var(--sv-ctrl-bd-hover);
+    border-color: var(--it-bd-hover);
+  }
+}
+.mixin-control-bd-color() when (@withActive =true) {
+  &:not(.st-disabled, :disabled, [disabled]):is(.st-active, :active) {
+    --it-bd-active: var(--sv-ctrl-bd-active);
+    border-color: var(--it-bd-active);
+  }
+}
+
+// ---------------------------------------- text -----------------------------------
+.mixin-text-color() {
+  --it-text: var(--sv-norm);
+  color: var(--it-text);
+
+  &.st-secondary {
+    --it-text-secondary: var(--sv-norm-secondary);
+    color: var(--it-text-secondary);
+  }
+}
+
+.mixin-text-color() when (@withHover =true) {
+  &:not(.st-disabled, :disabled, [disabled]):hover {
+    --it-text-hover: var(--sv-norm-hover);
+    color: var(--it-text-hover);
+  }
+}
+
+.mixin-text-color() when (@withActive =true) {
+  &:not(.st-disabled, :disabled, [disabled]):is(.st-active, :active) {
+    --it-text-active: var(--sv-norm-active);
+    color: var(--it-text-active);
+  }
+}
+
+.mixin-text-color() when (@withDisabled =true) {
+  &:is(:disabled, .st-disabled, [disabled]) {
+    --it-text-disabled: var(--sv-norm-disabled);
+    color: var(--it-text-disabled);
+  }
+}
+// 纯白字， 允许 禁用
+.mixin-white-text-color() {
+  --it-text: ~"var(--sv-norm-inv)"; // 反转字
+  color: var(--it-text);
+
+  &:is(:disabled, .st-disabled, [disabled]) {
+    --it-text-disabled: var(--sv-norm-disabled);
+    color: var(--it-text-disabled);
+  }
+}
+
+// 无主题背景, 无须考虑plain了
+.mixin-text-color() when (@withTheme =true) {
+  each(@themeList, {
+        &.st-@{value} {
+            --it-@{value}-text:~'var(--sv-@{value})'; // 边框，朴素字,背景
+            color:~'var(--it-@{value}-text)';
+        }
+
+        // 叠加 hover
+        .mixin-text-color-hover() when (@withHover =true) {
+            &.st-@{value}:not(.st-disabled, :disabled, [disabled]):hover {
+                --it-@{value}-text-hover:~'var(--sv-@{value}-hover)';
+                color:~'var(--it-@{value}-text-hover)';
+            }
+        }
+
+        .mixin-text-color-hover();
+
+        // 叠加 active
+        .mixin-text-color-active() when (@withActive =true) {
+
+            &.st-@{value}:not(.st-disabled, :disabled, [disabled]):active,
+            &.st-@{value}:not(.st-disabled, :disabled, [disabled]).st-active {
+                --it-@{value}-text-active:~'var(--sv-@{value}-active)';
+                color:~'var(--it-@{value}-text-active)';
+            }
+        }
+
+        .mixin-text-color-active();
+
+        // 叠加 disabled
+        .mixin-text-color-disabled() when (@withDisabled =true) {
+
+            &.st-@{value}:is(:disabled, .st-disabled, [disabled]) {
+                --it-@{value}-text-disabled:~'var(--sv-@{value}-disabled)';
+                color:~'var(--it-@{value}-text-disabled)';
+            }
+        }
+
+        .mixin-text-color-disabled();
+    });
+}
+
+// ---------------------------------------- bg -----------------------------------
+// 纯白背景时地，不混入hover,active， 但允许禁用
+.mixin-white-bg-color() {
+  --it-bg: var(--sv-norm-white-bg);
+  background-color: var(--it-bg);
+
+  &:is(:disabled, .st-disabled, [disabled]) {
+    --it-bg-disabled: var(--sv-norm-bg-disabled);
+    background-color: var(--it-bg-disabled);
+  }
+}
+
+.mixin-bg-color() {
+  --it-bg: var(--sv-norm-bg);
+  background-color: var(--it-bg);
+}
+.mixin-bg-color() when (@withHover =true) {
+  &:not(.st-disabled, :disabled, [disabled]):hover {
+    --it-bg-hover: var(--sv-norm-bg-hover);
+    background-color: var(--it-bg-hover);
+  }
+}
+
+.mixin-bg-color() when (@withActive =true) {
+  &:not(.st-disabled, :disabled, [disabled]):is(.st-active, :active) {
+    --it-bg-active: var(--sv-norm-bg-active);
+    background-color: var(--it-bg-active);
+  }
+}
+
+.mixin-bg-color() when (@withTheme =true) {
+  each(@themeList, {
+        &.st-@{value} {
+            --it-@{value}-bg:~'var(--sv-@{value})'; // 边框，朴素字,背景
+            background-color:~'var(--it-@{value}-bg)';
+        }
+        // 叠加 hover
+        .mixin-bg-color-hover() when (@withHover =true) {
+            &.st-@{value}:not(.st-disabled, :disabled, [disabled]):hover {
+                --it-@{value}-bg-hover:~'var(--sv-@{value}-hover)';
+                background-color:~'var(--it-@{value}-bg-hover)';
+            }
+        }
+        .mixin-bg-color-hover();
+
+        // 叠加 active
+        .mixin-bg-color-active() when (@withActive =true) {
+            &.st-@{value}:not(.st-disabled, :disabled, [disabled]):is(.st-active, :active) {
+                --it-@{value}-bg-active:~'var(--sv-@{value}-active)';
+                background-color:~'var(--it-@{value}-bg-active)';
+            }
+        }
+        .mixin-bg-color-active();
+
+        // 叠加 disabled
+        .mixin-bg-color-disabled() when (@withDisabled =true) {
+            &.st-@{value}:is(:disabled, .st-disabled, [disabled]) {
+                --it-@{value}-bg-disabled:~'var(--sv-@{value}-bg-disabled)';
+                background-color:~'var(--it-@{value}-bg-disabled)';
+            }
+        }
+        .mixin-bg-color-disabled();
+    });
+}
+
+.mixin-plain-bg-color() when (@withTheme =true) {
+  each(@themeList, {
+        &.st-@{value} {
+            --it-@{value}-plain-bg:~'var(--sv-@{value}-plain)'; // 朴素背景
+            background-color:~'var(--it-@{value}-plain-bg)';
+        }
+        // 叠加 hover
+        .mixin-bg-color-hover() when (@withHover =true) {
+          
+            &.st-@{value}:not(.st-disabled, :disabled, [disabled]):hover {
+                --it-@{value}-plain-bg-hover:~'var(--sv-@{value}-plain-hover)';
+                background-color:~'var(--it-@{value}-plain-bg-hover)';
+            }
+        }
+
+        .mixin-bg-color-hover();
+
+        // 叠加 active
+        .mixin-bg-color-active() when (@withActive =true) {
+
+
+            &.st-@{value}:not(.st-disabled, :disabled, [disabled]):is(.st-active, :active){
+                --it-@{value}-plain-bg-active:~'var(--sv-@{value}-plain-active)';
+                background-color:~'var(--it-@{value}-plain-bg-active)';
+            }
+        }
+        .mixin-bg-color-active();
+
+        // 叠加 disabled
+        .mixin-bg-color-disabled() when (@withDisabled =true) {
+
+            &.st-@{value}:is(:disabled, .st-disabled, [disabled]) {
+                --it-@{value}-bg-disabled:~'var(--sv-@{value}-bg-disabled)';
+                background-color:~'var(--it-@{value}-bg-disabled)';
+            }
+        }
+
+        .mixin-bg-color-disabled();
+    });
+}
+
+// ---------------------------------------- border -----------------------------------
+.mixin-border() {
+  --it-bd: var(--sv-norm-bd);
+  --it-bd-width: var(--sv-border-width);
+  --it-bd-style: solid;
+
+  border-width: var(--it-bd-width);
+  border-style: var(--it-bd-style);
+  border-color: var(--it-bd);
+
+  // :focus-visible 通常添加outline 进行提示，光晕
+  &.st-halo {
+    &:focus-visible {
+      outline: var(--sv-outline-width) var(--sv-outline-style) var(--sv-outline);
+      outline-offset: var(--sv-outline-offset);
+    }
+  }
+}
+
+.mixin-border() when (@withHover =true) {
+  &:not(.st-disabled, :disabled, [disabled]):hover {
+    --it-bd-hover: var(--sv-norm-hover);
+    border-color: var(--it-bd-hover);
+  }
+}
+
+.mixin-border() when (@withActive =true) {
+  &:not(.st-disabled, :disabled, [disabled]):is(.st-active, :active) {
+    --it-bd-active: var(--sv-norm-active);
+    border-color: var(--it-bd-active);
+  }
+}
+
+.mixin-border() when (@withDisabled =true) {
+  &:is(:disabled, .st-disabled, [disabled]) {
+    --it-bd-disabled: var(--sv-norm-bd-disabled);
+    border-color: var(--it-bd-disabled);
+  }
+}
+
+.mixin-border() when (@withTheme =true) {
+  each(@themeList, {
+        &.st-@{value} {
+            --it-@{value}-bd:~'var(--sv-@{value})';  
+            border-color:~'var(--it-@{value}-bd)';
+        }
+
+        // 叠加 hover
+        .mixin-border-color-hover() when (@withHover =true) {
+            &.st-@{value}:not(.st-disabled, :disabled, [disabled]):hover {
+                --it-@{value}-bd-hover:~'var(--sv-@{value}-hover)';
+                border-color:~'var(--it-@{value}-bd-hover)';
+            }
+        }
+
+        .mixin-border-color-hover();
+
+        // 叠加 active
+        .mixin-border-color-active() when (@withActive =true) {
+            &.st-@{value}:not(.st-disabled, :disabled, [disabled]):is(.st-active, :active) {
+                --it-@{value}-bd-active:~'var(--sv-@{value}-active)';
+                border-color:~'var(--it-@{value}-bd-active)';
+            }
+        }
+
+        .mixin-border-color-active();
+
+        // 叠加 disabled
+        .mixin-border-color-disabled() when (@withDisabled =true) {
+
+            &.st-@{value}:is(:disabled, .st-disabled, [disabled]) {
+                --it-@{value}-bd-disabled:~'var(--sv-@{value}-disabled)';
+                border-color:~'var(--it-@{value}-bd-disabled)';
+            }
+        }
+
+        .mixin-border-color-disabled();
+    });
+}
+
+.mixin-border-radius() {
+  &:not(.st-rect, .st-round) {
+    --it-br: var(--sv-br-md);
+    border-radius: var(--it-br);
+  }
+  &.st-round {
+    --it-br-round: var(--sv-br-round);
+    border-radius: var(--it-br-round);
+  }
+
+  &.st-rect {
+    border-radius: 0;
+  }
+}
+
+.mixin-border-radius() when (@withSize =true) {
+  each(@sizeList, {
+        &:not(.st-rect, .st-round).st-@{value} {
+            --it-br-@{value}: ~'var(--sv-br-@{value})';
+            border-radius: ~'var(--it-br-@{value})';
+        }
+    });
+}
+//#endregion
+
+//#region 仅图标特性
+.mixin-icon () {
+  & {
+    --it-icon-md: var(--sv-size-md);
+
+    position: relative;
+    line-height: 1;
+    padding: 0;
+    aspect-ratio: 1;
+    width: var(--it-icon-md);
+    height: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.mixin-icon() when (@withSize =true) {
+  each(@sizeList, {
+        &.st-@{value} {
+            --it-icon-@{value}: ~'var(--sv-size-@{value})';
+            width: ~'var(--it-icon-@{value})';
+        }
+    });
+}
+//#endregion
+//#region 外阴影 + 光标
+
+//  只有hover区别
+.mixin-box-shadow() {
+  --it-shadow: var(--sv-shadow);
+  box-shadow: var(--it-shadow);
+}
+
+.mixin-box-shadow() when (@withHover =true) {
+  &:not(.st-disabled, :disabled, [disabled]):hover {
+    --it-shadow-hover: var(--sv-shadow-hover);
+    box-shadow: var(--it-shadow-hover);
+  }
+}
+
+// 光标: 混入光标，就意味混入手形，比如按钮，链接。 禁用是禁用光标。
+.mixin-cursor() {
+  --it-cursor: var(--sv-cursor);
+  cursor: var(--it-cursor);
+}
+
+.mixin-cursor() when (@withDisabled =true) {
+  &:is(:disabled, .st-disabled, [disabled]) {
+    --it-cursor-disabled: var(--sv-cursor-disabled);
+    cursor: var(--it-cursor-disabled);
+  }
+}
+//#endregion

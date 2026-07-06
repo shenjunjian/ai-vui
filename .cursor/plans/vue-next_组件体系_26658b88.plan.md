@@ -39,12 +39,12 @@ flowchart TB
     Hooks["useDialog / useDrag / useSortable\nusePopover / useFocusTrap ..."]
   end
   subgraph style [样式层 scene-theme 独立包]
-    Tokens["--sv-* Design Tokens"]
-    Atoms["sc-* 功能类 + st-* 状态类"]
-    Scenes["sc-btn / sc-input / sc-modal ..."]
+    Tokens["--s-* Design Tokens"]
+    Atoms["s-* 场景类 + st-* 状态类"]
+    Component["sc-btn / sc-input / sc-modal ..."]
   end
   VueComponents --> Hooks
-  VueComponents --> Scenes
+  VueComponents --> Component
   Hooks --> DOM["DOM + Popover API / dialog / top layer"]
 ```
 
@@ -72,7 +72,6 @@ flowchart TB
 | `lg` | 大号 | `st-lg` |
 | `md` | 中号（**默认**） | `st-md` |
 | `sm` | 小号 | `st-sm` |
-| `xs` | 超小号 | `st-xs` |
 
 - 可通过 `ConfigProvider` 设置全局默认 `size`
 - 映射 `--sv-fs-*` / `--sv-pad-*` 等 token（与 scene-theme `@sizeList` 一致）
@@ -89,7 +88,6 @@ flowchart TB
 - **主题色（默认）**：色彩**浓**，实色背景 + 反色文字（scene-theme：`sc-theme-*` / `sc-livebg` + `sc-whitetxt`）
 - **朴素（plain）**：对应 theme 的**淡色**版本，浅背景 + 主题色文字/边框（`plain` prop 或 `variant="plain"` → `st-plain` + `sc-plain-*`）
 - **幽灵（ghost）**：**无背景**（透明），仅保留主题色文字与边框；hover/active 时也不填充实色背景（`ghost` prop → `sc-ghost-*`，`background-color: transparent`）
-- 未指定 `theme` 时使用 **control 色**（见下）
 
 #### control 色 — 中性控件色
 

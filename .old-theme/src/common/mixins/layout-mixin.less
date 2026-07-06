@@ -1,0 +1,96 @@
+@sizeList: xs, sm, md, lg;
+
+//#region 多项在一行上对齐，比如 treeNode, option, input。。。这些都有前后图标，居中文字等
+.mixin-flex-align(@display, @direction,  @gap:0) {
+  display: @display;
+  flex-direction: @direction;
+  gap: @gap;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+
+  &.st-wrap {
+    flex-wrap: wrap;
+  }
+  &.st-gap {
+    gap: var(--sv-gap-md);
+  }
+  &.st-start {
+    justify-content: start;
+  }
+  &.st-end {
+    justify-content: end;
+  }
+  &.st-stretch {
+    justify-content: stretch;
+  }
+  &.st-between {
+    justify-content: space-between;
+  }
+  &.st-around {
+    justify-content: space-around;
+  }
+  &.st-evenly {
+    justify-content: space-evenly;
+  }
+  &.st-align-start {
+    align-items: start;
+  }
+  &.st-align-end {
+    align-items: end;
+  }
+}
+
+.mixin-flex-align(@display, @direction,  @gap:0) when (@withSize =true) {
+  each(@sizeList, {
+        &.st-gap-@{value} {
+            gap: ~'var(--sv-gap-@{value})';
+        }
+    });
+}
+
+// 扩展项： 中间文本等
+.mixin-item-grow() {
+  flex: 1 0;
+}
+// 左右图标
+.mixin-item-noshrink() {
+  flex-shrink: 0;
+}
+// 空元素换行  (如果有row-gap, 该元素会独占一行，上下会有2个gap占位）
+.mixin-item-break() {
+  flex-basis: 100%;
+  padding: 0;
+  margin: 0;
+}
+//#endregion
+
+//#region grid 重叠定位, 代替 absolute 定位的新技巧
+.mixin-grid-stack() {
+  display: grid;
+  grid-template-areas: "sc-stack";
+  place-items: center;
+  & > * {
+    grid-area: sc-stack;
+  }
+}
+//#endregion
+
+//#region list 类, 比如 select, dropdown,menu...
+.mixin-list() {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch; // 子元素等宽，对齐
+  overflow-y: auto;
+
+  // 滚动,吸附
+  scroll-behavior: smooth;
+  scroll-snap-type: y mandatory;
+}
+
+.mixin-list-item() {
+  content-visibility: auto; // 优化性能， ff 不支持
+  scroll-snap-align: start;
+}
+
+//#endregion

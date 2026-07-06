@@ -1,0 +1,108 @@
+//#region 属性过渡
+.mixin-transition() {
+  --it-ani-time: var(--sv-ani-time);
+  transition: all var(--it-ani-time);
+}
+//#endregion
+
+//#region 省略号
+.mixin-ellipsis() {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+//#endregion
+
+.mixin-underline() {
+  text-decoration: underline;
+
+  &.st-double {
+    text-decoration-style: double;
+  }
+  &.st-dotted {
+    text-decoration-style: dotted;
+  }
+  &.st-dashed {
+    text-decoration-style: dashed;
+  }
+  &.st-wavy {
+    text-decoration-style: wavy;
+  }
+}
+
+.mixin-hover-underline() {
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &.st-double {
+    text-decoration-style: double;
+  }
+  &.st-dotted {
+    text-decoration-style: dotted;
+  }
+  &.st-dashed {
+    text-decoration-style: dashed;
+  }
+  &.st-wavy {
+    text-decoration-style: wavy;
+  }
+}
+
+//#region 原子工具函数 atomic
+// 链接：https://juejin.cn/post/7323948056264359988
+/**
+* @description less自定义原子类工厂, 生成 ${prefix}-${index} 的类名。
+* @param {string} prefix 前缀   m-,    p-,        fs .....
+* @param {string} property 属性 margin,padding,font-size.....
+* @param {string} unit 单位   : none, percent, px,em....
+* @param {number} start 起始值  
+* @param {number} end 结束值
+* @param {number} step 步长
+
+ .atomic(m-, margin, px， 0, 100, 2);  生成  .m-2{margin: 2px};
+*/
+.atomic(@prefix, @property, @unit: none, @start, @end, @step: 1) {
+  // 无单位
+  .unit-check() when (@unit =none) {
+    .loop-properties(@index) when (@index <=@end) {
+      .@{prefix}@{index} {
+        @{property}: @index;
+      }
+
+      .loop-properties(@index + @step);
+    }
+
+    .loop-properties(@start);
+  }
+
+  // px 等任意单位
+  .unit-check() when (not (@unit =none) and not (@unit =percent)) {
+    .loop-properties(@index) when (@index <=@end) {
+      .@{prefix}@{index} {
+        @{property}: unit(@index, @unit); //  unit(5, px) =>  5px
+      }
+
+      .loop-properties(@index + @step);
+    }
+
+    .loop-properties(@start);
+  }
+
+  // 百分比
+  .unit-check() when (@unit =percent) {
+    .loop-properties(@index) when (@index <=@end) {
+      .@{prefix}@{index} {
+        @{property}: @index * 1%;
+      }
+
+      .loop-properties(@index + @step);
+    }
+
+    .loop-properties(@start);
+  }
+
+  .unit-check();
+}
+
+//#endregion
