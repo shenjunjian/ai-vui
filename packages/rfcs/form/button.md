@@ -19,14 +19,15 @@
 
 ### 外观
 
-| 属性      | 类型                                                 | 默认值     | 说明                                                                                                                                           |
-| --------- | ---------------------------------------------------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| `size`    | `'sm' \| 'md' \| 'lg'`                               | `'md'`     | 尺寸 → `st-sm` / `st-md` / `st-lg`；可通过 ConfigProvider 继承默认尺寸                                                                         |
-| `theme`   | `'success' \| 'info' \| 'warn' \| 'error' \| 'dark'` | —          | 语义主题色 ；未指定时使用 control 中性色                                                                                                       |
-| `plain`   | `boolean`                                            | `false`    | 朴素主题色 ；仅指定theem是生效。                                                                                                               |
-| `ghost`   | `boolean`                                            | `false`    | 幽灵按钮（透明背景，仅保留主题色文字与边框                                                                                                     |
-| `variant` | `'button' \| 'text' \| 'link' \| 'icon'`             | `'button'` | 外观变体：`button` 默认实底/描边按钮；`text` 纯文字（仍保留 padding）；`link` 链接样式（仍保留 padding，区别于 [Link](../foundation/link.md)） |
-| `circle`  | `boolean`                                            | `false`    | 当值为`true` button 变量时，左右是半圆形圆角， icon变量时，为正圆 ；当值为 false时， 为普通圆角，                                              |
+| 属性      | 类型                                                 | 默认值     | 说明                                                                                                                                                                            |
+| --------- | ---------------------------------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `size`    | `'sm' \| 'md' \| 'lg'`                               | `'md'`     | 尺寸 → `st-sm` / `st-md` / `st-lg`；可通过 ConfigProvider 继承默认尺寸                                                                                                          |
+| `theme`   | `'success' \| 'info' \| 'warn' \| 'error' \| 'dark'` | —          | 语义主题色 ；未指定时使用 control 中性色                                                                                                                                        |
+| `plain`   | `boolean`                                            | `false`    | 朴素主题色 ；仅指定theem是生效。                                                                                                                                                |
+| `ghost`   | `boolean`                                            | `false`    | 幽灵按钮（透明背景，仅保留主题色文字与边框                                                                                                                                      |
+| `variant` | `'button' \| 'text' \| 'link' \| 'icon'`             | `'button'` | 外观变体：`button` 默认实底/描边按钮；`text` 纯文字（仍保留 padding）；`link` 链接样式（仍保留 padding，区别于 [Link](../foundation/link.md)）；`icon` 仅图标样式，正方形或圆形 |
+| `circle`  | `boolean`                                            | `false`    | 当值为`true` button 变量时，左右是半圆形圆角， icon变量时，为正圆 ；当值为 false时， 为普通圆角，                                                                               |
+| `circle`  | `boolean`                                            | `false`    | 当值为`true` button 变量时，左右是半圆形圆角， icon变量时，为正圆 ；当值为 false时， 为普通圆角，                                                                               |
 
 ### 状态与行为
 
@@ -62,7 +63,7 @@
 ```ts
 interface ButtonState {
   // 有resetTime时， 点击后的冷却状态
-  colding: boolean;
+  pending: boolean;
 }
 ```
 
@@ -84,8 +85,6 @@ interface ButtonState {
 - **role / aria / 键盘 / 焦点**：待定
 
 ## 动画
-
-- 遵循 `--sv-transition-*` token
 
 ## 验收标准
 
