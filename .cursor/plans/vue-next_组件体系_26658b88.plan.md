@@ -107,8 +107,7 @@ flowchart TB
 
 > RFC 编写约定：
 > - 各组件 Props 表须列出支持的 `size` / `theme` / `plain` / `ghost` / `disabled` 及与 `st-*` 的映射；不支持的变体明确标注「不适用」。
-> - **不在 Props 中声明 `class` / `style`**：Vue 自动透传至根元素；仅深层 DOM 需定制时暴露语义化 prop（如 `tableBodyClass`、`bodyStyle`）。详见 [`tvp-vue/rfcs/README.md`](e:/tiny-vue-next/tvp-vue/rfcs/README.md)。
-
+> - **不在 Props 中声明 `class` / `style`**：Vue 自动透传至根元素；仅深层 DOM 需定制时暴露语义化 prop（如 `tableBodyClass`、`bodyStyle`）。
 ### 命名规范
 
 | 类型 | 规范 | 示例 |

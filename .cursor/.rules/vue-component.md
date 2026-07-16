@@ -1,0 +1,1 @@
+按标准的Vue3 组合式语法编写，组件的模板参考`scripts\add-component\src\component-template` 的结构。
