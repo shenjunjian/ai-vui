@@ -2,8 +2,9 @@
 import { ref } from "vue";
 import ButtonDemo from "./components/button-demo.vue";
 import LinkDemo from "./components/link-demo.vue";
+import TagDemo from "./components/tag-demo.vue";
 
-const tab = ref<"button" | "link">("link");
+const tab = ref<"button" | "link" | "tag">("tag");
 </script>
 
 <template>
@@ -25,9 +26,18 @@ const tab = ref<"button" | "link">("link");
       >
         Link
       </button>
+      <button
+        type="button"
+        class="site-app__tab"
+        :class="{ 'is-active': tab === 'tag' }"
+        @click="tab = 'tag'"
+      >
+        Tag
+      </button>
     </nav>
     <ButtonDemo v-if="tab === 'button'" />
-    <LinkDemo v-else />
+    <LinkDemo v-else-if="tab === 'link'" />
+    <TagDemo v-else />
   </div>
 </template>
 

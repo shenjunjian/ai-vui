@@ -4,7 +4,7 @@
 
 ## 概述
 
-标签。渲染为 span, inline-block， 有外边框。不响应聚焦，所以不需要halo 效果。 可以有 icon, 但是让用记使用插槽即可。
+标签。渲染为 span, inline-block， 有外边框。不响应聚焦，也没有hover, 按下等响应，所以不需要halo 效果。 可以有 icon, 但是通过插槽注入即可。
 
 - **包**：`@opentiny/vue-next`
 - **导出**：`Tag`
@@ -44,7 +44,11 @@
 
 ```ts
 interface TagState {
-  // 待定义
+  /** 关闭后为 false，根节点卸载 */
+  visible: boolean;
+  sizeClass: string;
+  themeClass: string;
+  rootClass: unknown[];
 }
 ```
 
@@ -57,28 +61,19 @@ interface TagState {
 ## 实现逻辑
 
 1. 解析 props，合并 ConfigProvider 上下文
-2. 根元素挂载 `sc-tag` + `st-*` 状态类
-3. 通过 hook 处理 DOM，state 驱动 UI
-4. 销毁时清理监听与引用
-
-> 待细化：Tag 交互流程。
+2. 无 `theme` 时不挂主题类：使用主文本色 + 边框（非表单控件，无 `st-control`）；需要高亮语义时使用 `theme="info"`（色值与 Button Info 一致）
+3. 有 `theme` 时挂对应 `st-*`，色值与 Button 对齐；`plain` 仅在指定 theme 时挂 `sc-plain-tag`
+4. 无 hover / active / focus halo
+5. `closable`：点击关闭按钮依次触发 `closing` → 隐藏节点 → `closed`；`disabled` 时不可关闭
 
 ## 无障碍（a11y）
 
-- **role / aria / 键盘 / 焦点**：待定
-
-## 动画
-
-- 使用 `usePresence`（如适用）
-- 遵循 `--sv-transition-*` token
+- **role / aria / 键盘 / 焦点**：关闭按钮提供 `aria-label="关闭"`；其余待定
 
 ## Web Component 预留
 
-- Custom Element：`tvp-tag`
-
 ## 验收标准
 
-- [ ] API 与本文档一致
+- [x] API 与本文档一致
 - [ ] 无障碍达标
-- [ ] scene-theme 类名正确（实现后）
-- [ ] 测试与演示页
+- [x] 测试与演示页

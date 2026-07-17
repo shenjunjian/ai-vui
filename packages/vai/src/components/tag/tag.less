@@ -1,0 +1,140 @@
+// Tag styles（主题色与 Button 对齐；无 hover / active / halo）
+
+.sc-tag {
+  --tag-font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --tag-font-size: 14px;
+  --tag-line-height: 1.4;
+  --tag-padding-y: 2px;
+  --tag-padding-x: 8px;
+  --tag-gap: 4px;
+  --tag-radius: 4px;
+  --tag-border-width: 1px;
+  --tag-bg: transparent;
+  --tag-color: #1f2937;
+  --tag-border: #d1d5db;
+  --tag-close-size: 1em;
+
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tag-gap);
+  margin: 0;
+  padding: var(--tag-padding-y) var(--tag-padding-x);
+  font-family: var(--tag-font-family);
+  font-size: var(--tag-font-size);
+  line-height: var(--tag-line-height);
+  font-weight: 500;
+  color: var(--tag-color);
+  background-color: var(--tag-bg);
+  border: var(--tag-border-width) solid var(--tag-border);
+  border-radius: var(--tag-radius);
+  outline: none;
+  user-select: none;
+  white-space: nowrap;
+  vertical-align: middle;
+
+  // sizes
+  &.st-xs {
+    --tag-font-size: 10px;
+    --tag-padding-y: 0;
+    --tag-padding-x: 4px;
+    --tag-gap: 2px;
+    --tag-radius: 2px;
+  }
+
+  &.st-sm {
+    --tag-font-size: 12px;
+    --tag-padding-y: 1px;
+    --tag-padding-x: 6px;
+    --tag-gap: 3px;
+    --tag-radius: 3px;
+  }
+
+  &.st-md {
+    --tag-font-size: 14px;
+    --tag-padding-y: 2px;
+    --tag-padding-x: 8px;
+    --tag-gap: 4px;
+    --tag-radius: 4px;
+  }
+
+  &.st-lg {
+    --tag-font-size: 16px;
+    --tag-padding-y: 4px;
+    --tag-padding-x: 10px;
+    --tag-gap: 6px;
+    --tag-radius: 6px;
+  }
+
+  // themes（色值与 Button 一致）
+  &.st-dark {
+    --tag-bg: #1f2937;
+    --tag-color: #f9fafb;
+    --tag-border: #111827;
+  }
+
+  &.st-success {
+    --tag-bg: #16a34a;
+    --tag-color: #ffffff;
+    --tag-border: #15803d;
+  }
+
+  &.st-info {
+    --tag-bg: #2563eb;
+    --tag-color: #ffffff;
+    --tag-border: #1d4ed8;
+  }
+
+  &.st-warn {
+    --tag-bg: #d97706;
+    --tag-color: #ffffff;
+    --tag-border: #b45309;
+  }
+
+  &.st-error {
+    --tag-bg: #dc2626;
+    --tag-color: #ffffff;
+    --tag-border: #b91c1c;
+  }
+
+  // plain：仅 theme 生效时由组件挂类；透明底 + 主题色字/边
+  &.sc-plain-tag {
+    background-color: transparent;
+    color: var(--tag-border);
+    border-color: currentColor;
+  }
+
+  &.sc-circle-tag {
+    border-radius: 9999px;
+  }
+
+  &.st-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &__close {
+    appearance: none;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--tag-close-size);
+    height: var(--tag-close-size);
+    margin: 0;
+    padding: 0;
+    font: inherit;
+    line-height: 1;
+    color: inherit;
+    background: transparent;
+    border: none;
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+    opacity: 0.75;
+
+    &:disabled {
+      cursor: not-allowed;
+    }
+  }
+}
