@@ -1,1 +1,1 @@
-export { useTime } from "./useTime";
+export { useTimer } from "./useTimer.ts";

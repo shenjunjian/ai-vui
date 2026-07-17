@@ -3,10 +3,14 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "scripts": {
     "dev": "vp dev",
     "build": "vue-tsc -b && vp build",
-    "preview": "vp preview"
+    "preview": "vp preview",
+    "test": "vp test"
   },
   "dependencies": {
     "vue": "catalog:"
@@ -14,7 +18,10 @@
   "devDependencies": {
     "@types/node": "catalog:",
     "@vitejs/plugin-vue": "catalog:",
+    "@vue/test-utils": "^2.4.6",
     "@vue/tsconfig": "catalog:",
+    "happy-dom": "^20.0.0",
+    "less": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:",
     "vite-plus": "catalog:",

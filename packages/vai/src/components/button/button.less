@@ -1,5 +1,242 @@
-// Button component styles - imports from scene-theme
-// The actual button styles are defined in scene-theme's button.less
-// This file can be used for component-specific overrides if needed
+// Button styles（暂不依赖 scene-theme，后续再迁回场景类）
 
-@import "@shen/scene-theme/layers/components/button.less";
+.sc-btn {
+  --btn-font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --btn-font-size: 14px;
+  --btn-line-height: 1.4;
+  --btn-padding-y: 8px;
+  --btn-padding-x: 16px;
+  --btn-gap: 8px;
+  --btn-radius: 6px;
+  --btn-border-width: 1px;
+  --btn-size: 36px;
+  --btn-bg: #f3f4f6;
+  --btn-color: #1f2937;
+  --btn-border: #d1d5db;
+  --btn-hover-bg: #e5e7eb;
+  --btn-active-bg: #d1d5db;
+  --btn-pressed-bg: #9ca3af;
+
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--btn-gap);
+  margin: 0;
+  padding: var(--btn-padding-y) var(--btn-padding-x);
+  font-family: var(--btn-font-family);
+  font-size: var(--btn-font-size);
+  line-height: var(--btn-line-height);
+  font-weight: 500;
+  color: var(--btn-color);
+  background-color: var(--btn-bg);
+  border: var(--btn-border-width) solid var(--btn-border);
+  border-radius: var(--btn-radius);
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    opacity 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background-color: var(--btn-hover-bg);
+  }
+
+  &:active:not(:disabled),
+  &.st-pressed:not(:disabled) {
+    background-color: var(--btn-active-bg);
+  }
+
+  &.st-pressed:not(:disabled) {
+    background-color: var(--btn-pressed-bg);
+  }
+
+  // sizes
+  &.st-sm {
+    --btn-font-size: 12px;
+    --btn-padding-y: 4px;
+    --btn-padding-x: 10px;
+    --btn-gap: 4px;
+    --btn-size: 28px;
+  }
+
+  &.st-md {
+    --btn-font-size: 14px;
+    --btn-padding-y: 8px;
+    --btn-padding-x: 16px;
+    --btn-gap: 8px;
+    --btn-size: 36px;
+  }
+
+  &.st-lg {
+    --btn-font-size: 16px;
+    --btn-padding-y: 10px;
+    --btn-padding-x: 20px;
+    --btn-gap: 10px;
+    --btn-size: 44px;
+  }
+
+  // themes
+  &.st-control {
+    --btn-bg: #f3f4f6;
+    --btn-color: #1f2937;
+    --btn-border: #d1d5db;
+    --btn-hover-bg: #e5e7eb;
+    --btn-active-bg: #d1d5db;
+    --btn-pressed-bg: #9ca3af;
+  }
+
+  &.st-dark {
+    --btn-bg: #1f2937;
+    --btn-color: #f9fafb;
+    --btn-border: #111827;
+    --btn-hover-bg: #374151;
+    --btn-active-bg: #111827;
+    --btn-pressed-bg: #030712;
+  }
+
+  &.st-success {
+    --btn-bg: #16a34a;
+    --btn-color: #ffffff;
+    --btn-border: #15803d;
+    --btn-hover-bg: #22c55e;
+    --btn-active-bg: #15803d;
+    --btn-pressed-bg: #166534;
+  }
+
+  &.st-info {
+    --btn-bg: #2563eb;
+    --btn-color: #ffffff;
+    --btn-border: #1d4ed8;
+    --btn-hover-bg: #3b82f6;
+    --btn-active-bg: #1d4ed8;
+    --btn-pressed-bg: #1e40af;
+  }
+
+  &.st-warn {
+    --btn-bg: #d97706;
+    --btn-color: #ffffff;
+    --btn-border: #b45309;
+    --btn-hover-bg: #f59e0b;
+    --btn-active-bg: #b45309;
+    --btn-pressed-bg: #92400e;
+  }
+
+  &.st-error {
+    --btn-bg: #dc2626;
+    --btn-color: #ffffff;
+    --btn-border: #b91c1c;
+    --btn-hover-bg: #ef4444;
+    --btn-active-bg: #b91c1c;
+    --btn-pressed-bg: #991b1b;
+  }
+
+  // plain：仅 theme 生效时由组件挂类；透明底 + 主题色字/边
+  &.sc-plain-btn {
+    background-color: transparent;
+    color: var(--btn-border);
+    border-color: currentColor;
+
+    &:hover:not(:disabled) {
+      background-color: color-mix(in srgb, var(--btn-border) 12%, transparent);
+    }
+
+    &:active:not(:disabled),
+    &.st-pressed:not(:disabled) {
+      background-color: color-mix(in srgb, var(--btn-border) 20%, transparent);
+    }
+  }
+
+  // ghost：无背景、无 hover/active 底色变化；主题色文字与边框
+  &.sc-ghost-btn {
+    background-color: transparent;
+    color: var(--btn-bg);
+    border-color: currentColor;
+
+    &.st-control {
+      color: var(--btn-color);
+      border-color: var(--btn-border);
+    }
+
+    &:hover:not(:disabled),
+    &:active:not(:disabled),
+    &.st-pressed:not(:disabled) {
+      background-color: transparent;
+    }
+  }
+
+  // text / link：仍保留 padding；文字用主题色（实心底时 --btn-color 为白，不可见）
+  &.sc-text-btn,
+  &.sc-link-btn {
+    background-color: transparent;
+    border-color: transparent;
+    color: var(--btn-bg);
+
+    &.st-control {
+      color: var(--btn-color);
+    }
+
+    &:hover:not(:disabled) {
+      background-color: color-mix(in srgb, currentColor 12%, transparent);
+    }
+  }
+
+  &.sc-link-btn {
+    text-decoration: underline;
+    color: var(--btn-border);
+
+    &.st-control {
+      color: var(--btn-color);
+    }
+
+    &:hover:not(:disabled) {
+      text-decoration: none;
+    }
+  }
+
+  // icon：正方形（或圆形）
+  &.sc-icon-btn {
+    width: var(--btn-size);
+    height: var(--btn-size);
+    padding: 0;
+  }
+
+  // circle：button 为胶囊半圆；icon 为正圆
+  &.sc-circle-btn:not(.sc-icon-btn) {
+    border-radius: 9999px;
+  }
+
+  &.sc-circle-btn.sc-icon-btn {
+    border-radius: 50%;
+  }
+
+  // disabled / loading / pending
+  &:disabled,
+  &.st-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &.sc-btn-loading {
+    cursor: wait;
+  }
+
+  &__loading {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: sc-btn-spin 0.75s linear infinite;
+  }
+}
+
+@keyframes sc-btn-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

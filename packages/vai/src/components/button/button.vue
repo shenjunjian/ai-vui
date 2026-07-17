@@ -1,10 +1,7 @@
 <template>
-  <button
-    ref="rootRef"
-    class="sc-btn"
-    :class="[sizeClass, themeClass, { 'st-disabled': disabled }]"
-    :disabled="disabled"
-  >
+  <button ref="rootRef" type="button" class="sc-btn" :class="rootClass" :disabled="isDisabled"
+    :aria-busy="loading || undefined" :aria-pressed="toggleAriaPressed" @click="api.handleClick">
+    <span v-if="loading" class="sc-btn__loading" aria-hidden="true" />
     <slot v-bind="{ state, api, props }">Button</slot>
   </button>
 </template>
@@ -16,33 +13,50 @@ import { useTemplateRef, computed } from "vue";
 
 defineOptions({ name: "TinyButton" });
 
-// TODO: 模板的slot的作用域变量最好统一{ state, api, props }， 排查动画，排查aria-*
-// TODO: 规范： 必须写注释和默认值,   2、下面的写法丢失运行时props校验
 const props = withDefaults(
   defineProps<{
-    /** 设置主题色  */
-    theme?: "default" | "dark" | "success" | "info" | "warn" | "error";
-    /** 设置按钮大小 */
-    size?: "xs" | "sm" | "md" | "lg";
-    /** 是否禁用 */
+    /** 尺寸 */
+    size?: "sm" | "md" | "lg";
+    /** 语义主题色；未指定时使用 control 中性色 */
+    theme?: "success" | "info" | "warn" | "error" | "dark";
+    /** 朴素主题色；仅指定 theme 时生效 */
+    plain?: boolean;
+    /** 幽灵按钮（透明背景，保留主题色文字与边框） */
+    ghost?: boolean;
+    /** 外观变体 */
+    variant?: "button" | "text" | "link" | "icon";
+    /** button 变体时左右半圆；icon 变体时为正圆 */
+    circle?: boolean;
+    /** 禁用态 */
     disabled?: boolean;
+    /** 加载中；展示 loading 指示并禁止点击，不强制同步 disabled prop */
+    loading?: boolean;
+    /** 切换模式，仅 button / icon 变体生效 */
+    toggleMode?: boolean;
+    /** 点击后禁用时长（ms），防止重复提交；为 0 时关闭 */
+    resetTime?: number;
   }>(),
   {
-    theme: "default",
     size: "md",
+    plain: false,
+    ghost: false,
+    variant: "button",
+    circle: false,
     disabled: false,
+    loading: false,
+    toggleMode: false,
+    resetTime: 1000,
   },
 );
 
-/** 双向绑定值，必须是props中同样定义一下，以便有类型提示 */
-const open = defineModel<boolean>("open", { default: false }); // defineModel 必须写在外层
+/** 选中态（受控）；toggleMode 为 true 时生效 */
+const pressed = defineModel<boolean>("pressed", { default: false });
 const models = {
-  open,
+  pressed,
 };
 
-// TODO 规范： 通用注入 state,api, props方便用户使用
 const slots = defineSlots<{
-  /** 默认插槽 @since 1.0.0*/
+  /** 默认插槽 */
   default(props: {
     state: ButtonState;
     api: ButtonApi;
@@ -50,10 +64,13 @@ const slots = defineSlots<{
   }): any;
 }>();
 
-// Computed classes for scene-theme integration
+const refs = {
+  rootRef: useTemplateRef("rootRef"),
+};
+const { state, api } = useVm({ props, slots, refs, models });
+
 const sizeClass = computed(() => {
   const sizeMap: Record<string, string> = {
-    xs: "st-xs",
     sm: "st-sm",
     md: "st-md",
     lg: "st-lg",
@@ -62,8 +79,8 @@ const sizeClass = computed(() => {
 });
 
 const themeClass = computed(() => {
+  if (!props.theme) return "st-control";
   const themeMap: Record<string, string> = {
-    default: "st-control",
     dark: "st-dark",
     success: "st-success",
     info: "st-info",
@@ -73,10 +90,35 @@ const themeClass = computed(() => {
   return themeMap[props.theme] || "st-control";
 });
 
-const refs = {
-  rootRef: useTemplateRef("rootRef"),
-};
-const { state, api } = useVm({ props, slots, refs, models });
+
+const isDisabled = computed(
+  () => props.disabled || props.loading || state.pending,
+);
+
+const toggleAriaPressed = computed(() => {
+  if (!props.toggleMode) return undefined;
+  if (props.variant !== "button" && props.variant !== "icon") return undefined;
+  return pressed.value;
+});
+
+const rootClass = computed(() => [
+  sizeClass.value,
+  themeClass.value,
+  {
+    "st-disabled": isDisabled.value,
+    "sc-plain-btn": props.plain && !!props.theme,
+    "sc-ghost-btn": props.ghost,
+    "sc-text-btn": props.variant === "text",
+    "sc-link-btn": props.variant === "link",
+    "sc-icon-btn": props.variant === "icon",
+    "sc-circle-btn": props.circle,
+    "st-pressed":
+      props.toggleMode &&
+      pressed.value &&
+      (props.variant === "button" || props.variant === "icon"),
+    "sc-btn-loading": props.loading,
+  },
+]);
 
 defineExpose({
   state,
