@@ -31,13 +31,13 @@
 
 ### 状态与行为
 
-| 属性         | 类型      | 默认值  | 说明                                                                                |
-| ------------ | --------- | ------- | ----------------------------------------------------------------------------------- |
-| `disabled`   | `boolean` | `false` | 禁用态 → `st-disabled`；禁止点击与键盘激活                                          |
+| 属性         | 类型      | 默认值  | 说明                                                                                                                                                                    |
+| ------------ | --------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `disabled`   | `boolean` | `false` | 禁用态 → `st-disabled`；禁止点击与键盘激活                                                                                                                              |
 | `loading`    | `boolean` | `false` | 加载中；禁止点击并加 `sc-btn-loading`；非 `icon` 变体时额外插入 `sc-btn__loading` 指示；`icon` 变体不插入该元素（由插槽内容自行表达加载态）；不强制同步 `disabled` prop |
-| `toggleMode` | `boolean` | `false` | 切换模式，仅button,icon变体时生效；点击在选中/未选中间切换（类似 toggleModeButton）；直接切换，不受 `resetTime` 影响 |
-| `pressed`    | `boolean` | —       | 选中态（受控）；`toggleMode` 为 `true` 时生效 ， actived为true时，显示为选中状态。  |
-| `resetTime`  | `number`  | 1000    | 点击后禁用时长，防止重复提交；`toggleMode` 为 `true` 时不生效（切换无需防重复提交） |
+| `toggleMode` | `boolean` | `false` | 切换模式，仅button,icon变体时生效；点击在选中/未选中间切换（类似 toggleModeButton）；直接切换，不受 `resetTime` 影响                                                    |
+| `pressed`    | `boolean` | —       | 选中态（受控）；`toggleMode` 为 `true` 时生效 ， actived为true时，显示为选中状态。                                                                                      |
+| `resetTime`  | `number`  | 1000    | 点击后禁用时长，防止重复提交；`toggleMode` 为 `true` 时不生效（切换无需防重复提交）                                                                                     |
 
 ## Events
 
@@ -87,11 +87,8 @@ interface ButtonState {
 
 - **role / aria / 键盘 / 焦点**：待定
 
-## 动画
-
 ## 验收标准
 
 - [ ] API 与本文档一致
 - [ ] 无障碍达标
-- [ ] scene-theme 类名正确（实现后）
 - [ ] 测试与演示页
