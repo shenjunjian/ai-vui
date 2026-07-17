@@ -43,7 +43,7 @@ export function useTimer(cb: (...args: any[]) => void, delay: MaybeRef<number>) 
         } catch (error) {
           reject(error);
         }
-      }, unref(delay)) as unknown as number;
+      }, unref(delay));
     });
   }
 

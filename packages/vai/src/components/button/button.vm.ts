@@ -28,8 +28,10 @@ export default function useVm(ctx: ButtonCtx) {
       return;
     }
 
+    // toggleMode：直接切换选中态，不需要 resetTime 防重复提交
     if (canToggle.value) {
       models.pressed.value = !models.pressed.value;
+      return;
     }
 
     if (props.resetTime > 0) {

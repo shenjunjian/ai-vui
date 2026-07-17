@@ -34,10 +34,10 @@
 | 属性         | 类型      | 默认值  | 说明                                                                                |
 | ------------ | --------- | ------- | ----------------------------------------------------------------------------------- |
 | `disabled`   | `boolean` | `false` | 禁用态 → `st-disabled`；禁止点击与键盘激活                                          |
-| `loading`    | `boolean` | `false` | 加载中；展示 loading 指示（`sc-btn-loading`）并禁止点击，不强制同步 `disabled` prop |
-| `toggleMode` | `boolean` | `false` | 切换模式，仅button,icon变体时生效；点击在选中/未选中间切换（类似 toggleModeButton） |
+| `loading`    | `boolean` | `false` | 加载中；禁止点击并加 `sc-btn-loading`；非 `icon` 变体时额外插入 `sc-btn__loading` 指示；`icon` 变体不插入该元素（由插槽内容自行表达加载态）；不强制同步 `disabled` prop |
+| `toggleMode` | `boolean` | `false` | 切换模式，仅button,icon变体时生效；点击在选中/未选中间切换（类似 toggleModeButton）；直接切换，不受 `resetTime` 影响 |
 | `pressed`    | `boolean` | —       | 选中态（受控）；`toggleMode` 为 `true` 时生效 ， actived为true时，显示为选中状态。  |
-| `resetTime`  | `number`  | 1000    | 点击后禁用时长 ，防止重复提交                                                       |
+| `resetTime`  | `number`  | 1000    | 点击后禁用时长，防止重复提交；`toggleMode` 为 `true` 时不生效（切换无需防重复提交） |
 
 ## Events
 
@@ -76,7 +76,10 @@ interface ButtonState {
 ## 实现逻辑
 
 1. 解析 props，合并 ConfigProvider 上下文
-2. 通过useTimer 处理点击
+2. 点击处理：
+   - `toggleMode` 生效时：直接切换 `pressed`，不启动 `resetTime` 冷却
+   - 非 `toggleMode`：通过 `useTimer` 按 `resetTime` 进入 pending，防止重复提交
+3. `loading`：根节点加 `sc-btn-loading` 并禁用交互；仅当 `variant !== 'icon'` 时插入 `sc-btn__loading` 元素
 
 > 待细化：Button 交互流程。
 

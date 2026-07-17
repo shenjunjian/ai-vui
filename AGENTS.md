@@ -9,8 +9,9 @@
 
 ## 目录结构
 
-- apps/site 组件官网
+- apps/site 组件官网，组件开发时的示例代码网页
 - packages/scene-theme 与框架无关的 css 库，基于场景实现
+- packages/rfcs 组件库的设计规范
 - packages/vai 组件库
 - scripts/ 公共脚本
 
@@ -18,6 +19,7 @@
 
 - 设计为先，所有组件在 `./packages/rfcs` 目录, 请参阅 `./rules/rfcs.md`
 - 公共逻辑必须有测试
+- 当提出修改时，要同步修改rfcs， vai的组件源码和测试，补充site示例
 
 ## 全局命令
 

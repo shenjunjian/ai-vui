@@ -117,7 +117,7 @@ function toggleLoading() {
         </Button>
         <Button theme="info" loading>Loading</Button>
         <Button theme="success" plain loading>Plain Loading</Button>
-        <Button variant="icon" loading aria-label="加载图标">★</Button>
+        <Button variant="icon" loading aria-label="加载图标">↻</Button>
       </div>
     </section>
 
@@ -131,9 +131,17 @@ function toggleLoading() {
           {{ iconPressed ? "●" : "○" }}
         </Button>
         <Button theme="info" toggle-mode :pressed="true">预选中</Button>
+        <Button
+          v-model:pressed="pressed"
+          theme="warn"
+          toggle-mode
+          :reset-time="3000"
+        >
+          toggle 忽略 resetTime
+        </Button>
       </div>
       <p class="button-demo__hint">
-        pressed: {{ pressed }} / iconPressed: {{ iconPressed }}
+        pressed: {{ pressed }} / iconPressed: {{ iconPressed }}（可连续点击，不受 resetTime 冷却）
       </p>
     </section>
 
@@ -148,7 +156,9 @@ function toggleLoading() {
           关闭冷却
         </Button>
       </div>
-      <p class="button-demo__hint">点击次数：{{ clickCount }}</p>
+      <p class="button-demo__hint">
+        点击次数：{{ clickCount }}（仅非 toggleMode 生效；连续点击会被冷却拦截）
+      </p>
     </section>
 
     <section class="button-demo__section">

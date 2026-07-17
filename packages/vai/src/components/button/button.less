@@ -16,7 +16,10 @@
   --btn-hover-bg: #e5e7eb;
   --btn-active-bg: #d1d5db;
   --btn-pressed-bg: #9ca3af;
+  --btn-focus-color: var(--btn-bg);
+  --btn-focus-ring: color-mix(in srgb, var(--btn-focus-color) 35%, transparent);
 
+  appearance: none;
   box-sizing: border-box;
   display: inline-flex;
   align-items: center;
@@ -32,17 +35,31 @@
   background-color: var(--btn-bg);
   border: var(--btn-border-width) solid var(--btn-border);
   border-radius: var(--btn-radius);
+  outline: none;
   cursor: pointer;
+  touch-action: manipulation;
   user-select: none;
   white-space: nowrap;
   transition:
     background-color 0.15s ease,
     border-color 0.15s ease,
     color 0.15s ease,
-    opacity 0.15s ease;
+    opacity 0.15s ease,
+    box-shadow 0.15s ease;
 
   &:hover:not(:disabled) {
     background-color: var(--btn-hover-bg);
+  }
+
+  // 鼠标点击：瞬时外扩光晕后消失（类 antd wave）
+  &:focus:not(:focus-visible) {
+    animation: sc-btn-focus-wave 0.4s ease-out;
+  }
+
+  // 键盘聚焦：外扩光晕并保留
+  &:focus-visible {
+    box-shadow: 0 0 0 3px var(--btn-focus-ring);
+    animation: sc-btn-focus-halo 0.4s ease-out;
   }
 
   &:active:not(:disabled),
@@ -87,6 +104,7 @@
     --btn-hover-bg: #e5e7eb;
     --btn-active-bg: #d1d5db;
     --btn-pressed-bg: #9ca3af;
+    --btn-focus-color: #6b7280;
   }
 
   &.st-dark {
@@ -238,5 +256,29 @@
 @keyframes sc-btn-spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes sc-btn-focus-halo {
+  from {
+    box-shadow: 0 0 0 0 var(--btn-focus-ring);
+  }
+
+  to {
+    box-shadow: 0 0 0 3px var(--btn-focus-ring);
+  }
+}
+
+@keyframes sc-btn-focus-wave {
+  0% {
+    box-shadow: 0 0 0 0 var(--btn-focus-ring);
+  }
+
+  50% {
+    box-shadow: 0 0 0 4px var(--btn-focus-ring);
+  }
+
+  100% {
+    box-shadow: 0 0 0 4px transparent;
   }
 }

@@ -1,7 +1,7 @@
 <template>
   <button ref="rootRef" type="button" class="sc-btn" :class="rootClass" :disabled="isDisabled"
     :aria-busy="loading || undefined" :aria-pressed="toggleAriaPressed" @click="api.handleClick">
-    <span v-if="loading" class="sc-btn__loading" aria-hidden="true" />
+    <span v-if="loading && variant !== 'icon'" class="sc-btn__loading" aria-hidden="true" />
     <slot v-bind="{ state, api, props }">Button</slot>
   </button>
 </template>
@@ -29,11 +29,11 @@ const props = withDefaults(
     circle?: boolean;
     /** 禁用态 */
     disabled?: boolean;
-    /** 加载中；展示 loading 指示并禁止点击，不强制同步 disabled prop */
+    /** 加载中；禁止点击并加 sc-btn-loading；非 icon 变体时插入 sc-btn__loading 指示 */
     loading?: boolean;
     /** 切换模式，仅 button / icon 变体生效 */
     toggleMode?: boolean;
-    /** 点击后禁用时长（ms），防止重复提交；为 0 时关闭 */
+    /** 点击后禁用时长（ms），防止重复提交；为 0 时关闭；toggleMode 时不生效 */
     resetTime?: number;
   }>(),
   {

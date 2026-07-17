@@ -97,12 +97,28 @@ describe("Button", () => {
     expect(onClick).not.toHaveBeenCalled();
   });
 
+  test("icon variant loading does not insert sc-btn__loading", async () => {
+    const onClick = vi.fn();
+    const wrapper = mount(Button, {
+      props: { loading: true, variant: "icon", disabled: false },
+      slots: { default: "★" },
+      attrs: { onClick },
+    });
+
+    expect(wrapper.find(".sc-btn__loading").exists()).toBe(false);
+    expect(wrapper.classes()).toContain("sc-btn-loading");
+    expect(wrapper.classes()).toContain("sc-icon-btn");
+    expect(wrapper.attributes("disabled")).toBeDefined();
+
+    await wrapper.trigger("click");
+    expect(onClick).not.toHaveBeenCalled();
+  });
+
   test("toggleMode toggles pressed and emits update:pressed for button/icon", async () => {
     const wrapper = mount(Button, {
       props: {
         toggleMode: true,
         pressed: false,
-        resetTime: 0,
         variant: "button",
       },
       slots: { default: "Toggle" },
@@ -117,12 +133,35 @@ describe("Button", () => {
     expect(wrapper.emitted("update:pressed")?.[1]).toEqual([false]);
   });
 
+  test("toggleMode skips resetTime and allows immediate re-toggle", async () => {
+    const wrapper = mount(Button, {
+      props: {
+        toggleMode: true,
+        pressed: false,
+        resetTime: 1000,
+        variant: "button",
+      },
+      slots: { default: "Toggle" },
+    });
+
+    await wrapper.trigger("click");
+    await nextTick();
+    expect(wrapper.emitted("update:pressed")?.[0]).toEqual([true]);
+    expect(wrapper.vm.state.pending).toBe(false);
+    expect(wrapper.attributes("disabled")).toBeUndefined();
+
+    await wrapper.setProps({ pressed: true });
+    await wrapper.trigger("click");
+    await nextTick();
+    expect(wrapper.emitted("update:pressed")?.[1]).toEqual([false]);
+    expect(wrapper.vm.state.pending).toBe(false);
+  });
+
   test("toggleMode does not apply for text/link variants", async () => {
     const wrapper = mount(Button, {
       props: {
         toggleMode: true,
         pressed: false,
-        resetTime: 0,
         variant: "text",
       },
       slots: { default: "Text" },
