@@ -1,7 +1,19 @@
 <template>
-  <button ref="rootRef" type="button" class="sc-btn" :class="rootClass" :disabled="isDisabled"
-    :aria-busy="loading || undefined" :aria-pressed="toggleAriaPressed" @click="api.handleClick">
-    <span v-if="loading && variant !== 'icon'" class="sc-btn__loading" aria-hidden="true" />
+  <button
+    ref="rootRef"
+    type="button"
+    class="sc-btn"
+    :class="state.rootClass"
+    :disabled="state.isDisabled"
+    :aria-busy="loading || undefined"
+    :aria-pressed="state.toggleAriaPressed"
+    @click="api.handleClick"
+  >
+    <span
+      v-if="loading && variant !== 'icon'"
+      class="sc-btn__loading"
+      aria-hidden="true"
+    />
     <slot v-bind="{ state, api, props }">Button</slot>
   </button>
 </template>
@@ -9,7 +21,7 @@
 <script setup lang="ts">
 import useVm from "./button.vm.ts";
 import "./button.less";
-import { useTemplateRef, computed } from "vue";
+import { useTemplateRef } from "vue";
 
 defineOptions({ name: "TinyButton" });
 
@@ -68,57 +80,6 @@ const refs = {
   rootRef: useTemplateRef("rootRef"),
 };
 const { state, api } = useVm({ props, slots, refs, models });
-
-const sizeClass = computed(() => {
-  const sizeMap: Record<string, string> = {
-    sm: "st-sm",
-    md: "st-md",
-    lg: "st-lg",
-  };
-  return sizeMap[props.size] || "st-md";
-});
-
-const themeClass = computed(() => {
-  if (!props.theme) return "st-control";
-  const themeMap: Record<string, string> = {
-    dark: "st-dark",
-    success: "st-success",
-    info: "st-info",
-    warn: "st-warn",
-    error: "st-error",
-  };
-  return themeMap[props.theme] || "st-control";
-});
-
-
-const isDisabled = computed(
-  () => props.disabled || props.loading || state.pending,
-);
-
-const toggleAriaPressed = computed(() => {
-  if (!props.toggleMode) return undefined;
-  if (props.variant !== "button" && props.variant !== "icon") return undefined;
-  return pressed.value;
-});
-
-const rootClass = computed(() => [
-  sizeClass.value,
-  themeClass.value,
-  {
-    "st-disabled": isDisabled.value,
-    "sc-plain-btn": props.plain && !!props.theme,
-    "sc-ghost-btn": props.ghost,
-    "sc-text-btn": props.variant === "text",
-    "sc-link-btn": props.variant === "link",
-    "sc-icon-btn": props.variant === "icon",
-    "sc-circle-btn": props.circle,
-    "st-pressed":
-      props.toggleMode &&
-      pressed.value &&
-      (props.variant === "button" || props.variant === "icon"),
-    "sc-btn-loading": props.loading,
-  },
-]);
 
 defineExpose({
   state,
