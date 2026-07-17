@@ -97,9 +97,9 @@
     --tag-border: #b91c1c;
   }
 
-  // plain：仅 theme 生效时由组件挂类；透明底 + 主题色字/边
+  // plain：仅 theme 生效时由组件挂类；浅主题色底 + 主题色字/边（无 hover）
   &.sc-plain-tag {
-    background-color: transparent;
+    background-color: color-mix(in srgb, var(--tag-border) 12%, transparent);
     color: var(--tag-border);
     border-color: currentColor;
   }

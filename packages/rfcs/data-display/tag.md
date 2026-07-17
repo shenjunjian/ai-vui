@@ -17,7 +17,7 @@
 | `disabled` | `boolean`                                            | `false` | 禁用态                                                                                     |
 | `closable` | `boolean`                                            | `false` | 是否有关闭按钮                                                                             |
 | `theme`    | `'success' \| 'info' \| 'warn' \| 'error' \| 'dark'` | —       | 语义主题色（与 Button 一致）；但没有 hover, active 的行为。 无主题色时，主文本色带边框即可 |
-| `plain`    | `boolean`                                            | `false` | 朴素主题色 ；仅指定theme时生效。                                                           |
+| `plain`    | `boolean`                                            | `false` | 朴素主题色（浅主题色底 + 主题色字/边）；仅指定 theme 时生效。                               |
 | `circle`   | `boolean`                                            | `false` | 当值为`true` 左右是半圆形圆角；当值为 false时， 为普通圆角，                               |
 
 ## Events

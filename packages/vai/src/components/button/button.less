@@ -152,9 +152,9 @@
     --btn-pressed-bg: #991b1b;
   }
 
-  // plain：仅 theme 生效时由组件挂类；透明底 + 主题色字/边
+  // plain：仅 theme 生效时由组件挂类；浅主题色底 + 主题色字/边；hover 不变色
   &.sc-plain-btn {
-    background-color: transparent;
+    background-color: color-mix(in srgb, var(--btn-border) 12%, transparent);
     color: var(--btn-border);
     border-color: currentColor;
 
