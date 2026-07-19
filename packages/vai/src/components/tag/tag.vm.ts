@@ -18,7 +18,7 @@ export default function useVm(ctx: TagCtx) {
   });
 
   const themeClass = computed(() => {
-    if (!props.theme) return "";
+    if (!props.theme) return "st-control";
     const themeMap: Record<string, string> = {
       dark: "st-dark",
       success: "st-success",
@@ -26,7 +26,7 @@ export default function useVm(ctx: TagCtx) {
       warn: "st-warn",
       error: "st-error",
     };
-    return themeMap[props.theme] || "";
+    return themeMap[props.theme] || "st-control";
   });
 
   const rootClass = computed(() => [

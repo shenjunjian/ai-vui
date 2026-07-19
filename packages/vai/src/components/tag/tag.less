@@ -9,7 +9,7 @@
   --tag-gap: 4px;
   --tag-radius: 4px;
   --tag-border-width: 1px;
-  --tag-bg: transparent;
+  --tag-bg: #f3f4f6;
   --tag-color: #1f2937;
   --tag-border: #d1d5db;
   --tag-close-size: 1em;
@@ -66,7 +66,13 @@
     --tag-radius: 6px;
   }
 
-  // themes（色值与 Button 一致）
+  // themes（色值与 Button 一致；无主题时同 Alert control 中性色）
+  &.st-control {
+    --tag-bg: #f3f4f6;
+    --tag-color: #1f2937;
+    --tag-border: #d1d5db;
+  }
+
   &.st-dark {
     --tag-bg: #1f2937;
     --tag-color: #f9fafb;

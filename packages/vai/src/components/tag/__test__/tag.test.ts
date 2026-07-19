@@ -12,8 +12,7 @@ describe("Tag", () => {
     expect(wrapper.text()).toContain("标签");
     expect(wrapper.classes()).toContain("sc-tag");
     expect(wrapper.classes()).toContain("st-md");
-    expect(wrapper.classes()).not.toContain("st-control");
-    expect(wrapper.classes()).not.toContain("st-info");
+    expect(wrapper.classes()).toContain("st-control");
   });
 
   test("applies size and theme classes", () => {
@@ -24,6 +23,7 @@ describe("Tag", () => {
 
     expect(wrapper.classes()).toContain("st-xs");
     expect(wrapper.classes()).toContain("st-success");
+    expect(wrapper.classes()).not.toContain("st-control");
   });
 
   test("applies plain only when theme is set", async () => {

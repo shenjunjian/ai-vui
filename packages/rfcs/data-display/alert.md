@@ -14,7 +14,7 @@
 | 属性          | 类型                                                 | 默认值  | 说明                                                                                 |
 | ------------- | ---------------------------------------------------- | ------- | ------------------------------------------------------------------------------------ |
 | `size`        | `'sm' \| 'md' \| 'lg'`                               | `'md'`  | 尺寸（映射 `st-*`）                                                                  |
-| `theme`       | `'success' \| 'info' \| 'warn' \| 'error' \| 'dark'` | —       | 语义主题色；未指定时使用 control 中性色（`st-control`）                              |
+| `theme`       | `'success' \| 'info' \| 'warn' \| 'error' \| 'dark'` | —       | 语义主题色；未指定时使用 control 中性色                                              |
 | `showIcon`    | `boolean`                                            | `true`  | 是否显示前置状态图标                                                                 |
 | `closable`    | `boolean`                                            | `false` | 是否有关闭按钮                                                                       |
 | `beforeClose` | `() => boolean \| Promise<boolean>`                  | —       | 关闭前拦截；返回 `true` 允许关闭，返回 `false` / Promise reject / 异步错误时取消关闭 |

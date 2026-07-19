@@ -38,7 +38,7 @@ const promiseTrue = () => new Promise<boolean>((resolve) => setTimeout(() => res
     <section class="tag-demo__section">
       <h2>主题 theme</h2>
       <p class="tag-demo__hint">
-        无主题时为正常主色文字带边框；指定 theme 后色值与 Button 一致（高亮语义用 Info）
+        无主题时为 control 中性色（浅灰底）；指定 theme 后色值与 Button 一致（高亮语义用 Info）
       </p>
       <div class="tag-demo__row">
         <Tag>Default</Tag>
