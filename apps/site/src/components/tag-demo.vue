@@ -13,6 +13,9 @@ function beforeClose(label: string) {
 function onClosed(label: string) {
   closedLog.value = [...closedLog.value, `closed: ${label}`];
 }
+
+const promiseFalse = () => new Promise<boolean>((resolve) => setTimeout(() => resolve(false), 1000))
+const promiseTrue = () => new Promise<boolean>((resolve) => setTimeout(() => resolve(true), 1000))
 </script>
 
 <template>
@@ -84,26 +87,21 @@ function onClosed(label: string) {
         beforeClose 返回 true（取消勾选可拦截关闭）
       </label>
       <div class="tag-demo__row">
-        <Tag closable :before-close="() => beforeClose('Default')" @closed="onClosed('Default')">
-          Default
+        <Tag closable @closed="onClosed('Default')">
+          不绑定beforeClose
         </Tag>
-        <Tag
-          theme="info"
-          closable
-          :before-close="() => beforeClose('Info')"
-          @closed="onClosed('Info')"
-        >
-          Info
+        <Tag theme="error" plain closable circle :before-close="() => false" @closed="onClosed('Error')">
+          beforeClose 绑定 function->false
         </Tag>
-        <Tag
-          theme="error"
-          plain
-          closable
-          circle
-          :before-close="() => beforeClose('Error')"
-          @closed="onClosed('Error')"
-        >
-          Error
+        <Tag theme="error" plain closable circle :before-close="promiseFalse" @closed="onClosed('Error')">
+          beforeClose 绑定 function->Promise< false>
+        </Tag>
+
+        <Tag theme="error" plain closable circle :before-close="() => true" @closed="onClosed('Error')">
+          beforeClose 绑定 function->true
+        </Tag>
+        <Tag theme="error" plain closable circle :before-close="promiseTrue" @closed="onClosed('Error')">
+          beforeClose 绑定 function->Promise< true>
         </Tag>
       </div>
       <p class="tag-demo__hint">事件日志：{{ closedLog.join(" → ") || "尚未关闭" }}</p>

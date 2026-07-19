@@ -1,19 +1,8 @@
 <template>
-  <span
-    v-if="state.visible"
-    ref="rootRef"
-    class="sc-tag"
-    :class="state.rootClass"
-  >
+  <span v-if="state.visible" ref="rootRef" class="sc-tag" :class="state.rootClass">
     <slot v-bind="{ state, api, props }">Tag</slot>
-    <button
-      v-if="closable"
-      type="button"
-      class="sc-tag__close"
-      :disabled="disabled"
-      aria-label="关闭"
-      @click="api.handleClose"
-    >
+    <button v-if="closable" type="button" class="sc-tag__close" :disabled="disabled" aria-label="关闭"
+      @click="api.handleClose">
       ×
     </button>
   </span>
@@ -41,7 +30,7 @@ const props = withDefaults(
     /** 左右半圆圆角 */
     circle?: boolean;
     /** 关闭前拦截；返回 true 允许关闭 */
-    beforeClose?: () => boolean | Promise<boolean>;
+    beforeClose?: (() => boolean | Promise<boolean>);
   }>(),
   {
     size: "md",

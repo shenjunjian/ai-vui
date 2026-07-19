@@ -53,7 +53,7 @@ export default function useVm(ctx: TagCtx) {
       return;
     }
 
-    callWithGuard(props.beforeClose ?? true, () => {
+    callWithGuard(props.beforeClose , () => {
       visible.value = false;
       nextTick(() => {
         emit("closed");

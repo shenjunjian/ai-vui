@@ -6,7 +6,12 @@ import { isPromise, isFunction } from "@vue/shared";
  * let boolOrPromise = beforeClose()
  * resolvePromise ( boolOrPromise)
  */
-export const resolvePromise = /*@__PURE__*/ async (val: any | Promise<any>) => {
+export const resolvePromise = /*@__PURE__*/ async (val?: any | Promise<any>) => {
+  // 用户未指定属性，则认为允许关闭
+  if (val === undefined) {
+    return true;
+  }
+  // 如果返回的是 Promise，则等待 Promise 完成
   if (isPromise(val)) {
     try {
       const ret = await val;
@@ -15,6 +20,7 @@ export const resolvePromise = /*@__PURE__*/ async (val: any | Promise<any>) => {
       return false;
     }
   } else {
+    // 否则是普通值
     return !!val;
   }
 };
