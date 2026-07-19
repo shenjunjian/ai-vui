@@ -6,7 +6,7 @@
 
 单块折叠。
 
-- **包**：`@opentiny/vue-next`
+- **包**：`vai`
 - **导出**：`Collapsible`
 - **scene-theme 类名**：`sc-collapsible`（规划，scene-theme 尚未实现）
 
@@ -49,7 +49,7 @@ interface CollapsibleState {
 }
 ```
 
-## Hook 依赖（@opentiny/vue-next-hooks）
+## Hook 依赖（hooks）
 
 | Hook              | 用途                  |
 | ----------------- | --------------------- |

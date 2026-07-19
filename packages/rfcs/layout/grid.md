@@ -6,7 +6,7 @@
 
 CSS Grid 容器，支持拖拽布局。
 
-- **包**：`@opentiny/vue-next`
+- **包**：`vai`
 - **导出**：`Grid`
 - **scene-theme 类名**：`sc-grid`（规划，scene-theme 尚未实现）
 
@@ -49,7 +49,7 @@ interface GridState {
 }
 ```
 
-## Hook 依赖（@opentiny/vue-next-hooks）
+## Hook 依赖（hooks）
 
 | Hook              | 用途                  |
 | ----------------- | --------------------- |

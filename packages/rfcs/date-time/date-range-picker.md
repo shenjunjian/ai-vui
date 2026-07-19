@@ -6,7 +6,7 @@
 
 日期范围。
 
-- **包**：`@opentiny/vue-next`
+- **包**：`vai`
 - **导出**：`DateRangePicker`
 - **scene-theme 类名**：`sc-date-range-picker`（规划，scene-theme 尚未实现）
 
@@ -49,7 +49,7 @@ interface DateRangePickerState {
 }
 ```
 
-## Hook 依赖（@opentiny/vue-next-hooks）
+## Hook 依赖（hooks）
 
 | Hook              | 用途                  |
 | ----------------- | --------------------- |

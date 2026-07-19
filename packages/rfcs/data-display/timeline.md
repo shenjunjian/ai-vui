@@ -6,7 +6,7 @@
 
 时间线。
 
-- **包**：`@opentiny/vue-next`
+- **包**：`vai`
 - **导出**：`Timeline`
 - **scene-theme 类名**：`sc-timeline`（规划，scene-theme 尚未实现）
 
@@ -49,7 +49,7 @@ interface TimelineState {
 }
 ```
 
-## Hook 依赖（@opentiny/vue-next-hooks）
+## Hook 依赖（hooks）
 
 | Hook              | 用途                  |
 | ----------------- | --------------------- |

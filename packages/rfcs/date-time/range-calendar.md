@@ -6,7 +6,7 @@
 
 范围月历。
 
-- **包**：`@opentiny/vue-next`
+- **包**：`vai`
 - **导出**：`RangeCalendar`
 - **scene-theme 类名**：`sc-range-calendar`（规划，scene-theme 尚未实现）
 
@@ -49,7 +49,7 @@ interface RangeCalendarState {
 }
 ```
 
-## Hook 依赖（@opentiny/vue-next-hooks）
+## Hook 依赖（hooks）
 
 | Hook              | 用途                  |
 | ----------------- | --------------------- |

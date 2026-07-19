@@ -1,14 +1,14 @@
 # RFC 索引
 
-本目录为 `@opentiny/vue-next` 与 `@opentiny/vue-next-hooks` 的设计文档。**实现某组件前，请先完善对应 RFC 中的 Props / Events / Slots / Exposed / 实现逻辑。**
+本目录为 `vai` 与 `hooks` 的设计文档。**实现某组件前，请先完善对应 RFC 中的 Props / Events / Slots / Exposed / 实现逻辑。**
 
 ## 子工程
 
-| 包名                       | 目录                                                  | 职责                        |
-| -------------------------- | ----------------------------------------------------- | --------------------------- |
-| `@opentiny/vue-next`       | [packages/vue-next](../packages/vue-next)             | Vue 3 组件，单包全量导出    |
-| `@opentiny/vue-next-hooks` | [packages/vue-next-hooks](../packages/vue-next-hooks) | 可复用 DOM 逻辑 hooks       |
-| `scene-theme`              | [packages/scene-theme](../packages/scene-theme)       | 独立 CSS 样式库（暂不修改） |
+| 包名          | 目录                                                  | 职责                        |
+| ------------- | ----------------------------------------------------- | --------------------------- |
+| `vai`         | [packages/vue-next](../packages/vue-next)             | Vue 3 组件，单包全量导出    |
+| `hooks`       | [packages/vue-next-hooks](../packages/vue-next-hooks) | 可复用 DOM 逻辑 hooks       |
+| `scene-theme` | [packages/scene-theme](../packages/scene-theme)       | 独立 CSS 样式库（暂不修改） |
 
 ## RFC 章节说明
 

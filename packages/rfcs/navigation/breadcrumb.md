@@ -6,7 +6,7 @@
 
 面包屑。
 
-- **包**：`@opentiny/vue-next`
+- **包**：`vai`
 - **导出**：`Breadcrumb`
 - **scene-theme 类名**：`sc-breadcrumb`（规划，scene-theme 尚未实现）
 
@@ -49,7 +49,7 @@ interface BreadcrumbState {
 }
 ```
 
-## Hook 依赖（@opentiny/vue-next-hooks）
+## Hook 依赖（hooks）
 
 | Hook              | 用途                  |
 | ----------------- | --------------------- |

@@ -1,45 +1,45 @@
 # Alert
 
-> 状态：**草案** | 优先级：**P0** | 分类：**Overlay & Feedback 浮层与反馈**
+> 状态：**开发中** | 优先级：**P0** | 分类：**Overlay & Feedback 浮层与反馈**
 
 ## 概述
 
-页内警告条。
+页内占位警告条。 有前置状态图标， 主题色以及可关闭等特性。
 
-- **包**：`@opentiny/vue-next`
+- **包**：`vai`
 - **导出**：`Alert`
-- **scene-theme 类名**：`sc-alert`（规划，scene-theme 尚未实现）
 
 ## Props
 
-| 属性       | 类型                           | 默认值  | 说明                |
-| ---------- | ------------------------------ | ------- | ------------------- |
-| `class`    | `string \| string[]`           | —       | 自定义类名          |
-| `style`    | `CSSProperties`                | —       | 自定义样式          |
-| `size`     | `'xs' \| 'sm' \| 'md' \| 'lg'` | `'md'`  | 尺寸（映射 `st-*`） |
-| `disabled` | `boolean`                      | `false` | 禁用态              |
+| 属性    | 类型                                                 | 默认值 | 说明                                       |
+| ------- | ---------------------------------------------------- | ------ | ------------------------------------------ |
+| `size`  | ` 'sm' \| 'md' \| 'lg'`                              | `'md'` | 尺寸                                       |
+| `theme` | `'success' \| 'info' \| 'warn' \| 'error' \| 'dark'` | —      | 语义主题色 ；未指定时使用 control 中性色色 |
 
-> 待细化：补充 Alert 专属 props。
+| `show-icon` | `boolean` | `true` | 是否显示前置状态图标 |
+| `closable` | `boolean` | `false` | 是否有关闭按钮 |
 
 ## Events
 
-| 事件 | payload | 说明   |
-| ---- | ------- | ------ |
-| —    | —       | 待定义 |
+| 事件    | payload | 说明       |
+| ------- | ------- | ---------- |
+| closing | —       | 关闭前事件 |
+| closed  | —       | 关闭后事件 |
 
 ## Slots
 
-| 插槽      | 说明     |
-| --------- | -------- |
-| `default` | 默认内容 |
-
-> 待细化：补充 Alert 专属 named slots。
+| 插槽      | 说明         |
+| --------- | ------------ |
+| `default` | 默认内容     |
+| `icon`    | 状态图标内容 |
+| `close`   | 关闭的内容   |
 
 ## Exposed Methods
 
-| 方法 | 签名 | 说明   |
-| ---- | ---- | ------ |
-| —    | —    | 待定义 |
+| 方法  | 签名 | 说明 |
+| ----- | ---- | ---- |
+| state | -    | -    |
+| api   | -    | -    |
 
 ## State 模型
 
@@ -49,30 +49,18 @@ interface AlertState {
 }
 ```
 
-## Hook 依赖（@opentiny/vue-next-hooks）
+## Hook 依赖（hooks）
 
-| Hook              | 用途                  |
-| ----------------- | --------------------- |
-| `useControllable` | 受控/非受控（如适用） |
-| —                 | 待补充                |
+| Hook | 用途 |
+| ---- | ---- |
 
 ## 实现逻辑
 
 1. 解析 props，合并 ConfigProvider 上下文
-2. 根元素挂载 `sc-alert` + `st-*` 状态类
-3. 通过 hook 处理 DOM，state 驱动 UI
-4. 销毁时清理监听与引用
-
-> 待细化：Alert 交互流程。
 
 ## 无障碍（a11y）
 
 - **role / aria / 键盘 / 焦点**：待定
-
-## 动画
-
-- 使用 `usePresence`（如适用）
-- 遵循 `--sv-transition-*` token
 
 ## Web Component 预留
 
@@ -82,5 +70,4 @@ interface AlertState {
 
 - [ ] API 与本文档一致
 - [ ] 无障碍达标
-- [ ] scene-theme 类名正确（实现后）
 - [ ] 测试与演示页

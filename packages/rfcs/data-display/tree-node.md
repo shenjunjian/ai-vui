@@ -6,7 +6,7 @@
 
 树节点。
 
-- **包**：`@opentiny/vue-next`
+- **包**：`vai`
 - **导出**：`TreeNode`
 - **scene-theme 类名**：`sc-tree-node`（规划，scene-theme 尚未实现）
 
@@ -49,7 +49,7 @@ interface TreeNodeState {
 }
 ```
 
-## Hook 依赖（@opentiny/vue-next-hooks）
+## Hook 依赖（hooks）
 
 | Hook              | 用途                  |
 | ----------------- | --------------------- |

@@ -6,7 +6,7 @@
 
 单行输入（含 autocomplete、前后缀、Mention）。
 
-- **包**：`@opentiny/vue-next`
+- **包**：`vai`
 - **导出**：`Input`
 - **scene-theme 类名**：`sc-input`（规划，scene-theme 尚未实现）
 
@@ -49,7 +49,7 @@ interface InputState {
 }
 ```
 
-## Hook 依赖（@opentiny/vue-next-hooks）
+## Hook 依赖（hooks）
 
 | Hook              | 用途                  |
 | ----------------- | --------------------- |

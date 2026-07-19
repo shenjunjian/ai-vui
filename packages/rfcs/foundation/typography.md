@@ -6,7 +6,7 @@
 
 标题/段落/文本与 Markdown 渲染。
 
-- **包**：`@opentiny/vue-next`
+- **包**：`vai`
 - **导出**：`Typography`
 - **scene-theme 类名**：`sc-font 系`（规划，scene-theme 尚未实现）
 
@@ -49,7 +49,7 @@ interface TypographyState {
 }
 ```
 
-## Hook 依赖（@opentiny/vue-next-hooks）
+## Hook 依赖（hooks）
 
 | Hook              | 用途                  |
 | ----------------- | --------------------- |

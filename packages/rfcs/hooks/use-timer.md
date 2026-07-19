@@ -1,6 +1,6 @@
 # useTimer
 
-> 状态：**已实现** | 包：**@opentiny/vue-next-hooks**
+> 状态：**已实现** | 包：**hooks**
 
 ## 概述
 
@@ -53,7 +53,10 @@ function onClick() {
 ### 查询 debounce
 
 ```ts
-const { start: debounceQuery, stop: stopQuery } = useTimer((page: number) => grid.query(page), 500);
+const { start: debounceQuery, stop: stopQuery } = useTimer(
+  (page: number) => grid.query(page),
+  500,
+);
 
 debounceQuery(1);
 debounceQuery(2); // 仅第 2 次在 500ms 后触发

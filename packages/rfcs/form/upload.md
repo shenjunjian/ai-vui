@@ -6,7 +6,7 @@
 
 文件上传。
 
-- **包**：`@opentiny/vue-next`
+- **包**：`vai`
 - **导出**：`Upload`
 - **scene-theme 类名**：`sc-upload`（规划，scene-theme 尚未实现）
 
@@ -49,7 +49,7 @@ interface UploadState {
 }
 ```
 
-## Hook 依赖（@opentiny/vue-next-hooks）
+## Hook 依赖（hooks）
 
 | Hook              | 用途                  |
 | ----------------- | --------------------- |

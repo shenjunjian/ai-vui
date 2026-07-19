@@ -6,7 +6,7 @@
 
 标签组。
 
-- **包**：`@opentiny/vue-next`
+- **包**：`vai`
 - **导出**：`TagGroup`
 - **scene-theme 类名**：`sc-tag-group`（规划，scene-theme 尚未实现）
 
@@ -49,7 +49,7 @@ interface TagGroupState {
 }
 ```
 
-## Hook 依赖（@opentiny/vue-next-hooks）
+## Hook 依赖（hooks）
 
 | Hook              | 用途                  |
 | ----------------- | --------------------- |

@@ -1,6 +1,6 @@
 # useLabel
 
-> 状态：**草案** | 包：**@opentiny/vue-next-hooks**
+> 状态：**草案** | 包：**hooks**
 
 ## 概述
 

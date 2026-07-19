@@ -6,7 +6,7 @@
 
 日期+时间。
 
-- **包**：`@opentiny/vue-next`
+- **包**：`vai`
 - **导出**：`DateTimePicker`
 - **scene-theme 类名**：`sc-datetime-picker`（规划，scene-theme 尚未实现）
 
@@ -49,7 +49,7 @@ interface DateTimePickerState {
 }
 ```
 
-## Hook 依赖（@opentiny/vue-next-hooks）
+## Hook 依赖（hooks）
 
 | Hook              | 用途                  |
 | ----------------- | --------------------- |

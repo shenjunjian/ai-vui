@@ -6,7 +6,7 @@
 
 加载指示（含遮罩）。
 
-- **包**：`@opentiny/vue-next`
+- **包**：`vai`
 - **导出**：`Loading`
 - **scene-theme 类名**：`sc-loading`（规划，scene-theme 尚未实现）
 
@@ -49,7 +49,7 @@ interface LoadingState {
 }
 ```
 
-## Hook 依赖（@opentiny/vue-next-hooks）
+## Hook 依赖（hooks）
 
 | Hook              | 用途                  |
 | ----------------- | --------------------- |

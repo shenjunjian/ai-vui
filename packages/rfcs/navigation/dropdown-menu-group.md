@@ -6,7 +6,7 @@
 
 下拉菜单分组。
 
-- **包**：`@opentiny/vue-next`
+- **包**：`vai`
 - **导出**：`DropdownMenuGroup`
 - **scene-theme 类名**：`sc-dropdown-menu-group`（规划，scene-theme 尚未实现）
 
@@ -49,7 +49,7 @@ interface DropdownMenuGroupState {
 }
 ```
 
-## Hook 依赖（@opentiny/vue-next-hooks）
+## Hook 依赖（hooks）
 
 | Hook              | 用途                  |
 | ----------------- | --------------------- |

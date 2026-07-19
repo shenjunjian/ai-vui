@@ -6,7 +6,7 @@
 
 引导步骤。
 
-- **包**：`@opentiny/vue-next`
+- **包**：`vai`
 - **导出**：`TourStep`
 - **scene-theme 类名**：`sc-tour-step`（规划，scene-theme 尚未实现）
 
@@ -49,7 +49,7 @@ interface TourStepState {
 }
 ```
 
-## Hook 依赖（@opentiny/vue-next-hooks）
+## Hook 依赖（hooks）
 
 | Hook              | 用途                  |
 | ----------------- | --------------------- |

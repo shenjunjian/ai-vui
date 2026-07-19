@@ -6,7 +6,7 @@
 
 通用模态框（含 drawer/alert-dialog/confirm）。
 
-- **包**：`@opentiny/vue-next`
+- **包**：`vai`
 - **导出**：`Dialog`
 - **scene-theme 类名**：`sc-modal`（规划，scene-theme 尚未实现）
 - **浏览器 API**：<dialog>
@@ -50,7 +50,7 @@ interface DialogState {
 }
 ```
 
-## Hook 依赖（@opentiny/vue-next-hooks）
+## Hook 依赖（hooks）
 
 | Hook              | 用途                  |
 | ----------------- | --------------------- |

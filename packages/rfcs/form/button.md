@@ -12,7 +12,7 @@
 3. 图标按钮变体，此时显示为正圆型或正方开形。
 4. 文字变体：显示为纯文字 或 链接， 但此时仍占有padding。 （区别于Link组件， 它是纯文字 或 链接， 但没有padding）
 
-- **包**：`@opentiny/vue-next`
+- **包**：`vai`
 - **导出**：`Button`
 
 ## Props
@@ -23,7 +23,7 @@
 | --------- | ---------------------------------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `size`    | `'sm' \| 'md' \| 'lg'`                               | `'md'`     | 尺寸 → `st-sm` / `st-md` / `st-lg`；可通过 ConfigProvider 继承默认尺寸                                                                                                          |
 | `theme`   | `'success' \| 'info' \| 'warn' \| 'error' \| 'dark'` | —          | 语义主题色 ；未指定时使用 control 中性色                                                                                                                                        |
-| `plain`   | `boolean`                                            | `false`    | 朴素主题色（浅主题色底 + 主题色字/边，hover 不变色）；仅指定 theme 时生效。                                                                                                      |
+| `plain`   | `boolean`                                            | `false`    | 朴素主题色（浅主题色底 + 主题色字/边，hover 不变色）；仅指定 theme 时生效。                                                                                                     |
 | `ghost`   | `boolean`                                            | `false`    | 幽灵按钮（透明背景，仅保留主题色文字与边框                                                                                                                                      |
 | `variant` | `'button' \| 'text' \| 'link' \| 'icon'`             | `'button'` | 外观变体：`button` 默认实底/描边按钮；`text` 纯文字（仍保留 padding）；`link` 链接样式（仍保留 padding，区别于 [Link](../foundation/link.md)）；`icon` 仅图标样式，正方形或圆形 |
 | `circle`  | `boolean`                                            | `false`    | 当值为`true` button 变量时，左右是半圆形圆角， icon变量时，为正圆 ；当值为 false时， 为普通圆角，                                                                               |
@@ -67,7 +67,7 @@ interface ButtonState {
 }
 ```
 
-## Hook 依赖（@opentiny/vue-next-hooks）
+## Hook 依赖（hooks）
 
 | Hook       | 用途         |
 | ---------- | ------------ |

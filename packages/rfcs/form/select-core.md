@@ -6,7 +6,7 @@
 
 下拉选择基础层。
 
-- **包**：`@opentiny/vue-next`
+- **包**：`vai`
 - **导出**：`SelectCore`
 - **scene-theme 类名**：`sc-select-core`（规划，scene-theme 尚未实现）
 
@@ -49,7 +49,7 @@ interface SelectCoreState {
 }
 ```
 
-## Hook 依赖（@opentiny/vue-next-hooks）
+## Hook 依赖（hooks）
 
 | Hook              | 用途                  |
 | ----------------- | --------------------- |
