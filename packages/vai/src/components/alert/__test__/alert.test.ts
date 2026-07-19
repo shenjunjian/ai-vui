@@ -36,6 +36,12 @@ describe("Alert", () => {
     expect(wrapper.find(".sc-alert__icon").exists()).toBe(true);
     expect(wrapper.find(".ci-error").exists()).toBe(true);
 
+    await wrapper.setProps({ theme: "success" });
+    expect(wrapper.find(".ci-check").exists()).toBe(true);
+
+    await wrapper.setProps({ theme: "warn" });
+    expect(wrapper.find(".ci-risk").exists()).toBe(true);
+
     await wrapper.setProps({ showIcon: false });
     expect(wrapper.find(".sc-alert__icon").exists()).toBe(false);
   });

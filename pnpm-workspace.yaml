@@ -26,6 +26,11 @@ catalog:
   "@vueuse/core": latest
   nanoid: latest
 
+  # 图标依赖
+  "@opentiny/icons": 0.1.4
+  unocss: latest
+  "@unocss/preset-icons": latest
+
   # vue 相关
   "@vitejs/plugin-vue": ^6.0.7
   "@vue/tsconfig": latest

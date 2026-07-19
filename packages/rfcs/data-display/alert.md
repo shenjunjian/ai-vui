@@ -19,6 +19,8 @@
 | `closable`    | `boolean`                                            | `false` | 是否有关闭按钮                                                                       |
 | `beforeClose` | `() => boolean \| Promise<boolean>`                  | —       | 关闭前拦截；返回 `true` 允许关闭，返回 `false` / Promise reject / 异步错误时取消关闭 |
 
+状态图标（UnoCSS 第三方图标类，组件仅挂类名）：未指定 theme / `dark` → `ci-info`；`success` → `ci-check`；`info` → `ci-info`；`warn` → `ci-risk`；`error` → `ci-close`
+
 ## Events
 
 | 事件   | payload | 说明       |
@@ -48,7 +50,7 @@ interface AlertState {
   visible: boolean;
   sizeClass: string;
   themeClass: string;
-  /** 默认状态图标类名（ci-success / ci-info / ci-warn / ci-error） */
+  /** 默认状态图标类名（ci-check / ci-info / ci-risk / ci-error） */
   iconClass: string;
   rootClass: unknown[];
 }
@@ -64,7 +66,7 @@ interface AlertState {
 
 1. 解析 props，合并 ConfigProvider 上下文
 2. 无 `theme` 时挂 `st-control` 中性色；有 `theme` 时挂对应 `st-*`，色值与 Button 对齐
-3. `showIcon`：显示前置图标；默认图标按 theme 映射：`success→ci-success`、`info/dark/control→ci-info`、`warn→ci-warn`、`error→ci-error`；可通过 `icon` 插槽覆盖
+3. `showIcon`：显示前置图标；默认图标按 theme 映射：`success→ci-check`、`info/dark/未指定→ci-info`、`warn→ci-risk`、`error→ci-error`（样式由 UnoCSS 提供）；可通过 `icon` 插槽覆盖
 4. `closable`：点击关闭按钮时调用 `beforeClose`（未传入则默认允许）；通过后隐藏节点并触发 `closed`（与 Tag 一致）
 5. 根节点 `role="alert"`；关闭按钮提供 `aria-label="关闭"`
 

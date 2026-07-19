@@ -30,10 +30,10 @@ export default function useVm(ctx: AlertCtx) {
 
   const iconClass = computed(() => {
     const iconMap: Record<string, string> = {
-      success: "ci-success",
+      success: "ci-check",
       info: "ci-info",
-      warn: "ci-warn",
-      error: "ci-error",
+      warn: "ci-risk",
+      error: "ci-close",
       dark: "ci-info",
     };
     return iconMap[props.theme || ""] || "ci-info";
