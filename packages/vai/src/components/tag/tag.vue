@@ -17,8 +17,8 @@ defineOptions({ name: "TinyTag" });
 
 const props = withDefaults(
   defineProps<{
-    /** 尺寸 → st-xs / st-sm / st-md / st-lg */
-    size?: "xs" | "sm" | "md" | "lg";
+    /** 尺寸 → st-sm / st-md / st-lg */
+    size?: "sm" | "md" | "lg";
     /** 禁用态 */
     disabled?: boolean;
     /** 是否有关闭按钮 */

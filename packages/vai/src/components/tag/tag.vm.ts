@@ -9,7 +9,6 @@ export default function useVm(ctx: TagCtx) {
 
   const sizeClass = computed(() => {
     const sizeMap: Record<string, string> = {
-      xs: "st-xs",
       sm: "st-sm",
       md: "st-md",
       lg: "st-lg",

@@ -17,11 +17,11 @@ describe("Tag", () => {
 
   test("applies size and theme classes", () => {
     const wrapper = mount(Tag, {
-      props: { size: "xs", theme: "success" },
+      props: { size: "sm", theme: "success" },
       slots: { default: "OK" },
     });
 
-    expect(wrapper.classes()).toContain("st-xs");
+    expect(wrapper.classes()).toContain("st-sm");
     expect(wrapper.classes()).toContain("st-success");
     expect(wrapper.classes()).not.toContain("st-control");
   });

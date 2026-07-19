@@ -28,7 +28,6 @@ const promiseTrue = () => new Promise<boolean>((resolve) => setTimeout(() => res
     <section class="tag-demo__section">
       <h2>尺寸 size</h2>
       <div class="tag-demo__row">
-        <Tag size="xs">Extra Small</Tag>
         <Tag size="sm">Small</Tag>
         <Tag size="md">Medium</Tag>
         <Tag size="lg">Large</Tag>

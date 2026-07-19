@@ -16,7 +16,7 @@
 | ---------- | ------------------------------ | ------- | ------------------- |
 | `class`    | `string \| string[]`           | —       | 自定义类名          |
 | `style`    | `CSSProperties`                | —       | 自定义样式          |
-| `size`     | `'xs' \| 'sm' \| 'md' \| 'lg'` | `'md'`  | 尺寸（映射 `st-*`） |
+| `size`     | `'sm' \| 'md' \| 'lg'`         | `'md'`  | 尺寸（映射 `st-*`） |
 | `disabled` | `boolean`                      | `false` | 禁用态              |
 
 > 待细化：补充 TagGroup 专属 props。
