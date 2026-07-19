@@ -18,13 +18,13 @@
 
 | `show-icon` | `boolean` | `true` | 是否显示前置状态图标 |
 | `closable` | `boolean` | `false` | 是否有关闭按钮 |
+| `beforeClose` | `() => boolean \| Promise<boolean>` | — | 关闭前拦截；返回 `true` 允许关闭，返回 `false` / Promise reject / 异步错误时取消关闭 |
 
 ## Events
 
-| 事件    | payload | 说明       |
-| ------- | ------- | ---------- |
-| closing | —       | 关闭前事件 |
-| closed  | —       | 关闭后事件 |
+| 事件   | payload | 说明       |
+| ------ | ------- | ---------- |
+| closed | —       | 关闭后事件 |
 
 ## Slots
 

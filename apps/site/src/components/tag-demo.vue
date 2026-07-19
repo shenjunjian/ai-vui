@@ -3,9 +3,11 @@ import { ref } from "vue";
 import { Tag } from "vai";
 
 const closedLog = ref<string[]>([]);
+const confirmClose = ref(true);
 
-function onClosing(label: string) {
-  closedLog.value = [...closedLog.value, `closing: ${label}`];
+function beforeClose(label: string) {
+  closedLog.value = [...closedLog.value, `beforeClose: ${label}`];
+  return confirmClose.value;
 }
 
 function onClosed(label: string) {
@@ -77,14 +79,18 @@ function onClosed(label: string) {
 
     <section class="tag-demo__section">
       <h2>可关闭 closable</h2>
+      <label class="tag-demo__hint">
+        <input v-model="confirmClose" type="checkbox" />
+        beforeClose 返回 true（取消勾选可拦截关闭）
+      </label>
       <div class="tag-demo__row">
-        <Tag closable @closing="onClosing('Default')" @closed="onClosed('Default')">
+        <Tag closable :before-close="() => beforeClose('Default')" @closed="onClosed('Default')">
           Default
         </Tag>
         <Tag
           theme="info"
           closable
-          @closing="onClosing('Info')"
+          :before-close="() => beforeClose('Info')"
           @closed="onClosed('Info')"
         >
           Info
@@ -94,7 +100,7 @@ function onClosed(label: string) {
           plain
           closable
           circle
-          @closing="onClosing('Error')"
+          :before-close="() => beforeClose('Error')"
           @closed="onClosed('Error')"
         >
           Error

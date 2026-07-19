@@ -11,21 +11,21 @@
 
 ## Props
 
-| 属性       | 类型                                                 | 默认值  | 说明                                                                                       |
-| ---------- | ---------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------ |
-| `size`     | `'xs' \| 'sm' \| 'md' \| 'lg'`                       | `'md'`  | 尺寸（映射 `st-*`）                                                                        |
-| `disabled` | `boolean`                                            | `false` | 禁用态                                                                                     |
-| `closable` | `boolean`                                            | `false` | 是否有关闭按钮                                                                             |
-| `theme`    | `'success' \| 'info' \| 'warn' \| 'error' \| 'dark'` | —       | 语义主题色（与 Button 一致）；但没有 hover, active 的行为。 无主题色时，主文本色带边框即可 |
-| `plain`    | `boolean`                                            | `false` | 朴素主题色（浅主题色底 + 主题色字/边）；仅指定 theme 时生效。                              |
-| `circle`   | `boolean`                                            | `false` | 当值为`true` 左右是半圆形圆角；当值为 false时， 为普通圆角，                               |
+| 属性          | 类型                                                 | 默认值  | 说明                                                                                       |
+| ------------- | ---------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------ |
+| `size`        | `'xs' \| 'sm' \| 'md' \| 'lg'`                       | `'md'`  | 尺寸（映射 `st-*`）                                                                        |
+| `disabled`    | `boolean`                                            | `false` | 禁用态                                                                                     |
+| `closable`    | `boolean`                                            | `false` | 是否有关闭按钮                                                                             |
+| `theme`       | `'success' \| 'info' \| 'warn' \| 'error' \| 'dark'` | —       | 语义主题色（与 Button 一致）；但没有 hover, active 的行为。 无主题色时，主文本色带边框即可 |
+| `plain`       | `boolean`                                            | `false` | 朴素主题色（浅主题色底 + 主题色字/边）；仅指定 theme 时生效。                              |
+| `circle`      | `boolean`                                            | `false` | 当值为`true` 左右是半圆形圆角；当值为 false时， 为普通圆角，                               |
+| `beforeClose` | `() => boolean \| Promise<boolean>`                  | —       | 关闭前拦截；返回 `true` 允许关闭，返回 `false` / Promise reject / 异步错误时取消关闭       |
 
 ## Events
 
-| 事件    | payload | 说明       |
-| ------- | ------- | ---------- |
-| closing | —       | 关闭前事件 |
-| closed  | —       | 关闭后事件 |
+| 事件   | payload | 说明       |
+| ------ | ------- | ---------- |
+| closed | —       | 关闭后事件 |
 
 ## Slots
 
@@ -64,7 +64,7 @@ interface TagState {
 2. 无 `theme` 时不挂主题类：使用主文本色 + 边框（非表单控件，无 `st-control`）；需要高亮语义时使用 `theme="info"`（色值与 Button Info 一致）
 3. 有 `theme` 时挂对应 `st-*`，色值与 Button 对齐；`plain` 仅在指定 theme 时挂 `sc-plain-tag`
 4. 无 hover / active / focus halo
-5. `closable`：点击关闭按钮依次触发 `closing` → 隐藏节点 → `closed`；`disabled` 时不可关闭
+5. `closable`：点击关闭按钮时调用 `beforeClose`（未传入则默认允许）；通过后隐藏节点并触发 `closed`；`disabled` 时不可关闭
 
 ## 无障碍（a11y）
 

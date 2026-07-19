@@ -1,5 +1,6 @@
-import { reactive, computed, ref } from "vue";
+import { reactive, computed, ref, nextTick } from "vue";
 import type { TagCtx } from "./tag.vue";
+import { callWithGuard } from "../../utils/promiseHelper.ts";
 
 export default function useVm(ctx: TagCtx) {
   const { props, emit } = ctx;
@@ -52,9 +53,12 @@ export default function useVm(ctx: TagCtx) {
       return;
     }
 
-    emit("closing");
-    visible.value = false;
-    emit("closed");
+    callWithGuard(props.beforeClose ?? true, () => {
+      visible.value = false;
+      nextTick(() => {
+        emit("closed");
+      });
+    });
   }
 
   const api = {

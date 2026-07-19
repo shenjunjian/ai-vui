@@ -40,6 +40,8 @@ const props = withDefaults(
     plain?: boolean;
     /** 左右半圆圆角 */
     circle?: boolean;
+    /** 关闭前拦截；返回 true 允许关闭 */
+    beforeClose?: () => boolean | Promise<boolean>;
   }>(),
   {
     size: "md",
@@ -51,8 +53,6 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  /** 关闭前事件 */
-  closing: [];
   /** 关闭后事件 */
   closed: [];
 }>();

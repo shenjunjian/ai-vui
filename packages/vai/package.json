@@ -13,7 +13,8 @@
     "test": "vp test"
   },
   "dependencies": {
-    "vue": "catalog:"
+    "vue": "catalog:",
+    "@vue/shared": "catalog:"
   },
   "devDependencies": {
     "@types/node": "catalog:",

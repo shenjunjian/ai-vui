@@ -1,6 +1,5 @@
-import { describe, expect, test } from "vite-plus/test";
-import { mount } from "@vue/test-utils";
-import { nextTick } from "vue";
+import { describe, expect, test, vi } from "vite-plus/test";
+import { flushPromises, mount } from "@vue/test-utils";
 import Tag from "../tag.vue";
 
 describe("Tag", () => {
@@ -50,7 +49,7 @@ describe("Tag", () => {
     expect(wrapper.classes()).toContain("st-disabled");
   });
 
-  test("closable renders close button and emits closing/closed", async () => {
+  test("closable renders close button and emits closed", async () => {
     const wrapper = mount(Tag, {
       props: { closable: true },
       slots: { default: "Closable" },
@@ -60,24 +59,70 @@ describe("Tag", () => {
     expect(closeBtn.exists()).toBe(true);
 
     await closeBtn.trigger("click");
-    await nextTick();
+    await flushPromises();
 
-    expect(wrapper.emitted("closing")).toHaveLength(1);
     expect(wrapper.emitted("closed")).toHaveLength(1);
     expect(wrapper.find(".sc-tag").exists()).toBe(false);
     expect(wrapper.vm.state.visible).toBe(false);
   });
 
-  test("disabled closable does not close", async () => {
+  test("beforeClose returning false cancels close", async () => {
+    const beforeClose = vi.fn(() => false);
     const wrapper = mount(Tag, {
-      props: { closable: true, disabled: true },
+      props: { closable: true, beforeClose },
+      slots: { default: "Guard" },
+    });
+
+    await wrapper.find(".sc-tag__close").trigger("click");
+    await flushPromises();
+
+    expect(beforeClose).toHaveBeenCalledTimes(1);
+    expect(wrapper.emitted("closed")).toBeUndefined();
+    expect(wrapper.find(".sc-tag").exists()).toBe(true);
+    expect(wrapper.vm.state.visible).toBe(true);
+  });
+
+  test("beforeClose returning true allows close", async () => {
+    const beforeClose = vi.fn(() => true);
+    const wrapper = mount(Tag, {
+      props: { closable: true, beforeClose },
+      slots: { default: "Allow" },
+    });
+
+    await wrapper.find(".sc-tag__close").trigger("click");
+    await flushPromises();
+
+    expect(beforeClose).toHaveBeenCalledTimes(1);
+    expect(wrapper.emitted("closed")).toHaveLength(1);
+    expect(wrapper.find(".sc-tag").exists()).toBe(false);
+  });
+
+  test("beforeClose promise reject cancels close", async () => {
+    const beforeClose = vi.fn(() => Promise.reject(new Error("nope")));
+    const wrapper = mount(Tag, {
+      props: { closable: true, beforeClose },
+      slots: { default: "Reject" },
+    });
+
+    await wrapper.find(".sc-tag__close").trigger("click");
+    await flushPromises();
+
+    expect(beforeClose).toHaveBeenCalledTimes(1);
+    expect(wrapper.emitted("closed")).toBeUndefined();
+    expect(wrapper.find(".sc-tag").exists()).toBe(true);
+  });
+
+  test("disabled closable does not close", async () => {
+    const beforeClose = vi.fn(() => true);
+    const wrapper = mount(Tag, {
+      props: { closable: true, disabled: true, beforeClose },
       slots: { default: "Disabled" },
     });
 
     await wrapper.find(".sc-tag__close").trigger("click");
-    await nextTick();
+    await flushPromises();
 
-    expect(wrapper.emitted("closing")).toBeUndefined();
+    expect(beforeClose).not.toHaveBeenCalled();
     expect(wrapper.emitted("closed")).toBeUndefined();
     expect(wrapper.find(".sc-tag").exists()).toBe(true);
     expect(wrapper.vm.state.visible).toBe(true);
