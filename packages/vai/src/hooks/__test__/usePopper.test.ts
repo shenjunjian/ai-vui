@@ -138,6 +138,32 @@ describe("usePopper", () => {
     expect(popper.style.getPropertyValue("--vai-popper-gap")).toBe("12px");
   });
 
+  test("maps *-start / *-end placements to correct position-area span", async () => {
+    const api = setup({ placement: "bottom-start" });
+    await nextTick();
+    expect(popper.style.getPropertyValue("position-area")).toBe(
+      "bottom span-right",
+    );
+
+    api.placement = "bottom-end";
+    await nextTick();
+    expect(popper.style.getPropertyValue("position-area")).toBe(
+      "bottom span-left",
+    );
+
+    api.placement = "top-start";
+    await nextTick();
+    expect(popper.style.getPropertyValue("position-area")).toBe(
+      "top span-right",
+    );
+
+    api.placement = "left-start";
+    await nextTick();
+    expect(popper.style.getPropertyValue("position-area")).toBe(
+      "left span-bottom",
+    );
+  });
+
   test("applies customClass and animate flag", async () => {
     const api = setup({ customClass: "foo  bar", animate: false });
     await nextTick();

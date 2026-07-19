@@ -2,10 +2,11 @@
 import { ref } from "vue";
 import AlertDemo from "./components/alert-demo.vue";
 import ButtonDemo from "./components/button-demo.vue";
+import InputDemo from "./components/input-demo.vue";
 import LinkDemo from "./components/link-demo.vue";
 import TagDemo from "./components/tag-demo.vue";
 
-const tab = ref<"button" | "link" | "tag" | "alert">("alert");
+const tab = ref<"button" | "link" | "tag" | "alert" | "input">("input");
 </script>
 
 <template>
@@ -43,11 +44,20 @@ const tab = ref<"button" | "link" | "tag" | "alert">("alert");
       >
         Alert
       </button>
+      <button
+        type="button"
+        class="site-app__tab"
+        :class="{ 'is-active': tab === 'input' }"
+        @click="tab = 'input'"
+      >
+        Input
+      </button>
     </nav>
     <ButtonDemo v-if="tab === 'button'" />
     <LinkDemo v-else-if="tab === 'link'" />
     <TagDemo v-else-if="tab === 'tag'" />
-    <AlertDemo v-else />
+    <AlertDemo v-else-if="tab === 'alert'" />
+    <InputDemo v-else />
   </div>
 </template>
 

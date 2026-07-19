@@ -68,19 +68,24 @@ const POPPER_CLASS = "vai-popper";
 const ARROW_CLASS = "vai-popper--arrow";
 const NO_ANIMATE_CLASS = "vai-popper--no-animate";
 
+/**
+ * Floating UI 风格 placement → CSS position-area。
+ * -start：对齐起始边，并向另一侧跨格（如 bottom-start → bottom span-right，左对齐且可向右伸展）
+ * -end：对齐结束边，并反向跨格
+ */
 const POSITION_AREA_MAP: Record<PopperPlacement, string> = {
   top: "top",
-  "top-start": "top span-left",
-  "top-end": "top span-right",
+  "top-start": "top span-right",
+  "top-end": "top span-left",
   bottom: "bottom",
-  "bottom-start": "bottom span-left",
-  "bottom-end": "bottom span-right",
+  "bottom-start": "bottom span-right",
+  "bottom-end": "bottom span-left",
   left: "left",
-  "left-start": "left span-top",
-  "left-end": "left span-bottom",
+  "left-start": "left span-bottom",
+  "left-end": "left span-top",
   right: "right",
-  "right-start": "right span-top",
-  "right-end": "right span-bottom",
+  "right-start": "right span-bottom",
+  "right-end": "right span-top",
 };
 
 const DEFAULT_OPTION: Required<PopperOption> = {
