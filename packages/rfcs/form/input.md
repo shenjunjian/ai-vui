@@ -17,17 +17,17 @@ input的结构为： #prefix + input + char-count + #suffix + clear-icon
 
 ## Props
 
-| 属性          | 类型                                                                    | 默认值  | 说明                                                                                     |
-| ------------- | ----------------------------------------------------------------------- | ------- | ---------------------------------------------------------------------------------------- |
-| `size`        | ` 'sm' \| 'md' \| 'lg'`                                                 | `'md'`  | 尺寸                                                                                     |
-| `theme`       | `'success' \| 'info' \| 'warn' \| 'error' \| 'dark'`                    | —       | 语义主题色, 只影响border和文字                                                           |
-| `disabled`    | `boolean`                                                               | `false` | 禁用态                                                                                   |
-| `clearable`   | `boolean`                                                               | `false` | 有值时，是否显示可清除                                                                   |
-| `password`    | `boolean`                                                               | `false` | 是否显示为password                                                                       |
-| `char-count`  | `boolean`                                                               | `false` | 是否在后面显示字符数 ，显示在 suffix 插槽前面                                            |
-| `beforeClear` | `() => boolean \| Promise<boolean>`                                     | —       | 清除前拦截；返回 `true` 允许清除值，返回 `false` / Promise reject / 异步错误时，阻止清除 |
-| `pop-items`   | string[] \| Option[] \| (query:string) => Promise<string[]> \| Option[] | []      | 自动提示的数据项                                                                         |
-| `pop-option`  | 全局的弹出层选项配置值                                                  | -       | - 自动提示的弹出选项配置                                                                 |
+| 属性            | 类型                                                                    | 默认值  | 说明                                                                                     |
+| --------------- | ----------------------------------------------------------------------- | ------- | ---------------------------------------------------------------------------------------- |
+| `size`          | ` 'sm' \| 'md' \| 'lg'`                                                 | `'md'`  | 尺寸                                                                                     |
+| `theme`         | `'success' \| 'info' \| 'warn' \| 'error' \| 'dark'`                    | —       | 语义主题色, 只影响border和文字                                                           |
+| `disabled`      | `boolean`                                                               | `false` | 禁用态                                                                                   |
+| `clearable`     | `boolean`                                                               | `false` | 有值时，是否显示可清除                                                                   |
+| `password`      | `boolean`                                                               | `false` | 是否显示为password                                                                       |
+| `char-count`    | `boolean`                                                               | `false` | 是否在后面显示字符数 ，显示在 suffix 插槽前面                                            |
+| `beforeClear`   | `() => boolean \| Promise<boolean>`                                     | —       | 清除前拦截；返回 `true` 允许清除值，返回 `false` / Promise reject / 异步错误时，阻止清除 |
+| `pop-items`     | string[] \| Option[] \| (query:string) => Promise<string[]> \| Option[] | []      | 自动提示的数据项                                                                         |
+| `popper-option` | 全局的弹出层选项配置值                                                  | -       | - 自动提示的弹出选项配置                                                                 |
 
 ## Events
 
