@@ -4,6 +4,7 @@ import AlertDemo from "./components/alert-demo.vue";
 import ButtonDemo from "./components/button-demo.vue";
 import CheckboxDemo from "./components/checkbox-demo.vue";
 import InputDemo from "./components/input-demo.vue";
+import NumericDemo from "./components/numeric-demo.vue";
 import LinkDemo from "./components/link-demo.vue";
 import RadioDemo from "./components/radio-demo.vue";
 import TagDemo from "./components/tag-demo.vue";
@@ -16,11 +17,12 @@ const tab = ref<
   | "tag"
   | "alert"
   | "input"
+  | "numeric"
   | "text-area"
   | "checkbox"
   | "radio"
   | "use-popper"
->("radio");
+>("numeric");
 </script>
 
 <template>
@@ -69,6 +71,14 @@ const tab = ref<
       <button
         type="button"
         class="site-app__tab"
+        :class="{ 'is-active': tab === 'numeric' }"
+        @click="tab = 'numeric'"
+      >
+        Numeric
+      </button>
+      <button
+        type="button"
+        class="site-app__tab"
         :class="{ 'is-active': tab === 'text-area' }"
         @click="tab = 'text-area'"
       >
@@ -104,6 +114,7 @@ const tab = ref<
     <TagDemo v-else-if="tab === 'tag'" />
     <AlertDemo v-else-if="tab === 'alert'" />
     <InputDemo v-else-if="tab === 'input'" />
+    <NumericDemo v-else-if="tab === 'numeric'" />
     <TextAreaDemo v-else-if="tab === 'text-area'" />
     <CheckboxDemo v-else-if="tab === 'checkbox'" />
     <RadioDemo v-else-if="tab === 'radio'" />

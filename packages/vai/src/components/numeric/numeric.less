@@ -1,0 +1,231 @@
+// Numeric styles（主题色只影响 border / 文字，背景保持中性）
+@import "../../theme/common.less";
+
+.v-numeric {
+  --numeric-font-family: var(--v-font-family);
+  --numeric-font-size: var(--v-font-size-md);
+  --numeric-line-height: var(--v-line-height-tight);
+  --numeric-padding-x: var(--v-space-2);
+  --numeric-btn-width: var(--v-control-height-md);
+  --numeric-radius: var(--v-radius-lg);
+  --numeric-border-width: var(--v-border-width);
+  --numeric-height: var(--v-control-height-md);
+  --numeric-bg: var(--v-color-white);
+  --numeric-color: var(--v-color-control-text);
+  --numeric-border: var(--v-color-control-border);
+  --numeric-placeholder: var(--v-color-gray-400);
+  --numeric-unit-bg: var(--v-color-gray-50);
+  --numeric-unit-color: var(--v-color-gray-600);
+  --numeric-btn-color: var(--v-color-gray-600);
+  --numeric-btn-hover-bg: var(--v-color-gray-50);
+  --numeric-focus-ring: color-mix(
+    in srgb,
+    var(--numeric-border) var(--v-mix-focus-ring),
+    transparent
+  );
+
+  box-sizing: border-box;
+  position: relative;
+  display: inline-flex;
+  align-items: stretch;
+  width: 100%;
+  max-width: 100%;
+  height: var(--numeric-height);
+  margin: 0;
+  padding: 0;
+  font-family: var(--numeric-font-family);
+  font-size: var(--numeric-font-size);
+  line-height: var(--numeric-line-height);
+  color: var(--numeric-color);
+  background-color: var(--numeric-bg);
+  border: var(--numeric-border-width) solid var(--numeric-border);
+  border-radius: var(--numeric-radius);
+  outline: none;
+  overflow: hidden;
+  transition:
+    border-color var(--v-duration-fast) var(--v-ease-default),
+    box-shadow var(--v-duration-fast) var(--v-ease-default),
+    color var(--v-duration-fast) var(--v-ease-default);
+
+  &:focus-within {
+    border-color: var(--numeric-border);
+    .v-focus-ring-static(var(--numeric-focus-ring));
+  }
+
+  // sizes
+  &.st-sm {
+    --numeric-font-size: var(--v-font-size-sm);
+    --numeric-padding-x: var(--v-space-1);
+    --numeric-btn-width: var(--v-control-height-sm);
+    --numeric-height: var(--v-control-height-sm);
+    --numeric-radius: var(--v-radius-md);
+  }
+
+  &.st-md {
+    --numeric-font-size: var(--v-font-size-md);
+    --numeric-padding-x: var(--v-space-2);
+    --numeric-btn-width: var(--v-control-height-md);
+    --numeric-height: var(--v-control-height-md);
+    --numeric-radius: var(--v-radius-lg);
+  }
+
+  &.st-lg {
+    --numeric-font-size: var(--v-font-size-lg);
+    --numeric-padding-x: var(--v-space-3);
+    --numeric-btn-width: var(--v-control-height-lg);
+    --numeric-height: var(--v-control-height-lg);
+    --numeric-radius: var(--v-radius-xl);
+  }
+
+  // themes：仅 border + 文字
+  &.st-control {
+    --numeric-color: var(--v-color-control-text);
+    --numeric-border: var(--v-color-control-border);
+    --numeric-focus-ring: color-mix(
+      in srgb,
+      var(--v-color-control-focus) var(--v-mix-focus-ring),
+      transparent
+    );
+  }
+
+  &.st-dark {
+    --numeric-color: var(--v-color-control-text);
+    --numeric-border: var(--v-color-dark);
+    --numeric-focus-ring: color-mix(
+      in srgb,
+      var(--v-color-dark) var(--v-mix-focus-ring),
+      transparent
+    );
+  }
+
+  &.st-success {
+    --numeric-color: var(--v-color-success-border);
+    --numeric-border: var(--v-color-success);
+    --numeric-focus-ring: color-mix(
+      in srgb,
+      var(--v-color-success) var(--v-mix-focus-ring),
+      transparent
+    );
+  }
+
+  &.st-info {
+    --numeric-color: var(--v-color-info-border);
+    --numeric-border: var(--v-color-info);
+    --numeric-focus-ring: color-mix(
+      in srgb,
+      var(--v-color-info) var(--v-mix-focus-ring),
+      transparent
+    );
+  }
+
+  &.st-warn {
+    --numeric-color: var(--v-color-warn-border);
+    --numeric-border: var(--v-color-warn);
+    --numeric-focus-ring: color-mix(
+      in srgb,
+      var(--v-color-warn) var(--v-mix-focus-ring),
+      transparent
+    );
+  }
+
+  &.st-error {
+    --numeric-color: var(--v-color-error-border);
+    --numeric-border: var(--v-color-error);
+    --numeric-focus-ring: color-mix(
+      in srgb,
+      var(--v-color-error) var(--v-mix-focus-ring),
+      transparent
+    );
+  }
+
+  &.st-disabled {
+    .v-disabled(var(--v-opacity-disabled-light));
+    background-color: var(--v-color-gray-50);
+
+    .v-numeric__inner,
+    .v-numeric__btn {
+      cursor: not-allowed;
+    }
+  }
+
+  &__btn {
+    appearance: none;
+    .v-inline-flex-center();
+    flex-shrink: 0;
+    width: var(--numeric-btn-width);
+    margin: 0;
+    padding: 0;
+    font: inherit;
+    line-height: 1;
+    color: var(--numeric-btn-color);
+    background: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+      background-color: var(--numeric-btn-hover-bg);
+    }
+
+    &:disabled {
+      opacity: var(--v-opacity-disabled);
+      cursor: not-allowed;
+    }
+
+    &--minus {
+      border-right: var(--numeric-border-width) solid var(--numeric-border);
+    }
+
+    &--plus {
+      border-left: var(--numeric-border-width) solid var(--numeric-border);
+    }
+  }
+
+  &__inner {
+    appearance: none;
+    box-sizing: border-box;
+    flex: 1;
+    min-width: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0 var(--numeric-padding-x);
+    font: inherit;
+    color: inherit;
+    text-align: center;
+    background: transparent;
+    border: none;
+    outline: none;
+    /* 隐藏原生 number spinner */
+    -moz-appearance: textfield;
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      appearance: none;
+      margin: 0;
+    }
+
+    &::placeholder {
+      color: var(--numeric-placeholder);
+    }
+  }
+
+  &__unit {
+    .v-inline-flex-center();
+    flex-shrink: 0;
+    min-width: var(--numeric-btn-width);
+    padding: 0 var(--v-space-6);
+    color: var(--numeric-unit-color);
+    background-color: var(--numeric-unit-bg);
+    border-left: var(--numeric-border-width) solid var(--numeric-border);
+    white-space: nowrap;
+    user-select: none;
+  }
+
+  &:not(.is-controls):not(.is-unit) {
+    .v-numeric__inner {
+      text-align: left;
+      padding: 0 var(--v-space-6);
+    }
+  }
+}
