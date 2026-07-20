@@ -10,7 +10,7 @@
 ## 目录结构
 
 - apps/site 组件官网，组件开发时的示例代码网页
-- packages/scene-theme 与框架无关的 css 库，基于场景实现
+- packages/scene-theme 与框架无关的 css 库，基于场景实现(暂时不用，待未来启用)
 - packages/rfcs 组件库的设计规范
 - packages/vai 组件库
 - scripts/ 公共脚本
