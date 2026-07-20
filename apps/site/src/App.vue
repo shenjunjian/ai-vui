@@ -5,6 +5,7 @@ import ButtonDemo from "./components/button-demo.vue";
 import CheckboxDemo from "./components/checkbox-demo.vue";
 import InputDemo from "./components/input-demo.vue";
 import LinkDemo from "./components/link-demo.vue";
+import RadioDemo from "./components/radio-demo.vue";
 import TagDemo from "./components/tag-demo.vue";
 import TextAreaDemo from "./components/text-area-demo.vue";
 import UsePopperDemo from "./components/use-popper-demo.vue";
@@ -17,8 +18,9 @@ const tab = ref<
   | "input"
   | "text-area"
   | "checkbox"
+  | "radio"
   | "use-popper"
->("checkbox");
+>("radio");
 </script>
 
 <template>
@@ -83,6 +85,14 @@ const tab = ref<
       <button
         type="button"
         class="site-app__tab"
+        :class="{ 'is-active': tab === 'radio' }"
+        @click="tab = 'radio'"
+      >
+        Radio
+      </button>
+      <button
+        type="button"
+        class="site-app__tab"
         :class="{ 'is-active': tab === 'use-popper' }"
         @click="tab = 'use-popper'"
       >
@@ -96,6 +106,7 @@ const tab = ref<
     <InputDemo v-else-if="tab === 'input'" />
     <TextAreaDemo v-else-if="tab === 'text-area'" />
     <CheckboxDemo v-else-if="tab === 'checkbox'" />
+    <RadioDemo v-else-if="tab === 'radio'" />
     <UsePopperDemo v-else />
   </div>
 </template>
