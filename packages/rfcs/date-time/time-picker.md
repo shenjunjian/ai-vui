@@ -12,12 +12,11 @@
 
 ## Props
 
-| 属性       | 类型                   | 默认值  | 说明                |
-| ---------- | ---------------------- | ------- | ------------------- |
-| `class`    | `string \| string[]`   | —       | 自定义类名          |
-| `style`    | `CSSProperties`        | —       | 自定义样式          |
-| `size`     | `'sm' \| 'md' \| 'lg'` | `'md'`  | 尺寸（映射 `st-*`） |
-| `disabled` | `boolean`              | `false` | 禁用态              |
+| 属性 | 类型 | 默认值 | 说明 |
+| ---- | ---- | ------ | ---- |
+
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | 尺寸（映射 `st-*`） |
+| `disabled` | `boolean` | `false` | 禁用态 |
 
 > 待细化：补充 TimePicker 专属 props。
 
