@@ -19,10 +19,10 @@ todos:
     status: completed
   - id: css-md
     content: 重写 .cursor/.rules/css.md 开发规范
-    status: pending
+    status: completed
   - id: verify-tests
     content: 跑 8 个组件单测，确认无残留 sc-
-    status: pending
+    status: completed
 isProject: false
 ---
 

@@ -34,7 +34,7 @@ describe("Alert", () => {
     });
 
     expect(wrapper.find(".v-alert__icon").exists()).toBe(true);
-    expect(wrapper.find(".ci-error").exists()).toBe(true);
+    expect(wrapper.find(".ci-close").exists()).toBe(true);
 
     await wrapper.setProps({ theme: "success" });
     expect(wrapper.find(".ci-check").exists()).toBe(true);
