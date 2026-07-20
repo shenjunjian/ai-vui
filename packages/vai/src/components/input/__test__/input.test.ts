@@ -54,14 +54,14 @@ describe("Input", () => {
   test("renders with default classes", async () => {
     const wrapper = mount(Input);
 
-    expect(wrapper.classes()).toContain("sc-input");
+    expect(wrapper.classes()).toContain("v-input");
     expect(wrapper.classes()).toContain("st-md");
     expect(wrapper.classes()).toContain("st-control");
-    expect(wrapper.find("input.sc-input__inner").exists()).toBe(true);
+    expect(wrapper.find("input.v-input__inner").exists()).toBe(true);
     expect(wrapper.find("input").attributes("type")).toBe("text");
 
     await nextTick();
-    const suggest = wrapper.find(".sc-input__suggest").element as HTMLElement;
+    const suggest = wrapper.find(".v-input__suggest").element as HTMLElement;
     expect(suggest.getAttribute("popover")).toBe("manual");
     expect(suggest.classList.contains("vai-popper")).toBe(true);
   });
@@ -129,10 +129,10 @@ describe("Input", () => {
       attrs: { maxlength: "10" },
     });
 
-    expect(wrapper.find(".sc-input__count").text()).toBe("3/10");
+    expect(wrapper.find(".v-input__count").text()).toBe("3/10");
 
     await wrapper.setProps({ modelValue: "abcd" });
-    expect(wrapper.find(".sc-input__count").text()).toBe("4/10");
+    expect(wrapper.find(".v-input__count").text()).toBe("4/10");
   });
 
   test("prefix and suffix slots render in order", () => {
@@ -146,9 +146,9 @@ describe("Input", () => {
 
     const html = wrapper.html();
     const prefixIdx = html.indexOf('class="p"');
-    const countIdx = html.indexOf("sc-input__count");
+    const countIdx = html.indexOf("v-input__count");
     const suffixIdx = html.indexOf('class="s"');
-    const clearIdx = html.indexOf("sc-input__clear");
+    const clearIdx = html.indexOf("v-input__clear");
 
     expect(prefixIdx).toBeGreaterThan(-1);
     expect(countIdx).toBeGreaterThan(prefixIdx);
@@ -161,7 +161,7 @@ describe("Input", () => {
       props: { modelValue: "text", clearable: true },
     });
 
-    const clearBtn = wrapper.find(".sc-input__clear");
+    const clearBtn = wrapper.find(".v-input__clear");
     expect(clearBtn.exists()).toBe(true);
     expect(clearBtn.attributes("aria-label")).toBe("清除");
 
@@ -178,7 +178,7 @@ describe("Input", () => {
       props: { modelValue: "keep", clearable: true, beforeClear },
     });
 
-    await wrapper.find(".sc-input__clear").trigger("click");
+    await wrapper.find(".v-input__clear").trigger("click");
     await flushPromises();
 
     expect(beforeClear).toHaveBeenCalledTimes(1);
@@ -192,7 +192,7 @@ describe("Input", () => {
       props: { modelValue: "keep", clearable: true, beforeClear },
     });
 
-    await wrapper.find(".sc-input__clear").trigger("click");
+    await wrapper.find(".v-input__clear").trigger("click");
     await flushPromises();
 
     expect(wrapper.emitted("cleared")).toBeUndefined();
@@ -232,7 +232,7 @@ describe("Input", () => {
       attachTo: document.body,
     });
 
-    const suggest = wrapper.find(".sc-input__suggest")
+    const suggest = wrapper.find(".v-input__suggest")
       .element as HTMLElement;
     patchPopoverApi(suggest);
 
@@ -267,7 +267,7 @@ describe("Input", () => {
     });
 
     patchPopoverApi(
-      wrapper.find(".sc-input__suggest").element as HTMLElement,
+      wrapper.find(".v-input__suggest").element as HTMLElement,
     );
 
     await wrapper.find("input").setValue("zzz");
@@ -293,7 +293,7 @@ describe("Input", () => {
     });
 
     patchPopoverApi(
-      wrapper.find(".sc-input__suggest").element as HTMLElement,
+      wrapper.find(".v-input__suggest").element as HTMLElement,
     );
 
     await wrapper.find("input").setValue("vi");
@@ -319,7 +319,7 @@ describe("Input", () => {
     });
 
     patchPopoverApi(
-      wrapper.find(".sc-input__suggest").element as HTMLElement,
+      wrapper.find(".v-input__suggest").element as HTMLElement,
     );
 
     await wrapper.find("input").setValue("a");
@@ -327,7 +327,7 @@ describe("Input", () => {
     await flushPromises();
     await nextTick();
 
-    const items = wrapper.findAll(".sc-input__suggest-item");
+    const items = wrapper.findAll(".v-input__suggest-item");
     expect(items.length).toBeGreaterThan(0);
     await items[0]!.trigger("mousedown");
     expect(wrapper.emitted("update:modelValue")?.at(-1)).toEqual(["alpha"]);
@@ -344,7 +344,7 @@ describe("Input", () => {
     expect(wrapper.classes()).not.toContain("is-filled");
     expect(wrapper.vm.state.showLabel).toBe(true);
 
-    const label = wrapper.find("label.sc-input__label");
+    const label = wrapper.find("label.v-input__label");
     expect(label.exists()).toBe(true);
     expect(label.text()).toBe("用户名");
     expect(label.attributes("for")).toBe(wrapper.vm.state.inputId);
@@ -362,7 +362,7 @@ describe("Input", () => {
     });
 
     expect(wrapper.classes()).toContain("is-line");
-    expect(wrapper.find("label.sc-input__label").exists()).toBe(false);
+    expect(wrapper.find("label.v-input__label").exists()).toBe(false);
     expect(wrapper.vm.state.showLabel).toBe(false);
   });
 
@@ -372,7 +372,7 @@ describe("Input", () => {
     });
 
     expect(wrapper.classes()).not.toContain("is-line");
-    expect(wrapper.find("label.sc-input__label").exists()).toBe(false);
+    expect(wrapper.find("label.v-input__label").exists()).toBe(false);
   });
 
   test("line variant keeps clearable / theme / slots behavior", async () => {
@@ -394,12 +394,12 @@ describe("Input", () => {
     expect(wrapper.classes()).toContain("is-line");
     expect(wrapper.classes()).toContain("st-info");
     expect(wrapper.classes()).toContain("is-filled");
-    expect(wrapper.find(".sc-input__clear").exists()).toBe(true);
-    expect(wrapper.find(".sc-input__count").exists()).toBe(true);
+    expect(wrapper.find(".v-input__clear").exists()).toBe(true);
+    expect(wrapper.find(".v-input__count").exists()).toBe(true);
     expect(wrapper.find(".p").exists()).toBe(true);
     expect(wrapper.find(".s").exists()).toBe(true);
 
-    await wrapper.find(".sc-input__clear").trigger("click");
+    await wrapper.find(".v-input__clear").trigger("click");
     await flushPromises();
 
     expect(wrapper.emitted("update:modelValue")?.at(-1)).toEqual([""]);
@@ -419,7 +419,7 @@ describe("Input", () => {
     });
 
     patchPopoverApi(
-      wrapper.find(".sc-input__suggest").element as HTMLElement,
+      wrapper.find(".v-input__suggest").element as HTMLElement,
     );
 
     await wrapper.find("input").setValue("ap");

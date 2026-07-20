@@ -62,7 +62,7 @@ interface TagState {
 
 1. 解析 props，合并 ConfigProvider 上下文
 2. 无 `theme` 时挂 `st-control` 中性色（浅灰底 + 主文本色 + 边框，与 Alert control 一致）；需要高亮语义时使用 `theme="info"`（色值与 Button Info 一致）
-3. 有 `theme` 时挂对应 `st-*`，色值与 Button 对齐；`plain` 仅在指定 theme 时挂 `sc-plain-tag`
+3. 有 `theme` 时挂对应 `st-*`，色值与 Button 对齐；`plain` 仅在指定 theme 时挂 `v-plain-tag`
 4. 无 hover / active / focus halo
 5. `closable`：点击关闭按钮时调用 `beforeClose`（未传入则默认允许）；通过后隐藏节点并触发 `closed`；`disabled` 时不可关闭
 

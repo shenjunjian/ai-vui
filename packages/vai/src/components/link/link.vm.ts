@@ -27,11 +27,11 @@ export default function useVm(ctx: LinkCtx) {
 
   const underlineClass = computed(() => {
     const underlineMap: Record<string, string> = {
-      none: "sc-underline-none",
-      hover: "sc-underline-hover",
-      always: "sc-underline-always",
+      none: "v-underline-none",
+      hover: "v-underline-hover",
+      always: "v-underline-always",
     };
-    return underlineMap[props.underline] || "sc-underline-hover";
+    return underlineMap[props.underline] || "v-underline-hover";
   });
 
   const rootClass = computed(() => [

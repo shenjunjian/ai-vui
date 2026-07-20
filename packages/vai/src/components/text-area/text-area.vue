@@ -1,8 +1,8 @@
 <template>
-  <div ref="rootRef" class="sc-textarea" :class="state.rootClass">
-    <textarea ref="textareaRef" class="sc-textarea__inner" :disabled="disabled" :value="modelValue"
+  <div ref="rootRef" class="v-textarea" :class="state.rootClass">
+    <textarea ref="textareaRef" class="v-textarea__inner" :disabled="disabled" :value="modelValue"
       :style="state.textareaStyle" v-bind="state.textareaAttrs" @input="api.handleInput" />
-    <span v-if="showCount" class="sc-textarea__count" aria-hidden="true">
+    <span v-if="showCount" class="v-textarea__count" aria-hidden="true">
       {{ state.charCountText }}
     </span>
   </div>

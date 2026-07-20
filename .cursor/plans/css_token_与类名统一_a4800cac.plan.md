@@ -10,13 +10,13 @@ todos:
     status: completed
   - id: migrate-less
     content: 8 个组件 less：用 token/mixin，sc- → v-
-    status: pending
+    status: completed
   - id: rename-bindings
     content: 同步 vue/vm/测试中的 sc- 类名
-    status: pending
+    status: completed
   - id: update-rfcs
     content: 更新 8 个组件 RFC + 批量改其余 RFC 的 sc- 规划类名
-    status: pending
+    status: completed
   - id: css-md
     content: 重写 .cursor/.rules/css.md 开发规范
     status: pending

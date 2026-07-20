@@ -1,19 +1,19 @@
 <template>
-  <div ref="rootRef" class="sc-input" :class="state.rootClass">
+  <div ref="rootRef" class="v-input" :class="state.rootClass">
     <label
       v-if="state.showLabel"
-      class="sc-input__label"
+      class="v-input__label"
       :for="state.inputId"
     >
       {{ label }}
     </label>
-    <span v-if="$slots.prefix" class="sc-input__prefix">
+    <span v-if="$slots.prefix" class="v-input__prefix">
       <slot name="prefix" v-bind="{ state, api, props }" />
     </span>
     <input
       :id="state.inputId"
       ref="inputRef"
-      class="sc-input__inner"
+      class="v-input__inner"
       :type="state.inputType"
       :disabled="disabled"
       :value="modelValue"
@@ -23,16 +23,16 @@
       @focus="api.handleFocus"
       @blur="api.handleBlur"
     />
-    <span v-if="showCount" class="sc-input__count" aria-hidden="true">
+    <span v-if="showCount" class="v-input__count" aria-hidden="true">
       {{ state.charCountText }}
     </span>
-    <span v-if="$slots.suffix" class="sc-input__suffix">
+    <span v-if="$slots.suffix" class="v-input__suffix">
       <slot name="suffix" v-bind="{ state, api, props }" />
     </span>
     <button
       v-if="state.showClear"
       type="button"
-      class="sc-input__clear"
+      class="v-input__clear"
       aria-label="清除"
       tabindex="-1"
       @click="api.clear"
@@ -41,14 +41,14 @@
     </button>
     <div
       ref="popperRef"
-      class="sc-input__suggest"
+      class="v-input__suggest"
       role="listbox"
       :aria-hidden="!state.popVisible"
     >
       <div
         v-for="(item, index) in state.filteredItems"
         :key="`${item.label}-${index}`"
-        class="sc-input__suggest-item"
+        class="v-input__suggest-item"
         :class="{ 'is-active': index === state.activeIndex }"
         role="option"
         :aria-selected="index === state.activeIndex"

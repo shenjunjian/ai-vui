@@ -1,23 +1,24 @@
 // TextArea styles（主题色只影响 border / 文字，背景保持中性）
+@import "../../theme/common.less";
 
-.sc-textarea {
-  --textarea-font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-  --textarea-font-size: 14px;
-  --textarea-line-height: 1.5;
-  --textarea-padding-y: 8px;
-  --textarea-padding-x: 12px;
-  --textarea-radius: 6px;
-  --textarea-border-width: 1px;
-  --textarea-bg: #ffffff;
-  --textarea-color: #1f2937;
-  --textarea-border: #d1d5db;
-  --textarea-placeholder: #9ca3af;
+.v-textarea {
+  --textarea-font-family: var(--v-font-family);
+  --textarea-font-size: var(--v-font-size-md);
+  --textarea-line-height: var(--v-line-height-normal);
+  --textarea-padding-y: var(--v-space-4);
+  --textarea-padding-x: var(--v-space-6);
+  --textarea-radius: var(--v-radius-lg);
+  --textarea-border-width: var(--v-border-width);
+  --textarea-bg: var(--v-color-white);
+  --textarea-color: var(--v-color-control-text);
+  --textarea-border: var(--v-color-control-border);
+  --textarea-placeholder: var(--v-color-gray-400);
   --textarea-focus-ring: color-mix(
     in srgb,
-    var(--textarea-border) 35%,
+    var(--textarea-border) var(--v-mix-focus-ring),
     transparent
   );
-  --textarea-count-color: #9ca3af;
+  --textarea-count-color: var(--v-color-gray-400);
 
   box-sizing: border-box;
   position: relative;
@@ -32,70 +33,93 @@
 
   // sizes
   &.st-sm {
-    --textarea-font-size: 12px;
-    --textarea-padding-y: 6px;
-    --textarea-padding-x: 10px;
-    --textarea-radius: 4px;
+    --textarea-font-size: var(--v-font-size-sm);
+    --textarea-padding-y: var(--v-space-3);
+    --textarea-padding-x: var(--v-space-5);
+    --textarea-radius: var(--v-radius-md);
   }
 
   &.st-md {
-    --textarea-font-size: 14px;
-    --textarea-padding-y: 8px;
-    --textarea-padding-x: 12px;
-    --textarea-radius: 6px;
+    --textarea-font-size: var(--v-font-size-md);
+    --textarea-padding-y: var(--v-space-4);
+    --textarea-padding-x: var(--v-space-6);
+    --textarea-radius: var(--v-radius-lg);
   }
 
   &.st-lg {
-    --textarea-font-size: 16px;
-    --textarea-padding-y: 10px;
-    --textarea-padding-x: 14px;
-    --textarea-radius: 8px;
+    --textarea-font-size: var(--v-font-size-lg);
+    --textarea-padding-y: var(--v-space-5);
+    --textarea-padding-x: var(--v-space-7);
+    --textarea-radius: var(--v-radius-xl);
   }
 
   // themes：仅 border + 文字
   &.st-control {
-    --textarea-color: #1f2937;
-    --textarea-border: #d1d5db;
-    --textarea-focus-ring: color-mix(in srgb, #6b7280 35%, transparent);
+    --textarea-color: var(--v-color-control-text);
+    --textarea-border: var(--v-color-control-border);
+    --textarea-focus-ring: color-mix(
+      in srgb,
+      var(--v-color-control-focus) var(--v-mix-focus-ring),
+      transparent
+    );
   }
 
   &.st-dark {
-    --textarea-color: #1f2937;
-    --textarea-border: #1f2937;
-    --textarea-focus-ring: color-mix(in srgb, #1f2937 35%, transparent);
+    --textarea-color: var(--v-color-control-text);
+    --textarea-border: var(--v-color-dark);
+    --textarea-focus-ring: color-mix(
+      in srgb,
+      var(--v-color-dark) var(--v-mix-focus-ring),
+      transparent
+    );
   }
 
   &.st-success {
-    --textarea-color: #15803d;
-    --textarea-border: #16a34a;
-    --textarea-focus-ring: color-mix(in srgb, #16a34a 35%, transparent);
+    --textarea-color: var(--v-color-success-border);
+    --textarea-border: var(--v-color-success);
+    --textarea-focus-ring: color-mix(
+      in srgb,
+      var(--v-color-success) var(--v-mix-focus-ring),
+      transparent
+    );
   }
 
   &.st-info {
-    --textarea-color: #1d4ed8;
-    --textarea-border: #2563eb;
-    --textarea-focus-ring: color-mix(in srgb, #2563eb 35%, transparent);
+    --textarea-color: var(--v-color-info-border);
+    --textarea-border: var(--v-color-info);
+    --textarea-focus-ring: color-mix(
+      in srgb,
+      var(--v-color-info) var(--v-mix-focus-ring),
+      transparent
+    );
   }
 
   &.st-warn {
-    --textarea-color: #b45309;
-    --textarea-border: #d97706;
-    --textarea-focus-ring: color-mix(in srgb, #d97706 35%, transparent);
+    --textarea-color: var(--v-color-warn-border);
+    --textarea-border: var(--v-color-warn);
+    --textarea-focus-ring: color-mix(
+      in srgb,
+      var(--v-color-warn) var(--v-mix-focus-ring),
+      transparent
+    );
   }
 
   &.st-error {
-    --textarea-color: #b91c1c;
-    --textarea-border: #dc2626;
-    --textarea-focus-ring: color-mix(in srgb, #dc2626 35%, transparent);
+    --textarea-color: var(--v-color-error-border);
+    --textarea-border: var(--v-color-error);
+    --textarea-focus-ring: color-mix(
+      in srgb,
+      var(--v-color-error) var(--v-mix-focus-ring),
+      transparent
+    );
   }
 
   &.st-disabled {
-    opacity: 0.55;
-    cursor: not-allowed;
+    .v-disabled(var(--v-opacity-disabled-light));
 
-    .sc-textarea__inner {
+    .v-textarea__inner {
       cursor: not-allowed;
-      background-color: #f9fafb;
+      background-color: var(--v-color-gray-50);
     }
   }
 
@@ -115,9 +139,9 @@
     border-radius: var(--textarea-radius);
     outline: none;
     transition:
-      border-color 0.15s ease,
-      box-shadow 0.15s ease,
-      color 0.15s ease;
+      border-color var(--v-duration-fast) var(--v-ease-default),
+      box-shadow var(--v-duration-fast) var(--v-ease-default),
+      color var(--v-duration-fast) var(--v-ease-default);
 
     &::placeholder {
       color: var(--textarea-placeholder);
@@ -125,11 +149,11 @@
 
     &:focus {
       border-color: var(--textarea-border);
-      box-shadow: 0 0 0 3px var(--textarea-focus-ring);
+      .v-focus-ring-static(var(--textarea-focus-ring));
     }
   }
 
-  &.is-show-count .sc-textarea__inner {
+  &.is-show-count .v-textarea__inner {
     padding-bottom: calc(var(--textarea-padding-y) + 1.25em);
   }
 

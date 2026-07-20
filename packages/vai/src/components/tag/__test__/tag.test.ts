@@ -10,7 +10,7 @@ describe("Tag", () => {
 
     expect(wrapper.element.tagName).toBe("SPAN");
     expect(wrapper.text()).toContain("标签");
-    expect(wrapper.classes()).toContain("sc-tag");
+    expect(wrapper.classes()).toContain("v-tag");
     expect(wrapper.classes()).toContain("st-md");
     expect(wrapper.classes()).toContain("st-control");
   });
@@ -32,10 +32,10 @@ describe("Tag", () => {
       slots: { default: "Plain" },
     });
 
-    expect(wrapper.classes()).not.toContain("sc-plain-tag");
+    expect(wrapper.classes()).not.toContain("v-plain-tag");
 
     await wrapper.setProps({ theme: "info" });
-    expect(wrapper.classes()).toContain("sc-plain-tag");
+    expect(wrapper.classes()).toContain("v-plain-tag");
     expect(wrapper.classes()).toContain("st-info");
   });
 
@@ -45,7 +45,7 @@ describe("Tag", () => {
       slots: { default: "Pill" },
     });
 
-    expect(wrapper.classes()).toContain("sc-circle-tag");
+    expect(wrapper.classes()).toContain("v-circle-tag");
     expect(wrapper.classes()).toContain("st-disabled");
   });
 
@@ -55,14 +55,14 @@ describe("Tag", () => {
       slots: { default: "Closable" },
     });
 
-    const closeBtn = wrapper.find(".sc-tag__close");
+    const closeBtn = wrapper.find(".v-tag__close");
     expect(closeBtn.exists()).toBe(true);
 
     await closeBtn.trigger("click");
     await flushPromises();
 
     expect(wrapper.emitted("closed")).toHaveLength(1);
-    expect(wrapper.find(".sc-tag").exists()).toBe(false);
+    expect(wrapper.find(".v-tag").exists()).toBe(false);
     expect(wrapper.vm.state.visible).toBe(false);
   });
 
@@ -73,12 +73,12 @@ describe("Tag", () => {
       slots: { default: "Guard" },
     });
 
-    await wrapper.find(".sc-tag__close").trigger("click");
+    await wrapper.find(".v-tag__close").trigger("click");
     await flushPromises();
 
     expect(beforeClose).toHaveBeenCalledTimes(1);
     expect(wrapper.emitted("closed")).toBeUndefined();
-    expect(wrapper.find(".sc-tag").exists()).toBe(true);
+    expect(wrapper.find(".v-tag").exists()).toBe(true);
     expect(wrapper.vm.state.visible).toBe(true);
   });
 
@@ -89,12 +89,12 @@ describe("Tag", () => {
       slots: { default: "Allow" },
     });
 
-    await wrapper.find(".sc-tag__close").trigger("click");
+    await wrapper.find(".v-tag__close").trigger("click");
     await flushPromises();
 
     expect(beforeClose).toHaveBeenCalledTimes(1);
     expect(wrapper.emitted("closed")).toHaveLength(1);
-    expect(wrapper.find(".sc-tag").exists()).toBe(false);
+    expect(wrapper.find(".v-tag").exists()).toBe(false);
   });
 
   test("beforeClose promise reject cancels close", async () => {
@@ -104,12 +104,12 @@ describe("Tag", () => {
       slots: { default: "Reject" },
     });
 
-    await wrapper.find(".sc-tag__close").trigger("click");
+    await wrapper.find(".v-tag__close").trigger("click");
     await flushPromises();
 
     expect(beforeClose).toHaveBeenCalledTimes(1);
     expect(wrapper.emitted("closed")).toBeUndefined();
-    expect(wrapper.find(".sc-tag").exists()).toBe(true);
+    expect(wrapper.find(".v-tag").exists()).toBe(true);
   });
 
   test("disabled closable does not close", async () => {
@@ -119,12 +119,12 @@ describe("Tag", () => {
       slots: { default: "Disabled" },
     });
 
-    await wrapper.find(".sc-tag__close").trigger("click");
+    await wrapper.find(".v-tag__close").trigger("click");
     await flushPromises();
 
     expect(beforeClose).not.toHaveBeenCalled();
     expect(wrapper.emitted("closed")).toBeUndefined();
-    expect(wrapper.find(".sc-tag").exists()).toBe(true);
+    expect(wrapper.find(".v-tag").exists()).toBe(true);
     expect(wrapper.vm.state.visible).toBe(true);
   });
 

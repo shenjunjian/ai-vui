@@ -33,8 +33,8 @@ export default function useVm(ctx: TagCtx) {
     themeClass.value,
     {
       "st-disabled": props.disabled,
-      "sc-plain-tag": props.plain && !!props.theme,
-      "sc-circle-tag": props.circle,
+      "v-plain-tag": props.plain && !!props.theme,
+      "v-circle-tag": props.circle,
     },
   ]);
 

@@ -1,7 +1,7 @@
 <template>
   <a
     ref="rootRef"
-    class="sc-link"
+    class="v-link"
     :class="state.rootClass"
     :aria-disabled="disabled || undefined"
     :tabindex="disabled ? -1 : undefined"

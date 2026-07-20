@@ -10,10 +10,10 @@ describe("Link", () => {
 
     expect(wrapper.element.tagName).toBe("A");
     expect(wrapper.text()).toContain("文档");
-    expect(wrapper.classes()).toContain("sc-link");
+    expect(wrapper.classes()).toContain("v-link");
     expect(wrapper.classes()).toContain("st-md");
     expect(wrapper.classes()).not.toContain("st-control");
-    expect(wrapper.classes()).toContain("sc-underline-hover");
+    expect(wrapper.classes()).toContain("v-underline-hover");
   });
 
   test("applies size and theme classes", () => {
@@ -32,14 +32,14 @@ describe("Link", () => {
       slots: { default: "None" },
     });
 
-    expect(wrapper.classes()).toContain("sc-underline-none");
+    expect(wrapper.classes()).toContain("v-underline-none");
 
     await wrapper.setProps({ underline: "always" });
-    expect(wrapper.classes()).toContain("sc-underline-always");
-    expect(wrapper.classes()).not.toContain("sc-underline-none");
+    expect(wrapper.classes()).toContain("v-underline-always");
+    expect(wrapper.classes()).not.toContain("v-underline-none");
 
     await wrapper.setProps({ underline: "hover" });
-    expect(wrapper.classes()).toContain("sc-underline-hover");
+    expect(wrapper.classes()).toContain("v-underline-hover");
   });
 
   test("disabled prevents navigation and adds st-disabled", async () => {

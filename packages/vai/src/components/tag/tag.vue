@@ -1,7 +1,7 @@
 <template>
-  <span v-if="state.visible" ref="rootRef" class="sc-tag" :class="state.rootClass">
+  <span v-if="state.visible" ref="rootRef" class="v-tag" :class="state.rootClass">
     <slot v-bind="{ state, api, props }">Tag</slot>
-    <button v-if="closable" type="button" class="sc-tag__close" :disabled="disabled" aria-label="关闭"
+    <button v-if="closable" type="button" class="v-tag__close" :disabled="disabled" aria-label="关闭"
       @click="api.handleClose">
       ×
     </button>

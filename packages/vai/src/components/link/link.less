@@ -1,13 +1,18 @@
 // Link styles（主题色与 Button 对齐）
+@import "../../theme/common.less";
 
-.sc-link {
-  --link-font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-  --link-font-size: 14px;
-  --link-line-height: 1.4;
-  --link-color: #1f2937;
-  --link-hover-color: #2563eb;
+.v-link {
+  --link-font-family: var(--v-font-family);
+  --link-font-size: var(--v-font-size-md);
+  --link-line-height: var(--v-line-height-tight);
+  --link-color: var(--v-color-control-text);
+  --link-hover-color: var(--v-color-info);
   --link-focus-color: var(--link-hover-color);
-  --link-focus-ring: color-mix(in srgb, var(--link-focus-color) 35%, transparent);
+  --link-focus-ring: color-mix(
+    in srgb,
+    var(--link-focus-color) var(--v-mix-focus-ring),
+    transparent
+  );
 
   box-sizing: border-box;
   display: inline;
@@ -16,7 +21,7 @@
   font-family: var(--link-font-family);
   font-size: var(--link-font-size);
   line-height: var(--link-line-height);
-  font-weight: 500;
+  font-weight: var(--v-font-weight-medium);
   color: var(--link-color);
   background: none;
   border: none;
@@ -24,70 +29,65 @@
   cursor: pointer;
   text-decoration: none;
   transition:
-    color 0.15s ease,
-    opacity 0.15s ease,
-    text-decoration-color 0.15s ease;
+    color var(--v-duration-fast) var(--v-ease-default),
+    opacity var(--v-duration-fast) var(--v-ease-default),
+    text-decoration-color var(--v-duration-fast) var(--v-ease-default);
+  .v-focus-interactive(var(--link-focus-ring));
+
+  &:focus-visible {
+    border-radius: var(--v-radius-xs);
+  }
 
   &:hover:not(.st-disabled) {
     color: var(--link-hover-color);
   }
 
-  &:focus:not(:focus-visible) {
-    animation: sc-link-focus-wave 0.4s ease-out;
-  }
-
-  &:focus-visible {
-    border-radius: 2px;
-    box-shadow: 0 0 0 3px var(--link-focus-ring);
-    animation: sc-link-focus-halo 0.4s ease-out;
-  }
-
   // sizes（与 Button 字号对齐）
   &.st-sm {
-    --link-font-size: 12px;
+    --link-font-size: var(--v-font-size-sm);
   }
 
   &.st-md {
-    --link-font-size: 14px;
+    --link-font-size: var(--v-font-size-md);
   }
 
   &.st-lg {
-    --link-font-size: 16px;
+    --link-font-size: var(--v-font-size-lg);
   }
 
   // themes（色值与 Button 一致；无 theme 时沿用上方默认主色 + Info 悬停高亮）
   &.st-dark {
-    --link-color: #1f2937;
-    --link-hover-color: #374151;
-    --link-focus-color: #1f2937;
+    --link-color: var(--v-color-control-text);
+    --link-hover-color: var(--v-color-dark-hover);
+    --link-focus-color: var(--v-color-dark);
   }
 
   &.st-success {
-    --link-color: #16a34a;
-    --link-hover-color: #22c55e;
-    --link-focus-color: #16a34a;
+    --link-color: var(--v-color-success);
+    --link-hover-color: var(--v-color-success-hover);
+    --link-focus-color: var(--v-color-success);
   }
 
   &.st-info {
-    --link-color: #2563eb;
-    --link-hover-color: #3b82f6;
-    --link-focus-color: #2563eb;
+    --link-color: var(--v-color-info);
+    --link-hover-color: var(--v-color-info-hover);
+    --link-focus-color: var(--v-color-info);
   }
 
   &.st-warn {
-    --link-color: #d97706;
-    --link-hover-color: #f59e0b;
-    --link-focus-color: #d97706;
+    --link-color: var(--v-color-warn);
+    --link-hover-color: var(--v-color-warn-hover);
+    --link-focus-color: var(--v-color-warn);
   }
 
   &.st-error {
-    --link-color: #dc2626;
-    --link-hover-color: #ef4444;
-    --link-focus-color: #dc2626;
+    --link-color: var(--v-color-error);
+    --link-hover-color: var(--v-color-error-hover);
+    --link-focus-color: var(--v-color-error);
   }
 
   // underline
-  &.sc-underline-none {
+  &.v-underline-none {
     text-decoration: none;
 
     &:hover:not(.st-disabled) {
@@ -95,7 +95,7 @@
     }
   }
 
-  &.sc-underline-hover {
+  &.v-underline-hover {
     text-decoration: none;
 
     &:hover:not(.st-disabled) {
@@ -103,7 +103,7 @@
     }
   }
 
-  &.sc-underline-always {
+  &.v-underline-always {
     text-decoration: underline;
 
     &:hover:not(.st-disabled) {
@@ -112,31 +112,6 @@
   }
 
   &.st-disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-}
-
-@keyframes sc-link-focus-halo {
-  from {
-    box-shadow: 0 0 0 0 var(--link-focus-ring);
-  }
-
-  to {
-    box-shadow: 0 0 0 3px var(--link-focus-ring);
-  }
-}
-
-@keyframes sc-link-focus-wave {
-  0% {
-    box-shadow: 0 0 0 0 var(--link-focus-ring);
-  }
-
-  50% {
-    box-shadow: 0 0 0 4px var(--link-focus-ring);
-  }
-
-  100% {
-    box-shadow: 0 0 0 4px transparent;
+    .v-disabled();
   }
 }

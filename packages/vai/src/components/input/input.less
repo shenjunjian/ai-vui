@@ -1,23 +1,28 @@
 // Input styles（主题色只影响 border / 文字，背景保持中性）
+@import "../../theme/common.less";
 
-.sc-input {
-  --input-font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-  --input-font-size: 14px;
-  --input-line-height: 1.4;
-  --input-padding-y: 8px;
-  --input-padding-x: 12px;
-  --input-gap: 8px;
-  --input-radius: 6px;
-  --input-border-width: 1px;
-  --input-height: 36px;
-  --input-bg: #ffffff;
-  --input-color: #1f2937;
-  --input-border: #d1d5db;
-  --input-placeholder: #9ca3af;
-  --input-focus-ring: color-mix(in srgb, var(--input-border) 35%, transparent);
-  --input-addon-color: #6b7280;
-  --input-suggest-bg: #ffffff;
-  --input-suggest-active-bg: #f3f4f6;
+.v-input {
+  --input-font-family: var(--v-font-family);
+  --input-font-size: var(--v-font-size-md);
+  --input-line-height: var(--v-line-height-tight);
+  --input-padding-y: var(--v-space-4);
+  --input-padding-x: var(--v-space-6);
+  --input-gap: var(--v-space-4);
+  --input-radius: var(--v-radius-lg);
+  --input-border-width: var(--v-border-width);
+  --input-height: var(--v-control-height-md);
+  --input-bg: var(--v-color-white);
+  --input-color: var(--v-color-control-text);
+  --input-border: var(--v-color-control-border);
+  --input-placeholder: var(--v-color-gray-400);
+  --input-focus-ring: color-mix(
+    in srgb,
+    var(--input-border) var(--v-mix-focus-ring),
+    transparent
+  );
+  --input-addon-color: var(--v-color-gray-500);
+  --input-suggest-bg: var(--v-color-white);
+  --input-suggest-active-bg: var(--v-color-gray-100);
 
   box-sizing: border-box;
   position: relative;
@@ -38,86 +43,109 @@
   border-radius: var(--input-radius);
   outline: none;
   transition:
-    border-color 0.15s ease,
-    box-shadow 0.15s ease,
-    color 0.15s ease;
+    border-color var(--v-duration-fast) var(--v-ease-default),
+    box-shadow var(--v-duration-fast) var(--v-ease-default),
+    color var(--v-duration-fast) var(--v-ease-default);
 
   &:focus-within {
     border-color: var(--input-border);
-    box-shadow: 0 0 0 3px var(--input-focus-ring);
+    .v-focus-ring-static(var(--input-focus-ring));
   }
 
   // sizes
   &.st-sm {
-    --input-font-size: 12px;
-    --input-padding-y: 4px;
-    --input-padding-x: 8px;
-    --input-gap: 4px;
-    --input-height: 28px;
-    --input-radius: 4px;
+    --input-font-size: var(--v-font-size-sm);
+    --input-padding-y: var(--v-space-2);
+    --input-padding-x: var(--v-space-4);
+    --input-gap: var(--v-space-2);
+    --input-height: var(--v-control-height-sm);
+    --input-radius: var(--v-radius-md);
   }
 
   &.st-md {
-    --input-font-size: 14px;
-    --input-padding-y: 8px;
-    --input-padding-x: 12px;
-    --input-gap: 8px;
-    --input-height: 36px;
-    --input-radius: 6px;
+    --input-font-size: var(--v-font-size-md);
+    --input-padding-y: var(--v-space-4);
+    --input-padding-x: var(--v-space-6);
+    --input-gap: var(--v-space-4);
+    --input-height: var(--v-control-height-md);
+    --input-radius: var(--v-radius-lg);
   }
 
   &.st-lg {
-    --input-font-size: 16px;
-    --input-padding-y: 10px;
-    --input-padding-x: 14px;
-    --input-gap: 10px;
-    --input-height: 44px;
-    --input-radius: 8px;
+    --input-font-size: var(--v-font-size-lg);
+    --input-padding-y: var(--v-space-5);
+    --input-padding-x: var(--v-space-7);
+    --input-gap: var(--v-space-5);
+    --input-height: var(--v-control-height-lg);
+    --input-radius: var(--v-radius-xl);
   }
 
   // themes：仅 border + 文字
   &.st-control {
-    --input-color: #1f2937;
-    --input-border: #d1d5db;
-    --input-focus-ring: color-mix(in srgb, #6b7280 35%, transparent);
+    --input-color: var(--v-color-control-text);
+    --input-border: var(--v-color-control-border);
+    --input-focus-ring: color-mix(
+      in srgb,
+      var(--v-color-control-focus) var(--v-mix-focus-ring),
+      transparent
+    );
   }
 
   &.st-dark {
-    --input-color: #1f2937;
-    --input-border: #1f2937;
-    --input-focus-ring: color-mix(in srgb, #1f2937 35%, transparent);
+    --input-color: var(--v-color-control-text);
+    --input-border: var(--v-color-dark);
+    --input-focus-ring: color-mix(
+      in srgb,
+      var(--v-color-dark) var(--v-mix-focus-ring),
+      transparent
+    );
   }
 
   &.st-success {
-    --input-color: #15803d;
-    --input-border: #16a34a;
-    --input-focus-ring: color-mix(in srgb, #16a34a 35%, transparent);
+    --input-color: var(--v-color-success-border);
+    --input-border: var(--v-color-success);
+    --input-focus-ring: color-mix(
+      in srgb,
+      var(--v-color-success) var(--v-mix-focus-ring),
+      transparent
+    );
   }
 
   &.st-info {
-    --input-color: #1d4ed8;
-    --input-border: #2563eb;
-    --input-focus-ring: color-mix(in srgb, #2563eb 35%, transparent);
+    --input-color: var(--v-color-info-border);
+    --input-border: var(--v-color-info);
+    --input-focus-ring: color-mix(
+      in srgb,
+      var(--v-color-info) var(--v-mix-focus-ring),
+      transparent
+    );
   }
 
   &.st-warn {
-    --input-color: #b45309;
-    --input-border: #d97706;
-    --input-focus-ring: color-mix(in srgb, #d97706 35%, transparent);
+    --input-color: var(--v-color-warn-border);
+    --input-border: var(--v-color-warn);
+    --input-focus-ring: color-mix(
+      in srgb,
+      var(--v-color-warn) var(--v-mix-focus-ring),
+      transparent
+    );
   }
 
   &.st-error {
-    --input-color: #b91c1c;
-    --input-border: #dc2626;
-    --input-focus-ring: color-mix(in srgb, #dc2626 35%, transparent);
+    --input-color: var(--v-color-error-border);
+    --input-border: var(--v-color-error);
+    --input-focus-ring: color-mix(
+      in srgb,
+      var(--v-color-error) var(--v-mix-focus-ring),
+      transparent
+    );
   }
 
   &.st-disabled {
-    opacity: 0.55;
-    cursor: not-allowed;
-    background-color: #f9fafb;
+    .v-disabled(var(--v-opacity-disabled-light));
+    background-color: var(--v-color-gray-50);
 
-    .sc-input__inner {
+    .v-input__inner {
       cursor: not-allowed;
     }
   }
@@ -161,11 +189,8 @@
 
   &__clear {
     appearance: none;
-    box-sizing: border-box;
+    .v-inline-flex-center();
     flex-shrink: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
     width: 1.15em;
     height: 1.15em;
     margin: 0;
@@ -178,7 +203,7 @@
     border-radius: 50%;
     outline: none;
     cursor: pointer;
-    opacity: 0.7;
+    opacity: var(--v-opacity-muted);
 
     &:hover {
       opacity: 1;
@@ -194,14 +219,15 @@
     min-width: anchor-size(width);
     max-width: anchor-size(width);
     max-height: 240px;
-    padding: 4px;
+    padding: var(--v-space-2);
     overflow: auto;
     font-size: var(--input-font-size);
     color: var(--input-color);
     background: var(--input-suggest-bg);
-    border: 1px solid var(--input-border);
+    border: var(--v-border-width) solid var(--input-border);
     border-radius: var(--input-radius);
-    box-shadow: 0 8px 24px color-mix(in srgb, #111827 12%, transparent);
+    box-shadow: 0 8px 24px
+      color-mix(in srgb, var(--v-color-gray-900) var(--v-mix-plain-bg), transparent);
 
     &:popover-open {
       display: block;
@@ -209,7 +235,7 @@
   }
 
   &__suggest-item {
-    padding: 6px 10px;
+    padding: var(--v-space-3) var(--v-space-5);
     border-radius: calc(var(--input-radius) - 2px);
     cursor: pointer;
     user-select: none;
@@ -237,10 +263,10 @@
     transform: translateY(-50%);
     transform-origin: left center;
     transition:
-      top 0.15s ease,
-      transform 0.15s ease,
-      font-size 0.15s ease,
-      color 0.15s ease;
+      top var(--v-duration-fast) var(--v-ease-default),
+      transform var(--v-duration-fast) var(--v-ease-default),
+      font-size var(--v-duration-fast) var(--v-ease-default),
+      color var(--v-duration-fast) var(--v-ease-default);
   }
 
   // line 变体：下划线 + 浮动 label
@@ -256,25 +282,25 @@
 
     &:focus-within {
       box-shadow: none;
-      border-bottom-width: 2px;
+      border-bottom-width: var(--v-border-width-strong);
     }
 
     &.st-disabled {
       background-color: transparent;
     }
 
-    .sc-input__label {
+    .v-input__label {
       left: 0;
       max-width: 100%;
     }
 
-    .sc-input__inner {
+    .v-input__inner {
       height: auto;
       min-height: calc(var(--input-height) - 2 * var(--input-border-width));
     }
 
-    &:focus-within .sc-input__label,
-    &.is-filled .sc-input__label {
+    &:focus-within .v-input__label,
+    &.is-filled .v-input__label {
       top: 0;
       font-size: 0.75em;
       color: var(--input-color);

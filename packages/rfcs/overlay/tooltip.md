@@ -8,7 +8,7 @@
 
 - **包**：`vai`
 - **导出**：`Tooltip`
-- **scene-theme 类名**：`sc-tooltip`（规划，scene-theme 尚未实现）
+- **组件类名**：`v-tooltip`（规划，scene-theme 尚未实现）
 - **浏览器 API**：Popover API
 
 ## Props
@@ -59,7 +59,7 @@ interface TooltipState {
 ## 实现逻辑
 
 1. 解析 props，合并 ConfigProvider 上下文
-2. 根元素挂载 `sc-tooltip` + `st-*` 状态类
+2. 根元素挂载 `v-tooltip` + `st-*` 状态类
 3. 通过 hook 处理 DOM，state 驱动 UI
 4. 销毁时清理监听与引用
 
@@ -82,5 +82,5 @@ interface TooltipState {
 
 - [ ] API 与本文档一致
 - [ ] 无障碍达标
-- [ ] scene-theme 类名正确（实现后）
+- [ ] 组件类名正确（实现后）
 - [ ] 测试与演示页

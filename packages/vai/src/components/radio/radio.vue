@@ -1,16 +1,16 @@
 <template>
-  <label ref="rootRef" class="sc-radio" :class="state.rootClass">
-    <span class="sc-radio__control">
+  <label ref="rootRef" class="v-radio" :class="state.rootClass">
+    <span class="v-radio__control">
       <input
         ref="inputRef"
         type="radio"
-        class="sc-radio__input"
+        class="v-radio__input"
         :checked="checked"
         :disabled="disabled"
         v-bind="state.inputAttrs"
       />
     </span>
-    <span v-if="state.showLabel" class="sc-radio__label">
+    <span v-if="state.showLabel" class="v-radio__label">
       <slot v-bind="{ state, api, props }">{{ label }}</slot>
     </span>
   </label>

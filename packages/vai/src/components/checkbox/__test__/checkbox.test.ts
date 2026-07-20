@@ -7,10 +7,10 @@ describe("Checkbox", () => {
   test("renders with default classes and native checkbox", () => {
     const wrapper = mount(Checkbox);
 
-    expect(wrapper.classes()).toContain("sc-checkbox");
+    expect(wrapper.classes()).toContain("v-checkbox");
     expect(wrapper.classes()).toContain("st-md");
     expect(wrapper.classes()).toContain("st-control");
-    expect(wrapper.find("input.sc-checkbox__input").exists()).toBe(true);
+    expect(wrapper.find("input.v-checkbox__input").exists()).toBe(true);
     expect(wrapper.find("input").attributes("type")).toBe("checkbox");
   });
 
@@ -63,7 +63,7 @@ describe("Checkbox", () => {
       props: { label: "同意协议" },
     });
 
-    expect(wrapper.find(".sc-checkbox__label").text()).toBe("同意协议");
+    expect(wrapper.find(".v-checkbox__label").text()).toBe("同意协议");
   });
 
   test("default slot overrides label text", () => {
@@ -72,13 +72,13 @@ describe("Checkbox", () => {
       slots: { default: "slot label" },
     });
 
-    expect(wrapper.find(".sc-checkbox__label").text()).toBe("slot label");
+    expect(wrapper.find(".v-checkbox__label").text()).toBe("slot label");
   });
 
   test("no label span when label and slot are empty", () => {
     const wrapper = mount(Checkbox);
 
-    expect(wrapper.find(".sc-checkbox__label").exists()).toBe(false);
+    expect(wrapper.find(".v-checkbox__label").exists()).toBe(false);
   });
 
   test("falls through common attrs to native input", () => {
@@ -155,7 +155,7 @@ describe("Checkbox", () => {
     });
 
     expect(wrapper.element.tagName.toLowerCase()).toBe("label");
-    expect(wrapper.find(".sc-checkbox__control input[type='checkbox']").exists()).toBe(
+    expect(wrapper.find(".v-checkbox__control input[type='checkbox']").exists()).toBe(
       true,
     );
   });

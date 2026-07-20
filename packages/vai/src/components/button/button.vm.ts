@@ -54,14 +54,14 @@ export default function useVm(ctx: ButtonCtx) {
     themeClass.value,
     {
       "st-disabled": isDisabled.value,
-      "sc-plain-btn": props.plain && !!props.theme,
-      "sc-ghost-btn": props.ghost,
-      "sc-text-btn": props.variant === "text",
-      "sc-link-btn": props.variant === "link",
-      "sc-icon-btn": props.variant === "icon",
-      "sc-circle-btn": props.circle,
+      "v-plain-btn": props.plain && !!props.theme,
+      "v-ghost-btn": props.ghost,
+      "v-text-btn": props.variant === "text",
+      "v-link-btn": props.variant === "link",
+      "v-icon-btn": props.variant === "icon",
+      "v-circle-btn": props.circle,
       "st-pressed": canToggle.value && models.pressed.value,
-      "sc-btn-loading": props.loading,
+      "v-btn-loading": props.loading,
     },
   ]);
 

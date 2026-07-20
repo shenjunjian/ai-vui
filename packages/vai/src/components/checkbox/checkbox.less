@@ -1,26 +1,27 @@
 // Checkbox styles：原生 checkbox + appearance:none
 // 色值对齐 Button：轮廓=border，勾选底=bg，对号=color
 // 绘制在 __control（边框 + 伪元素）；input 透明叠层；焦点光晕挂 __control
+@import "../../theme/common.less";
 
-.sc-checkbox {
-  --checkbox-font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-  --checkbox-font-size: 14px;
-  --checkbox-line-height: 1.4;
-  --checkbox-gap: 8px;
-  --checkbox-size: 18px;
+.v-checkbox {
+  --checkbox-font-family: var(--v-font-family);
+  --checkbox-font-size: var(--v-font-size-md);
+  --checkbox-line-height: var(--v-line-height-tight);
+  --checkbox-gap: var(--v-space-4);
+  --checkbox-size: var(--v-check-size-md);
   // 颜色由 theme 类驱动；无 theme 时组件挂 st-control（对齐 Button control）
-  --checkbox-border: #d1d5db;
-  --checkbox-bg: #f3f4f6;
-  --checkbox-color: #1f2937;
-  --checkbox-label-color: #1f2937;
-  --checkbox-focus-color: #6b7280;
+  --checkbox-border: var(--v-color-control-border);
+  --checkbox-bg: var(--v-color-control);
+  --checkbox-color: var(--v-color-control-text);
+  --checkbox-label-color: var(--v-color-control-text);
+  --checkbox-focus-color: var(--v-color-control-focus);
   --checkbox-focus-ring: color-mix(
     in srgb,
-    var(--checkbox-focus-color) 40%,
+    var(--checkbox-focus-color) var(--v-mix-focus-ring-strong),
     transparent
   );
 
-  // 对号（icons/checked 中的勾）
+  // 对号（icons/checked 中的勾）— SVG data URI 保留裸色
   --checkbox-icon-mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath fill='%23000' d='M7.56 10.86 12.8 5.23a.75.75 0 1 0-1.12-1L7.23 9.93 4.37 7.11a.75.75 0 0 0-1.06 1.24l3.18 3.14a.75.75 0 0 0 1.07-.01Z'/%3E%3C/svg%3E");
   // 半选内块
   --checkbox-icon-indeterminate-mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath fill='%23000' d='M6.37 5.37h3.25c.55 0 1 .45 1 1v3.25c0 .55-.45 1-1 1H6.37c-.55 0-1-.45-1-1V6.37c0-.55.45-1 1-1Z'/%3E%3C/svg%3E");
@@ -39,79 +40,78 @@
   vertical-align: middle;
 
   &.st-sm {
-    --checkbox-font-size: 12px;
-    --checkbox-gap: 6px;
-    --checkbox-size: 14px;
+    --checkbox-font-size: var(--v-font-size-sm);
+    --checkbox-gap: var(--v-space-3);
+    --checkbox-size: var(--v-check-size-sm);
   }
 
   &.st-md {
-    --checkbox-font-size: 14px;
-    --checkbox-gap: 8px;
-    --checkbox-size: 18px;
+    --checkbox-font-size: var(--v-font-size-md);
+    --checkbox-gap: var(--v-space-4);
+    --checkbox-size: var(--v-check-size-md);
   }
 
   &.st-lg {
-    --checkbox-font-size: 16px;
-    --checkbox-gap: 10px;
-    --checkbox-size: 22px;
+    --checkbox-font-size: var(--v-font-size-lg);
+    --checkbox-gap: var(--v-space-5);
+    --checkbox-size: var(--v-check-size-lg);
   }
 
   // themes：色值对齐 Button 同名主题（border / bg / color）
   // 无 theme → st-control
   &.st-control {
-    --checkbox-border: #d1d5db;
-    --checkbox-bg: #f3f4f6;
-    --checkbox-color: #1f2937;
-    --checkbox-label-color: #1f2937;
-    --checkbox-focus-color: #6b7280;
+    --checkbox-border: var(--v-color-control-border);
+    --checkbox-bg: var(--v-color-control);
+    --checkbox-color: var(--v-color-control-text);
+    --checkbox-label-color: var(--v-color-control-text);
+    --checkbox-focus-color: var(--v-color-control-focus);
   }
 
   &.st-dark {
-    --checkbox-border: #111827;
-    --checkbox-bg: #1f2937;
-    --checkbox-color: #f9fafb;
-    --checkbox-label-color: #1f2937;
-    --checkbox-focus-color: #1f2937;
+    --checkbox-border: var(--v-color-dark-border);
+    --checkbox-bg: var(--v-color-dark);
+    --checkbox-color: var(--v-color-dark-text);
+    --checkbox-label-color: var(--v-color-control-text);
+    --checkbox-focus-color: var(--v-color-dark);
   }
 
   &.st-success {
-    --checkbox-border: #15803d;
-    --checkbox-bg: #16a34a;
-    --checkbox-color: #ffffff;
-    --checkbox-label-color: #1f2937;
-    --checkbox-focus-color: #16a34a;
+    --checkbox-border: var(--v-color-success-border);
+    --checkbox-bg: var(--v-color-success);
+    --checkbox-color: var(--v-color-white);
+    --checkbox-label-color: var(--v-color-control-text);
+    --checkbox-focus-color: var(--v-color-success);
   }
 
   &.st-info {
-    --checkbox-border: #1d4ed8;
-    --checkbox-bg: #2563eb;
-    --checkbox-color: #ffffff;
-    --checkbox-label-color: #1f2937;
-    --checkbox-focus-color: #2563eb;
+    --checkbox-border: var(--v-color-info-border);
+    --checkbox-bg: var(--v-color-info);
+    --checkbox-color: var(--v-color-white);
+    --checkbox-label-color: var(--v-color-control-text);
+    --checkbox-focus-color: var(--v-color-info);
   }
 
   &.st-warn {
-    --checkbox-border: #b45309;
-    --checkbox-bg: #d97706;
-    --checkbox-color: #ffffff;
-    --checkbox-label-color: #1f2937;
-    --checkbox-focus-color: #d97706;
+    --checkbox-border: var(--v-color-warn-border);
+    --checkbox-bg: var(--v-color-warn);
+    --checkbox-color: var(--v-color-white);
+    --checkbox-label-color: var(--v-color-control-text);
+    --checkbox-focus-color: var(--v-color-warn);
   }
 
   &.st-error {
-    --checkbox-border: #b91c1c;
-    --checkbox-bg: #dc2626;
-    --checkbox-color: #ffffff;
-    --checkbox-label-color: #1f2937;
-    --checkbox-focus-color: #dc2626;
+    --checkbox-border: var(--v-color-error-border);
+    --checkbox-bg: var(--v-color-error);
+    --checkbox-color: var(--v-color-white);
+    --checkbox-label-color: var(--v-color-control-text);
+    --checkbox-focus-color: var(--v-color-error);
   }
 
   &.st-disabled {
-    opacity: 0.55;
-    cursor: not-allowed;
+    .v-disabled(var(--v-opacity-disabled-light));
 
-    .sc-checkbox__input,
-    .sc-checkbox__label {
+    .v-checkbox__input,
+    .v-checkbox__label {
       cursor: not-allowed;
     }
   }
@@ -119,19 +119,18 @@
   &__control {
     box-sizing: border-box;
     position: relative;
-    display: inline-flex;
+    .v-inline-flex-center();
     flex-shrink: 0;
-    align-items: center;
-    justify-content: center;
     width: var(--checkbox-size);
     height: var(--checkbox-size);
-    border: 1.5px solid var(--checkbox-border);
-    border-radius: 4px;
+    border: var(--v-border-width-thick) solid var(--checkbox-border);
+    border-radius: var(--v-radius-md);
     background-color: transparent;
+    --v-focus-ring-current: var(--checkbox-focus-ring);
     transition:
-      box-shadow 0.15s ease,
-      background-color 0.15s ease,
-      border-color 0.15s ease;
+      box-shadow var(--v-duration-fast) var(--v-ease-default),
+      background-color var(--v-duration-fast) var(--v-ease-default),
+      border-color var(--v-duration-fast) var(--v-ease-default);
 
     // 对号 / 半选块
     &::after {
@@ -142,15 +141,15 @@
       opacity: 0;
       -webkit-mask: var(--checkbox-icon-mark) center / contain no-repeat;
       mask: var(--checkbox-icon-mark) center / contain no-repeat;
-      transition: opacity 0.15s ease;
+      transition: opacity var(--v-duration-fast) var(--v-ease-default);
     }
 
     // 勾选：底 → bg，对号 → color；轮廓保持 border
-    &:has(.sc-checkbox__input:checked) {
+    &:has(.v-checkbox__input:checked) {
       background-color: var(--checkbox-bg);
     }
 
-    &:has(.sc-checkbox__input:checked)::after {
+    &:has(.v-checkbox__input:checked)::after {
       opacity: 1;
       background-color: var(--checkbox-color);
       -webkit-mask-image: var(--checkbox-icon-mark);
@@ -158,28 +157,28 @@
     }
 
     // 半选优先：轮廓 border，内块 → bg
-    &:has(.sc-checkbox__input:indeterminate) {
+    &:has(.v-checkbox__input:indeterminate) {
       background-color: transparent;
     }
 
-    &:has(.sc-checkbox__input:indeterminate)::after {
+    &:has(.v-checkbox__input:indeterminate)::after {
       opacity: 1;
       background-color: var(--checkbox-bg);
       -webkit-mask-image: var(--checkbox-icon-indeterminate-mark);
       mask-image: var(--checkbox-icon-indeterminate-mark);
     }
 
-    &:has(.sc-checkbox__input:focus:not(:focus-visible)) {
-      animation: sc-checkbox-focus-wave 0.4s ease-out;
+    &:has(.v-checkbox__input:focus:not(:focus-visible)) {
+      animation: v-focus-wave var(--v-duration-focus) var(--v-ease-out);
     }
 
-    &:has(.sc-checkbox__input:focus-visible) {
-      box-shadow: 0 0 0 3px var(--checkbox-focus-ring);
-      animation: sc-checkbox-focus-halo 0.4s ease-out;
+    &:has(.v-checkbox__input:focus-visible) {
+      box-shadow: 0 0 0 var(--v-focus-ring-width) var(--checkbox-focus-ring);
+      animation: v-focus-halo var(--v-duration-focus) var(--v-ease-out);
     }
   }
 
-  &.is-checked .sc-checkbox__control {
+  &.is-checked .v-checkbox__control {
     background-color: var(--checkbox-bg);
 
     &::after {
@@ -190,7 +189,7 @@
     }
   }
 
-  &.is-indeterminate .sc-checkbox__control {
+  &.is-indeterminate .v-checkbox__control {
     background-color: transparent;
 
     &::after {
@@ -202,46 +201,11 @@
   }
 
   &__input {
-    appearance: none;
-    box-sizing: border-box;
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    opacity: 0;
-    border: none;
-    outline: none;
-    cursor: pointer;
+    .v-overlay-input();
   }
 
   &__label {
     min-width: 0;
     color: inherit;
-  }
-}
-
-@keyframes sc-checkbox-focus-halo {
-  from {
-    box-shadow: 0 0 0 0 var(--checkbox-focus-ring);
-  }
-
-  to {
-    box-shadow: 0 0 0 3px var(--checkbox-focus-ring);
-  }
-}
-
-@keyframes sc-checkbox-focus-wave {
-  0% {
-    box-shadow: 0 0 0 0 var(--checkbox-focus-ring);
-  }
-
-  50% {
-    box-shadow: 0 0 0 4px var(--checkbox-focus-ring);
-  }
-
-  100% {
-    box-shadow: 0 0 0 4px transparent;
   }
 }

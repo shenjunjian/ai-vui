@@ -2,22 +2,22 @@
   <div
     v-if="state.visible"
     ref="rootRef"
-    class="sc-alert"
+    class="v-alert"
     :class="state.rootClass"
     role="alert"
   >
-    <span v-if="showIcon" class="sc-alert__icon" aria-hidden="true">
+    <span v-if="showIcon" class="v-alert__icon" aria-hidden="true">
       <slot name="icon" v-bind="{ state, api, props }">
         <i :class="state.iconClass" />
       </slot>
     </span>
-    <div class="sc-alert__content">
+    <div class="v-alert__content">
       <slot v-bind="{ state, api, props }">Alert</slot>
     </div>
     <button
       v-if="closable"
       type="button"
-      class="sc-alert__close"
+      class="v-alert__close"
       aria-label="关闭"
       @click="api.handleClose"
     >

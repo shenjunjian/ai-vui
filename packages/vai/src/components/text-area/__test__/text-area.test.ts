@@ -7,10 +7,10 @@ describe("TextArea", () => {
   test("renders with default classes", () => {
     const wrapper = mount(TextArea);
 
-    expect(wrapper.classes()).toContain("sc-textarea");
+    expect(wrapper.classes()).toContain("v-textarea");
     expect(wrapper.classes()).toContain("st-md");
     expect(wrapper.classes()).toContain("st-control");
-    expect(wrapper.find("textarea.sc-textarea__inner").exists()).toBe(true);
+    expect(wrapper.find("textarea.v-textarea__inner").exists()).toBe(true);
   });
 
   test("applies size and theme classes", () => {
@@ -74,10 +74,10 @@ describe("TextArea", () => {
     });
 
     expect(wrapper.classes()).toContain("is-show-count");
-    expect(wrapper.find(".sc-textarea__count").text()).toBe("3/20");
+    expect(wrapper.find(".v-textarea__count").text()).toBe("3/20");
 
     await wrapper.setProps({ modelValue: "abcd" });
-    expect(wrapper.find(".sc-textarea__count").text()).toBe("4/20");
+    expect(wrapper.find(".v-textarea__count").text()).toBe("4/20");
   });
 
   test("showCount without maxlength shows raw length", () => {
@@ -85,7 +85,7 @@ describe("TextArea", () => {
       props: { modelValue: "hello", showCount: true },
     });
 
-    expect(wrapper.find(".sc-textarea__count").text()).toBe("5");
+    expect(wrapper.find(".v-textarea__count").text()).toBe("5");
   });
 
   test("exposes focus blur clear selectall", async () => {

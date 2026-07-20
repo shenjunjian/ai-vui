@@ -14,7 +14,7 @@
 
 - **包**：`vai`
 - **导出**：`TextArea`
-- **scene-theme 类名**：`sc-textarea`（组件内实现）
+- **组件类名**：`v-textarea`（组件内实现）
 
 ## Props
 

@@ -1,17 +1,18 @@
 // Alert styles（主题色与 Button 对齐）
+@import "../../theme/common.less";
 
-.sc-alert {
-  --alert-font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-  --alert-font-size: 14px;
-  --alert-line-height: 1.5;
-  --alert-padding-y: 10px;
-  --alert-padding-x: 14px;
-  --alert-gap: 10px;
-  --alert-radius: 6px;
-  --alert-border-width: 1px;
-  --alert-bg: #f3f4f6;
-  --alert-color: #1f2937;
-  --alert-border: #d1d5db;
+.v-alert {
+  --alert-font-family: var(--v-font-family);
+  --alert-font-size: var(--v-font-size-md);
+  --alert-line-height: var(--v-line-height-normal);
+  --alert-padding-y: var(--v-space-5);
+  --alert-padding-x: var(--v-space-7);
+  --alert-gap: var(--v-space-5);
+  --alert-radius: var(--v-radius-lg);
+  --alert-border-width: var(--v-border-width);
+  --alert-bg: var(--v-color-control);
+  --alert-color: var(--v-color-control-text);
+  --alert-border: var(--v-color-control-border);
   --alert-icon-size: 1.15em;
   --alert-close-size: 1.25em;
 
@@ -34,71 +35,89 @@
 
   // sizes
   &.st-sm {
-    --alert-font-size: 12px;
-    --alert-padding-y: 6px;
-    --alert-padding-x: 10px;
-    --alert-gap: 8px;
-    --alert-radius: 4px;
+    --alert-font-size: var(--v-font-size-sm);
+    --alert-padding-y: var(--v-space-3);
+    --alert-padding-x: var(--v-space-5);
+    --alert-gap: var(--v-space-4);
+    --alert-radius: var(--v-radius-md);
   }
 
   &.st-md {
-    --alert-font-size: 14px;
-    --alert-padding-y: 10px;
-    --alert-padding-x: 14px;
-    --alert-gap: 10px;
-    --alert-radius: 6px;
+    --alert-font-size: var(--v-font-size-md);
+    --alert-padding-y: var(--v-space-5);
+    --alert-padding-x: var(--v-space-7);
+    --alert-gap: var(--v-space-5);
+    --alert-radius: var(--v-radius-lg);
   }
 
   &.st-lg {
-    --alert-font-size: 16px;
-    --alert-padding-y: 14px;
-    --alert-padding-x: 18px;
-    --alert-gap: 12px;
-    --alert-radius: 8px;
+    --alert-font-size: var(--v-font-size-lg);
+    --alert-padding-y: var(--v-space-7);
+    --alert-padding-x: var(--v-space-9);
+    --alert-gap: var(--v-space-6);
+    --alert-radius: var(--v-radius-xl);
   }
 
   // themes（浅底 + 主题色字/边，更适合警告条）
   &.st-control {
-    --alert-bg: #f3f4f6;
-    --alert-color: #1f2937;
-    --alert-border: #d1d5db;
+    --alert-bg: var(--v-color-control);
+    --alert-color: var(--v-color-control-text);
+    --alert-border: var(--v-color-control-border);
   }
 
   &.st-dark {
-    --alert-bg: color-mix(in srgb, #1f2937 12%, transparent);
-    --alert-color: #1f2937;
-    --alert-border: #1f2937;
+    --alert-bg: color-mix(
+      in srgb,
+      var(--v-color-dark) var(--v-mix-plain-bg),
+      transparent
+    );
+    --alert-color: var(--v-color-control-text);
+    --alert-border: var(--v-color-dark);
   }
 
   &.st-success {
-    --alert-bg: color-mix(in srgb, #16a34a 12%, transparent);
-    --alert-color: #15803d;
-    --alert-border: #16a34a;
+    --alert-bg: color-mix(
+      in srgb,
+      var(--v-color-success) var(--v-mix-plain-bg),
+      transparent
+    );
+    --alert-color: var(--v-color-success-border);
+    --alert-border: var(--v-color-success);
   }
 
   &.st-info {
-    --alert-bg: color-mix(in srgb, #2563eb 12%, transparent);
-    --alert-color: #1d4ed8;
-    --alert-border: #2563eb;
+    --alert-bg: color-mix(
+      in srgb,
+      var(--v-color-info) var(--v-mix-plain-bg),
+      transparent
+    );
+    --alert-color: var(--v-color-info-border);
+    --alert-border: var(--v-color-info);
   }
 
   &.st-warn {
-    --alert-bg: color-mix(in srgb, #d97706 12%, transparent);
-    --alert-color: #b45309;
-    --alert-border: #d97706;
+    --alert-bg: color-mix(
+      in srgb,
+      var(--v-color-warn) var(--v-mix-plain-bg),
+      transparent
+    );
+    --alert-color: var(--v-color-warn-border);
+    --alert-border: var(--v-color-warn);
   }
 
   &.st-error {
-    --alert-bg: color-mix(in srgb, #dc2626 12%, transparent);
-    --alert-color: #b91c1c;
-    --alert-border: #dc2626;
+    --alert-bg: color-mix(
+      in srgb,
+      var(--v-color-error) var(--v-mix-plain-bg),
+      transparent
+    );
+    --alert-color: var(--v-color-error-border);
+    --alert-border: var(--v-color-error);
   }
 
   &__icon {
     flex-shrink: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    .v-inline-flex-center();
     width: var(--alert-icon-size);
     height: var(--alert-icon-size);
     margin-top: 0.15em;
@@ -113,11 +132,8 @@
 
   &__close {
     appearance: none;
-    box-sizing: border-box;
+    .v-inline-flex-center();
     flex-shrink: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
     width: var(--alert-close-size);
     height: var(--alert-close-size);
     margin: 0;
@@ -128,10 +144,10 @@
     color: inherit;
     background: transparent;
     border: none;
-    border-radius: 2px;
+    border-radius: var(--v-radius-xs);
     outline: none;
     cursor: pointer;
-    opacity: 0.7;
+    opacity: var(--v-opacity-muted);
 
     &:hover {
       opacity: 1;

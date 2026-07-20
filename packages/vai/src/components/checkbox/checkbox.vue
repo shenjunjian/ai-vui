@@ -1,16 +1,16 @@
 <template>
-  <label ref="rootRef" class="sc-checkbox" :class="state.rootClass">
-    <span class="sc-checkbox__control">
+  <label ref="rootRef" class="v-checkbox" :class="state.rootClass">
+    <span class="v-checkbox__control">
       <input
         ref="inputRef"
         type="checkbox"
-        class="sc-checkbox__input"
+        class="v-checkbox__input"
         :checked="checked"
         :disabled="disabled"
         v-bind="state.inputAttrs"
       />
     </span>
-    <span v-if="state.showLabel" class="sc-checkbox__label">
+    <span v-if="state.showLabel" class="v-checkbox__label">
       <slot v-bind="{ state, api, props }">{{ label }}</slot>
     </span>
   </label>

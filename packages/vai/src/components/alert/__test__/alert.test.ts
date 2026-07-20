@@ -10,7 +10,7 @@ describe("Alert", () => {
 
     expect(wrapper.element.tagName).toBe("DIV");
     expect(wrapper.text()).toContain("提示内容");
-    expect(wrapper.classes()).toContain("sc-alert");
+    expect(wrapper.classes()).toContain("v-alert");
     expect(wrapper.classes()).toContain("st-md");
     expect(wrapper.classes()).toContain("st-control");
     expect(wrapper.attributes("role")).toBe("alert");
@@ -33,7 +33,7 @@ describe("Alert", () => {
       slots: { default: "Error" },
     });
 
-    expect(wrapper.find(".sc-alert__icon").exists()).toBe(true);
+    expect(wrapper.find(".v-alert__icon").exists()).toBe(true);
     expect(wrapper.find(".ci-error").exists()).toBe(true);
 
     await wrapper.setProps({ theme: "success" });
@@ -43,7 +43,7 @@ describe("Alert", () => {
     expect(wrapper.find(".ci-risk").exists()).toBe(true);
 
     await wrapper.setProps({ showIcon: false });
-    expect(wrapper.find(".sc-alert__icon").exists()).toBe(false);
+    expect(wrapper.find(".v-alert__icon").exists()).toBe(false);
   });
 
   test("icon slot overrides default icon", () => {
@@ -65,7 +65,7 @@ describe("Alert", () => {
       slots: { default: "Closable" },
     });
 
-    const closeBtn = wrapper.find(".sc-alert__close");
+    const closeBtn = wrapper.find(".v-alert__close");
     expect(closeBtn.exists()).toBe(true);
     expect(closeBtn.attributes("aria-label")).toBe("关闭");
 
@@ -73,7 +73,7 @@ describe("Alert", () => {
     await flushPromises();
 
     expect(wrapper.emitted("closed")).toHaveLength(1);
-    expect(wrapper.find(".sc-alert").exists()).toBe(false);
+    expect(wrapper.find(".v-alert").exists()).toBe(false);
     expect(wrapper.vm.state.visible).toBe(false);
   });
 
@@ -96,12 +96,12 @@ describe("Alert", () => {
       slots: { default: "Guard" },
     });
 
-    await wrapper.find(".sc-alert__close").trigger("click");
+    await wrapper.find(".v-alert__close").trigger("click");
     await flushPromises();
 
     expect(beforeClose).toHaveBeenCalledTimes(1);
     expect(wrapper.emitted("closed")).toBeUndefined();
-    expect(wrapper.find(".sc-alert").exists()).toBe(true);
+    expect(wrapper.find(".v-alert").exists()).toBe(true);
     expect(wrapper.vm.state.visible).toBe(true);
   });
 
@@ -112,12 +112,12 @@ describe("Alert", () => {
       slots: { default: "Allow" },
     });
 
-    await wrapper.find(".sc-alert__close").trigger("click");
+    await wrapper.find(".v-alert__close").trigger("click");
     await flushPromises();
 
     expect(beforeClose).toHaveBeenCalledTimes(1);
     expect(wrapper.emitted("closed")).toHaveLength(1);
-    expect(wrapper.find(".sc-alert").exists()).toBe(false);
+    expect(wrapper.find(".v-alert").exists()).toBe(false);
   });
 
   test("beforeClose promise reject cancels close", async () => {
@@ -127,12 +127,12 @@ describe("Alert", () => {
       slots: { default: "Reject" },
     });
 
-    await wrapper.find(".sc-alert__close").trigger("click");
+    await wrapper.find(".v-alert__close").trigger("click");
     await flushPromises();
 
     expect(beforeClose).toHaveBeenCalledTimes(1);
     expect(wrapper.emitted("closed")).toBeUndefined();
-    expect(wrapper.find(".sc-alert").exists()).toBe(true);
+    expect(wrapper.find(".v-alert").exists()).toBe(true);
   });
 
   test("exposes state and api", () => {

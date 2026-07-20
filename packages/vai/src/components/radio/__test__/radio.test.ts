@@ -7,10 +7,10 @@ describe("Radio", () => {
   test("renders with default classes and native radio", () => {
     const wrapper = mount(Radio);
 
-    expect(wrapper.classes()).toContain("sc-radio");
+    expect(wrapper.classes()).toContain("v-radio");
     expect(wrapper.classes()).toContain("st-md");
     expect(wrapper.classes()).toContain("st-control");
-    expect(wrapper.find("input.sc-radio__input").exists()).toBe(true);
+    expect(wrapper.find("input.v-radio__input").exists()).toBe(true);
     expect(wrapper.find("input").attributes("type")).toBe("radio");
   });
 
@@ -63,7 +63,7 @@ describe("Radio", () => {
       props: { label: "选项 A" },
     });
 
-    expect(wrapper.find(".sc-radio__label").text()).toBe("选项 A");
+    expect(wrapper.find(".v-radio__label").text()).toBe("选项 A");
   });
 
   test("default slot overrides label text", () => {
@@ -72,13 +72,13 @@ describe("Radio", () => {
       slots: { default: "slot label" },
     });
 
-    expect(wrapper.find(".sc-radio__label").text()).toBe("slot label");
+    expect(wrapper.find(".v-radio__label").text()).toBe("slot label");
   });
 
   test("no label span when label and slot are empty", () => {
     const wrapper = mount(Radio);
 
-    expect(wrapper.find(".sc-radio__label").exists()).toBe(false);
+    expect(wrapper.find(".v-radio__label").exists()).toBe(false);
   });
 
   test("falls through common attrs to native input", () => {
@@ -147,7 +147,7 @@ describe("Radio", () => {
     });
 
     expect(wrapper.element.tagName.toLowerCase()).toBe("label");
-    expect(wrapper.find(".sc-radio__control input[type='radio']").exists()).toBe(
+    expect(wrapper.find(".v-radio__control input[type='radio']").exists()).toBe(
       true,
     );
   });

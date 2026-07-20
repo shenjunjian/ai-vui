@@ -1,36 +1,38 @@
-// Button styles（暂不依赖 scene-theme，后续再迁回场景类）
+// Button styles
+@import "../../theme/common.less";
 
-.sc-btn {
-  --btn-font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-  --btn-font-size: 14px;
-  --btn-line-height: 1.4;
-  --btn-padding-y: 8px;
-  --btn-padding-x: 16px;
-  --btn-gap: 8px;
-  --btn-radius: 6px;
-  --btn-border-width: 1px;
-  --btn-size: 36px;
-  --btn-bg: #f3f4f6;
-  --btn-color: #1f2937;
-  --btn-border: #d1d5db;
-  --btn-hover-bg: #e5e7eb;
-  --btn-active-bg: #d1d5db;
-  --btn-pressed-bg: #9ca3af;
+.v-btn {
+  --btn-font-family: var(--v-font-family);
+  --btn-font-size: var(--v-font-size-md);
+  --btn-line-height: var(--v-line-height-tight);
+  --btn-padding-y: var(--v-space-4);
+  --btn-padding-x: var(--v-space-8);
+  --btn-gap: var(--v-space-4);
+  --btn-radius: var(--v-radius-lg);
+  --btn-border-width: var(--v-border-width);
+  --btn-size: var(--v-control-height-md);
+  --btn-bg: var(--v-color-control);
+  --btn-color: var(--v-color-control-text);
+  --btn-border: var(--v-color-control-border);
+  --btn-hover-bg: var(--v-color-control-hover);
+  --btn-active-bg: var(--v-color-control-active);
+  --btn-pressed-bg: var(--v-color-control-pressed);
   --btn-focus-color: var(--btn-bg);
-  --btn-focus-ring: color-mix(in srgb, var(--btn-focus-color) 35%, transparent);
+  --btn-focus-ring: color-mix(
+    in srgb,
+    var(--btn-focus-color) var(--v-mix-focus-ring),
+    transparent
+  );
 
   appearance: none;
-  box-sizing: border-box;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  .v-inline-flex-center();
   gap: var(--btn-gap);
   margin: 0;
   padding: var(--btn-padding-y) var(--btn-padding-x);
   font-family: var(--btn-font-family);
   font-size: var(--btn-font-size);
   line-height: var(--btn-line-height);
-  font-weight: 500;
+  font-weight: var(--v-font-weight-medium);
   color: var(--btn-color);
   background-color: var(--btn-bg);
   border: var(--btn-border-width) solid var(--btn-border);
@@ -40,26 +42,11 @@
   touch-action: manipulation;
   user-select: none;
   white-space: nowrap;
-  transition:
-    background-color 0.15s ease,
-    border-color 0.15s ease,
-    color 0.15s ease,
-    opacity 0.15s ease,
-    box-shadow 0.15s ease;
+  .v-transition-colors();
+  .v-focus-interactive(var(--btn-focus-ring));
 
   &:hover:not(:disabled) {
     background-color: var(--btn-hover-bg);
-  }
-
-  // 鼠标点击：瞬时外扩光晕后消失（类 antd wave）
-  &:focus:not(:focus-visible) {
-    animation: sc-btn-focus-wave 0.4s ease-out;
-  }
-
-  // 键盘聚焦：外扩光晕并保留
-  &:focus-visible {
-    box-shadow: 0 0 0 3px var(--btn-focus-ring);
-    animation: sc-btn-focus-halo 0.4s ease-out;
   }
 
   &:active:not(:disabled),
@@ -73,103 +60,107 @@
 
   // sizes
   &.st-sm {
-    --btn-font-size: 12px;
-    --btn-padding-y: 4px;
-    --btn-padding-x: 10px;
-    --btn-gap: 4px;
-    --btn-size: 28px;
+    --btn-font-size: var(--v-font-size-sm);
+    --btn-padding-y: var(--v-space-2);
+    --btn-padding-x: var(--v-space-5);
+    --btn-gap: var(--v-space-2);
+    --btn-size: var(--v-control-height-sm);
   }
 
   &.st-md {
-    --btn-font-size: 14px;
-    --btn-padding-y: 8px;
-    --btn-padding-x: 16px;
-    --btn-gap: 8px;
-    --btn-size: 36px;
+    --btn-font-size: var(--v-font-size-md);
+    --btn-padding-y: var(--v-space-4);
+    --btn-padding-x: var(--v-space-8);
+    --btn-gap: var(--v-space-4);
+    --btn-size: var(--v-control-height-md);
   }
 
   &.st-lg {
-    --btn-font-size: 16px;
-    --btn-padding-y: 10px;
-    --btn-padding-x: 20px;
-    --btn-gap: 10px;
-    --btn-size: 44px;
+    --btn-font-size: var(--v-font-size-lg);
+    --btn-padding-y: var(--v-space-5);
+    --btn-padding-x: var(--v-space-10);
+    --btn-gap: var(--v-space-5);
+    --btn-size: var(--v-control-height-lg);
   }
 
   // themes
   &.st-control {
-    --btn-bg: #f3f4f6;
-    --btn-color: #1f2937;
-    --btn-border: #d1d5db;
-    --btn-hover-bg: #e5e7eb;
-    --btn-active-bg: #d1d5db;
-    --btn-pressed-bg: #9ca3af;
-    --btn-focus-color: #6b7280;
+    --btn-bg: var(--v-color-control);
+    --btn-color: var(--v-color-control-text);
+    --btn-border: var(--v-color-control-border);
+    --btn-hover-bg: var(--v-color-control-hover);
+    --btn-active-bg: var(--v-color-control-active);
+    --btn-pressed-bg: var(--v-color-control-pressed);
+    --btn-focus-color: var(--v-color-control-focus);
   }
 
   &.st-dark {
-    --btn-bg: #1f2937;
-    --btn-color: #f9fafb;
-    --btn-border: #111827;
-    --btn-hover-bg: #374151;
-    --btn-active-bg: #111827;
-    --btn-pressed-bg: #030712;
+    --btn-bg: var(--v-color-dark);
+    --btn-color: var(--v-color-dark-text);
+    --btn-border: var(--v-color-dark-border);
+    --btn-hover-bg: var(--v-color-dark-hover);
+    --btn-active-bg: var(--v-color-dark-active);
+    --btn-pressed-bg: var(--v-color-dark-pressed);
   }
 
   &.st-success {
-    --btn-bg: #16a34a;
-    --btn-color: #ffffff;
-    --btn-border: #15803d;
-    --btn-hover-bg: #22c55e;
-    --btn-active-bg: #15803d;
-    --btn-pressed-bg: #166534;
+    --btn-bg: var(--v-color-success);
+    --btn-color: var(--v-color-white);
+    --btn-border: var(--v-color-success-border);
+    --btn-hover-bg: var(--v-color-success-hover);
+    --btn-active-bg: var(--v-color-success-border);
+    --btn-pressed-bg: var(--v-color-success-pressed);
   }
 
   &.st-info {
-    --btn-bg: #2563eb;
-    --btn-color: #ffffff;
-    --btn-border: #1d4ed8;
-    --btn-hover-bg: #3b82f6;
-    --btn-active-bg: #1d4ed8;
-    --btn-pressed-bg: #1e40af;
+    --btn-bg: var(--v-color-info);
+    --btn-color: var(--v-color-white);
+    --btn-border: var(--v-color-info-border);
+    --btn-hover-bg: var(--v-color-info-hover);
+    --btn-active-bg: var(--v-color-info-border);
+    --btn-pressed-bg: var(--v-color-info-pressed);
   }
 
   &.st-warn {
-    --btn-bg: #d97706;
-    --btn-color: #ffffff;
-    --btn-border: #b45309;
-    --btn-hover-bg: #f59e0b;
-    --btn-active-bg: #b45309;
-    --btn-pressed-bg: #92400e;
+    --btn-bg: var(--v-color-warn);
+    --btn-color: var(--v-color-white);
+    --btn-border: var(--v-color-warn-border);
+    --btn-hover-bg: var(--v-color-warn-hover);
+    --btn-active-bg: var(--v-color-warn-border);
+    --btn-pressed-bg: var(--v-color-warn-pressed);
   }
 
   &.st-error {
-    --btn-bg: #dc2626;
-    --btn-color: #ffffff;
-    --btn-border: #b91c1c;
-    --btn-hover-bg: #ef4444;
-    --btn-active-bg: #b91c1c;
-    --btn-pressed-bg: #991b1b;
+    --btn-bg: var(--v-color-error);
+    --btn-color: var(--v-color-white);
+    --btn-border: var(--v-color-error-border);
+    --btn-hover-bg: var(--v-color-error-hover);
+    --btn-active-bg: var(--v-color-error-border);
+    --btn-pressed-bg: var(--v-color-error-pressed);
   }
 
   // plain：仅 theme 生效时由组件挂类；浅主题色底 + 主题色字/边；hover 不变色
-  &.sc-plain-btn {
-    background-color: color-mix(in srgb, var(--btn-border) 12%, transparent);
+  &.v-plain-btn {
+    .v-plain-surface(var(--btn-border));
     color: var(--btn-border);
     border-color: currentColor;
 
     &:hover:not(:disabled) {
-      background-color: color-mix(in srgb, var(--btn-border) 12%, transparent);
+      .v-plain-surface(var(--btn-border));
     }
 
     &:active:not(:disabled),
     &.st-pressed:not(:disabled) {
-      background-color: color-mix(in srgb, var(--btn-border) 20%, transparent);
+      background-color: color-mix(
+        in srgb,
+        var(--btn-border) var(--v-mix-plain-hover),
+        transparent
+      );
     }
   }
 
   // ghost：无背景、无 hover/active 底色变化；主题色文字与边框
-  &.sc-ghost-btn {
+  &.v-ghost-btn {
     background-color: transparent;
     color: var(--btn-bg);
     border-color: currentColor;
@@ -187,8 +178,8 @@
   }
 
   // text / link：仍保留 padding；文字用主题色（实心底时 --btn-color 为白，不可见）
-  &.sc-text-btn,
-  &.sc-link-btn {
+  &.v-text-btn,
+  &.v-link-btn {
     background-color: transparent;
     border-color: transparent;
     color: var(--btn-bg);
@@ -198,11 +189,11 @@
     }
 
     &:hover:not(:disabled) {
-      background-color: color-mix(in srgb, currentColor 12%, transparent);
+      .v-plain-surface(currentColor);
     }
   }
 
-  &.sc-link-btn {
+  &.v-link-btn {
     text-decoration: underline;
     color: var(--btn-border);
 
@@ -216,29 +207,28 @@
   }
 
   // icon：正方形（或圆形）
-  &.sc-icon-btn {
+  &.v-icon-btn {
     width: var(--btn-size);
     height: var(--btn-size);
     padding: 0;
   }
 
   // circle：button 为胶囊半圆；icon 为正圆
-  &.sc-circle-btn:not(.sc-icon-btn) {
-    border-radius: 9999px;
+  &.v-circle-btn:not(.v-icon-btn) {
+    border-radius: var(--v-radius-pill);
   }
 
-  &.sc-circle-btn.sc-icon-btn {
+  &.v-circle-btn.v-icon-btn {
     border-radius: 50%;
   }
 
   // disabled / loading / pending
   &:disabled,
   &.st-disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+    .v-disabled();
   }
 
-  &.sc-btn-loading {
+  &.v-btn-loading {
     cursor: wait;
   }
 
@@ -246,39 +236,15 @@
     display: inline-block;
     width: 1em;
     height: 1em;
-    border: 2px solid currentColor;
+    border: var(--v-border-width-strong) solid currentColor;
     border-right-color: transparent;
     border-radius: 50%;
-    animation: sc-btn-spin 0.75s linear infinite;
+    animation: v-btn-spin var(--v-duration-spin) var(--v-ease-linear) infinite;
   }
 }
 
-@keyframes sc-btn-spin {
+@keyframes v-btn-spin {
   to {
     transform: rotate(360deg);
-  }
-}
-
-@keyframes sc-btn-focus-halo {
-  from {
-    box-shadow: 0 0 0 0 var(--btn-focus-ring);
-  }
-
-  to {
-    box-shadow: 0 0 0 3px var(--btn-focus-ring);
-  }
-}
-
-@keyframes sc-btn-focus-wave {
-  0% {
-    box-shadow: 0 0 0 0 var(--btn-focus-ring);
-  }
-
-  50% {
-    box-shadow: 0 0 0 4px var(--btn-focus-ring);
-  }
-
-  100% {
-    box-shadow: 0 0 0 4px transparent;
   }
 }

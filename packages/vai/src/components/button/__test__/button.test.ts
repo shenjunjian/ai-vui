@@ -18,7 +18,7 @@ describe("Button", () => {
     });
 
     expect(wrapper.text()).toContain("提交");
-    expect(wrapper.classes()).toContain("sc-btn");
+    expect(wrapper.classes()).toContain("v-btn");
     expect(wrapper.classes()).toContain("st-md");
     expect(wrapper.classes()).toContain("st-control");
   });
@@ -39,10 +39,10 @@ describe("Button", () => {
       slots: { default: "Plain" },
     });
 
-    expect(wrapper.classes()).not.toContain("sc-plain-btn");
+    expect(wrapper.classes()).not.toContain("v-plain-btn");
 
     await wrapper.setProps({ theme: "info" });
-    expect(wrapper.classes()).toContain("sc-plain-btn");
+    expect(wrapper.classes()).toContain("v-plain-btn");
     expect(wrapper.classes()).toContain("st-info");
   });
 
@@ -52,17 +52,17 @@ describe("Button", () => {
       slots: { default: "G" },
     });
 
-    expect(wrapper.classes()).toContain("sc-ghost-btn");
-    expect(wrapper.classes()).toContain("sc-circle-btn");
+    expect(wrapper.classes()).toContain("v-ghost-btn");
+    expect(wrapper.classes()).toContain("v-circle-btn");
 
     await wrapper.setProps({ variant: "text", ghost: false });
-    expect(wrapper.classes()).toContain("sc-text-btn");
+    expect(wrapper.classes()).toContain("v-text-btn");
 
     await wrapper.setProps({ variant: "link" });
-    expect(wrapper.classes()).toContain("sc-link-btn");
+    expect(wrapper.classes()).toContain("v-link-btn");
 
     await wrapper.setProps({ variant: "icon" });
-    expect(wrapper.classes()).toContain("sc-icon-btn");
+    expect(wrapper.classes()).toContain("v-icon-btn");
   });
 
   test("disabled prevents interaction and adds st-disabled", async () => {
@@ -88,8 +88,8 @@ describe("Button", () => {
       attrs: { onClick },
     });
 
-    expect(wrapper.find(".sc-btn__loading").exists()).toBe(true);
-    expect(wrapper.classes()).toContain("sc-btn-loading");
+    expect(wrapper.find(".v-btn__loading").exists()).toBe(true);
+    expect(wrapper.classes()).toContain("v-btn-loading");
     expect(wrapper.attributes("disabled")).toBeDefined();
     expect(wrapper.props("disabled")).toBe(false);
 
@@ -97,7 +97,7 @@ describe("Button", () => {
     expect(onClick).not.toHaveBeenCalled();
   });
 
-  test("icon variant loading does not insert sc-btn__loading", async () => {
+  test("icon variant loading does not insert v-btn__loading", async () => {
     const onClick = vi.fn();
     const wrapper = mount(Button, {
       props: { loading: true, variant: "icon", disabled: false },
@@ -105,9 +105,9 @@ describe("Button", () => {
       attrs: { onClick },
     });
 
-    expect(wrapper.find(".sc-btn__loading").exists()).toBe(false);
-    expect(wrapper.classes()).toContain("sc-btn-loading");
-    expect(wrapper.classes()).toContain("sc-icon-btn");
+    expect(wrapper.find(".v-btn__loading").exists()).toBe(false);
+    expect(wrapper.classes()).toContain("v-btn-loading");
+    expect(wrapper.classes()).toContain("v-icon-btn");
     expect(wrapper.attributes("disabled")).toBeDefined();
 
     await wrapper.trigger("click");

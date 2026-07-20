@@ -8,7 +8,7 @@
 
 - **包**：`vai`
 - **导出**：`ConfigProvider`
-- **scene-theme 类名**：`—`（规划，scene-theme 尚未实现）
+- **组件类名**：`—`（规划，scene-theme 尚未实现）
 
 ## Props
 
@@ -81,5 +81,5 @@ interface ConfigProviderState {
 
 - [ ] API 与本文档一致
 - [ ] 无障碍达标
-- [ ] scene-theme 类名正确（实现后）
+- [ ] 组件类名正确（实现后）
 - [ ] 测试与演示页

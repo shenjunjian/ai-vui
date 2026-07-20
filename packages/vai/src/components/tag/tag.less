@@ -1,17 +1,18 @@
 // Tag styles（主题色与 Button 对齐；无 hover / active / halo）
+@import "../../theme/common.less";
 
-.sc-tag {
-  --tag-font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-  --tag-font-size: 14px;
-  --tag-line-height: 1.4;
+.v-tag {
+  --tag-font-family: var(--v-font-family);
+  --tag-font-size: var(--v-font-size-md);
+  --tag-line-height: var(--v-line-height-tight);
   --tag-padding-y: 2px;
-  --tag-padding-x: 8px;
-  --tag-gap: 4px;
-  --tag-radius: 4px;
-  --tag-border-width: 1px;
-  --tag-bg: #f3f4f6;
-  --tag-color: #1f2937;
-  --tag-border: #d1d5db;
+  --tag-padding-x: var(--v-space-4);
+  --tag-gap: var(--v-space-2);
+  --tag-radius: var(--v-radius-md);
+  --tag-border-width: var(--v-border-width);
+  --tag-bg: var(--v-color-control);
+  --tag-color: var(--v-color-control-text);
+  --tag-border: var(--v-color-control-border);
   --tag-close-size: 1em;
 
   box-sizing: border-box;
@@ -23,7 +24,7 @@
   font-family: var(--tag-font-family);
   font-size: var(--tag-font-size);
   line-height: var(--tag-line-height);
-  font-weight: 500;
+  font-weight: var(--v-font-weight-medium);
   color: var(--tag-color);
   background-color: var(--tag-bg);
   border: var(--tag-border-width) solid var(--tag-border);
@@ -35,88 +36,84 @@
 
   // sizes
   &.st-sm {
-    --tag-font-size: 12px;
+    --tag-font-size: var(--v-font-size-sm);
     --tag-padding-y: 1px;
-    --tag-padding-x: 6px;
-    --tag-gap: 3px;
-    --tag-radius: 3px;
+    --tag-padding-x: var(--v-space-3);
+    --tag-gap: var(--v-space-1);
+    --tag-radius: var(--v-radius-sm);
   }
 
   &.st-md {
-    --tag-font-size: 14px;
+    --tag-font-size: var(--v-font-size-md);
     --tag-padding-y: 2px;
-    --tag-padding-x: 8px;
-    --tag-gap: 4px;
-    --tag-radius: 4px;
+    --tag-padding-x: var(--v-space-4);
+    --tag-gap: var(--v-space-2);
+    --tag-radius: var(--v-radius-md);
   }
 
   &.st-lg {
-    --tag-font-size: 16px;
-    --tag-padding-y: 4px;
-    --tag-padding-x: 10px;
-    --tag-gap: 6px;
-    --tag-radius: 6px;
+    --tag-font-size: var(--v-font-size-lg);
+    --tag-padding-y: var(--v-space-2);
+    --tag-padding-x: var(--v-space-5);
+    --tag-gap: var(--v-space-3);
+    --tag-radius: var(--v-radius-lg);
   }
 
   // themes（色值与 Button 一致；无主题时同 Alert control 中性色）
   &.st-control {
-    --tag-bg: #f3f4f6;
-    --tag-color: #1f2937;
-    --tag-border: #d1d5db;
+    --tag-bg: var(--v-color-control);
+    --tag-color: var(--v-color-control-text);
+    --tag-border: var(--v-color-control-border);
   }
 
   &.st-dark {
-    --tag-bg: #1f2937;
-    --tag-color: #f9fafb;
-    --tag-border: #111827;
+    --tag-bg: var(--v-color-dark);
+    --tag-color: var(--v-color-dark-text);
+    --tag-border: var(--v-color-dark-border);
   }
 
   &.st-success {
-    --tag-bg: #16a34a;
-    --tag-color: #ffffff;
-    --tag-border: #15803d;
+    --tag-bg: var(--v-color-success);
+    --tag-color: var(--v-color-white);
+    --tag-border: var(--v-color-success-border);
   }
 
   &.st-info {
-    --tag-bg: #2563eb;
-    --tag-color: #ffffff;
-    --tag-border: #1d4ed8;
+    --tag-bg: var(--v-color-info);
+    --tag-color: var(--v-color-white);
+    --tag-border: var(--v-color-info-border);
   }
 
   &.st-warn {
-    --tag-bg: #d97706;
-    --tag-color: #ffffff;
-    --tag-border: #b45309;
+    --tag-bg: var(--v-color-warn);
+    --tag-color: var(--v-color-white);
+    --tag-border: var(--v-color-warn-border);
   }
 
   &.st-error {
-    --tag-bg: #dc2626;
-    --tag-color: #ffffff;
-    --tag-border: #b91c1c;
+    --tag-bg: var(--v-color-error);
+    --tag-color: var(--v-color-white);
+    --tag-border: var(--v-color-error-border);
   }
 
   // plain：仅 theme 生效时由组件挂类；浅主题色底 + 主题色字/边（无 hover）
-  &.sc-plain-tag {
-    background-color: color-mix(in srgb, var(--tag-border) 12%, transparent);
+  &.v-plain-tag {
+    .v-plain-surface(var(--tag-border));
     color: var(--tag-border);
     border-color: currentColor;
   }
 
-  &.sc-circle-tag {
-    border-radius: 9999px;
+  &.v-circle-tag {
+    border-radius: var(--v-radius-pill);
   }
 
   &.st-disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+    .v-disabled();
   }
 
   &__close {
     appearance: none;
-    box-sizing: border-box;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    .v-inline-flex-center();
     width: var(--tag-close-size);
     height: var(--tag-close-size);
     margin: 0;
@@ -126,10 +123,10 @@
     color: inherit;
     background: transparent;
     border: none;
-    border-radius: 2px;
+    border-radius: var(--v-radius-xs);
     outline: none;
     cursor: pointer;
-    opacity: 0.75;
+    opacity: var(--v-opacity-soft);
 
     &:disabled {
       cursor: not-allowed;

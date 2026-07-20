@@ -20,11 +20,11 @@
 支持 `indeterminate` 属性，透传到 input 实例的 `indeterminate` 属性（DOM 属性，非 HTML attribute）。半选优先级高于勾选：为 `true` 时无论 `checked` 为何值均显示半选图标。
 
 ```html
-<label class="sc-checkbox">
-  <span class="sc-checkbox__control">
-    <input type="checkbox" class="sc-checkbox__input" />
+<label class="v-checkbox">
+  <span class="v-checkbox__control">
+    <input type="checkbox" class="v-checkbox__input" />
   </span>
-  <span class="sc-checkbox__label"><!-- default slot / label --></span>
+  <span class="v-checkbox__label"><!-- default slot / label --></span>
 </label>
 ```
 
@@ -32,7 +32,7 @@
 
 - **包**：`vai`
 - **导出**：`Checkbox`
-- **scene-theme 类名**：`sc-checkbox`（组件内实现）
+- **组件类名**：`v-checkbox`（组件内实现）
 
 ## Props
 
@@ -102,18 +102,18 @@ interface CheckboxState {
 
 ## 实现逻辑
 
-1. 解析 props；根元素为 `<label class="sc-checkbox">` + `st-*` / `is-*` 状态类；**无 `theme` 时挂 `st-control`（control 色系）**，有 theme 时映射为 `st-success` / `st-info` / `st-warn` / `st-error` / `st-dark`
+1. 解析 props；根元素为 `<label class="v-checkbox">` + `st-*` / `is-*` 状态类；**无 `theme` 时挂 `st-control`（control 色系）**，有 theme 时映射为 `st-success` / `st-info` / `st-warn` / `st-error` / `st-dark`
 2. `v-model:checked` 绑定原生 checkbox 的勾选态
 3. `watch` 将 `indeterminate` 同步到 `input.indeterminate`；点击后若 prop 仍为 true 则立即恢复
 4. 常见 input 属性 / 事件经 `inheritAttrs: false` 透传到内部 input；`change` 按上文「透传策略」合并内部同步与用户监听
-5. 图标绘制在 `sc-checkbox__control`：边框用 border 色；勾选底用 bg 色、对号用 color 色；半选内块用 bg 色；input 透明叠层接收交互
-6. 焦点光晕画在 `sc-checkbox__control` 上，交互对齐 Button：`:focus-visible` 保留 halo，鼠标点击播 wave
+5. 图标绘制在 `v-checkbox__control`：边框用 border 色；勾选底用 bg 色、对号用 color 色；半选内块用 bg 色；input 透明叠层接收交互
+6. 焦点光晕画在 `v-checkbox__control` 上，交互对齐 Button：`:focus-visible` 保留 halo，鼠标点击播 wave
 
 ## 无障碍（a11y）
 
 - 根节点 `<label>` 包裹 input，点击文案即可切换
 - 键盘：原生 checkbox 焦点与空格切换
-- `:focus-visible` 时 `sc-checkbox__control` 外扩 box-shadow 光晕
+- `:focus-visible` 时 `v-checkbox__control` 外扩 box-shadow 光晕
 
 ## 动画
 

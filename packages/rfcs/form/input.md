@@ -16,7 +16,7 @@
 
 - **包**：`vai`
 - **导出**：`Input`
-- **scene-theme 类名**：`sc-input`（组件内实现）
+- **组件类名**：`v-input`（组件内实现）
 
 ## Props
 

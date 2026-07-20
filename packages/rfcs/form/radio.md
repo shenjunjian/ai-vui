@@ -19,11 +19,11 @@
 同组互斥可通过透传原生 `name` / `value` 实现（与原生 radio 一致）；更完整的组控见 `RadioGroup`。
 
 ```html
-<label class="sc-radio">
-  <span class="sc-radio__control">
-    <input type="radio" class="sc-radio__input" />
+<label class="v-radio">
+  <span class="v-radio__control">
+    <input type="radio" class="v-radio__input" />
   </span>
-  <span class="sc-radio__label"><!-- default slot / label --></span>
+  <span class="v-radio__label"><!-- default slot / label --></span>
 </label>
 ```
 
@@ -31,7 +31,7 @@
 
 - **包**：`vai`
 - **导出**：`Radio`
-- **scene-theme 类名**：`sc-radio`（组件内实现）
+- **组件类名**：`v-radio`（组件内实现）
 
 ## Props
 
@@ -100,17 +100,17 @@ interface RadioState {
 
 ## 实现逻辑
 
-1. 解析 props；根元素为 `<label class="sc-radio">` + `st-*` / `is-*` 状态类；**无 `theme` 时挂 `st-control`（control 色系）**，有 theme 时映射为 `st-success` / `st-info` / `st-warn` / `st-error` / `st-dark`
+1. 解析 props；根元素为 `<label class="v-radio">` + `st-*` / `is-*` 状态类；**无 `theme` 时挂 `st-control`（control 色系）**，有 theme 时映射为 `st-success` / `st-info` / `st-warn` / `st-error` / `st-dark`
 2. `v-model:checked` 绑定原生 radio 的勾选态
 3. 常见 input 属性 / 事件经 `inheritAttrs: false` 透传到内部 input；`change` 按上文「透传策略」合并内部同步与用户监听
-4. 图标绘制在 `sc-radio__control`：`::before` 轮廓环用 border 色，勾选时 `::after` 内圈用 bg 色；input 透明叠层接收交互
-5. 焦点光晕画在 `sc-radio__control` 上，交互对齐 Button：`:focus-visible` 保留 halo，鼠标点击播 wave
+4. 图标绘制在 `v-radio__control`：`::before` 轮廓环用 border 色，勾选时 `::after` 内圈用 bg 色；input 透明叠层接收交互
+5. 焦点光晕画在 `v-radio__control` 上，交互对齐 Button：`:focus-visible` 保留 halo，鼠标点击播 wave
 
 ## 无障碍（a11y）
 
 - 根节点 `<label>` 包裹 input，点击文案即可切换
 - 键盘：原生 radio 焦点与方向键在同名组内切换
-- `:focus-visible` 时 `sc-radio__control` 外扩 box-shadow 光晕
+- `:focus-visible` 时 `v-radio__control` 外扩 box-shadow 光晕
 
 ## 动画
 

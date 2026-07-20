@@ -1,26 +1,27 @@
 // Radio styles：原生 radio + appearance:none
 // 色值对齐 Button：轮廓=border，内圈=bg；mask 画在 __control 伪元素上（input 透明叠层）
 // 注意：焦点光晕画在无 mask 的 __control 上
+@import "../../theme/common.less";
 
-.sc-radio {
-  --radio-font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-  --radio-font-size: 14px;
-  --radio-line-height: 1.4;
-  --radio-gap: 8px;
-  --radio-size: 18px;
+.v-radio {
+  --radio-font-family: var(--v-font-family);
+  --radio-font-size: var(--v-font-size-md);
+  --radio-line-height: var(--v-line-height-tight);
+  --radio-gap: var(--v-space-4);
+  --radio-size: var(--v-check-size-md);
   // 颜色由 theme 类驱动；无 theme 时组件挂 st-control（对齐 Button control）
-  --radio-border: #d1d5db;
-  --radio-bg: #f3f4f6;
-  --radio-color: #1f2937;
-  --radio-label-color: #1f2937;
-  --radio-focus-color: #6b7280;
+  --radio-border: var(--v-color-control-border);
+  --radio-bg: var(--v-color-control);
+  --radio-color: var(--v-color-control-text);
+  --radio-label-color: var(--v-color-control-text);
+  --radio-focus-color: var(--v-color-control-focus);
   --radio-focus-ring: color-mix(
     in srgb,
-    var(--radio-focus-color) 40%,
+    var(--radio-focus-color) var(--v-mix-focus-ring-strong),
     transparent
   );
 
-  // 轮廓环（与 icons/no-checked.svg 一致）
+  // 轮廓环（与 icons/no-checked.svg 一致）— SVG data URI 保留裸色
   --radio-icon-ring: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath fill-rule='evenodd' fill='%23000' d='M8 1C11.87 1 15 4.13 15 8C15 11.87 11.87 15 8 15C4.13 15 1 11.87 1 8C1 4.13 4.13 1 8 1ZM8 2.87C5.16 2.87 2.87 5.16 2.87 8C2.87 10.84 5.16 13.13 8 13.13C10.84 13.13 13.13 10.84 13.13 8C13.13 5.16 10.84 2.87 8 2.87Z'/%3E%3C/svg%3E");
 
   box-sizing: border-box;
@@ -37,79 +38,78 @@
   vertical-align: middle;
 
   &.st-sm {
-    --radio-font-size: 12px;
-    --radio-gap: 6px;
-    --radio-size: 14px;
+    --radio-font-size: var(--v-font-size-sm);
+    --radio-gap: var(--v-space-3);
+    --radio-size: var(--v-check-size-sm);
   }
 
   &.st-md {
-    --radio-font-size: 14px;
-    --radio-gap: 8px;
-    --radio-size: 18px;
+    --radio-font-size: var(--v-font-size-md);
+    --radio-gap: var(--v-space-4);
+    --radio-size: var(--v-check-size-md);
   }
 
   &.st-lg {
-    --radio-font-size: 16px;
-    --radio-gap: 10px;
-    --radio-size: 22px;
+    --radio-font-size: var(--v-font-size-lg);
+    --radio-gap: var(--v-space-5);
+    --radio-size: var(--v-check-size-lg);
   }
 
   // themes：色值对齐 Button 同名主题
   // 无 theme → st-control
   &.st-control {
-    --radio-border: #d1d5db;
-    --radio-bg: #d1d5db;
-    --radio-color: #1f2937;
-    --radio-label-color: #1f2937;
-    --radio-focus-color: #6b7280;
+    --radio-border: var(--v-color-control-border);
+    --radio-bg: var(--v-color-control-active);
+    --radio-color: var(--v-color-control-text);
+    --radio-label-color: var(--v-color-control-text);
+    --radio-focus-color: var(--v-color-control-focus);
   }
 
   &.st-dark {
-    --radio-border: #111827;
-    --radio-bg: #1f2937;
-    --radio-color: #f9fafb;
-    --radio-label-color: #1f2937;
-    --radio-focus-color: #1f2937;
+    --radio-border: var(--v-color-dark-border);
+    --radio-bg: var(--v-color-dark);
+    --radio-color: var(--v-color-dark-text);
+    --radio-label-color: var(--v-color-control-text);
+    --radio-focus-color: var(--v-color-dark);
   }
 
   &.st-success {
-    --radio-border: #15803d;
-    --radio-bg: #16a34a;
-    --radio-color: #ffffff;
-    --radio-label-color: #1f2937;
-    --radio-focus-color: #16a34a;
+    --radio-border: var(--v-color-success-border);
+    --radio-bg: var(--v-color-success);
+    --radio-color: var(--v-color-white);
+    --radio-label-color: var(--v-color-control-text);
+    --radio-focus-color: var(--v-color-success);
   }
 
   &.st-info {
-    --radio-border: #1d4ed8;
-    --radio-bg: #2563eb;
-    --radio-color: #ffffff;
-    --radio-label-color: #1f2937;
-    --radio-focus-color: #2563eb;
+    --radio-border: var(--v-color-info-border);
+    --radio-bg: var(--v-color-info);
+    --radio-color: var(--v-color-white);
+    --radio-label-color: var(--v-color-control-text);
+    --radio-focus-color: var(--v-color-info);
   }
 
   &.st-warn {
-    --radio-border: #b45309;
-    --radio-bg: #d97706;
-    --radio-color: #ffffff;
-    --radio-label-color: #1f2937;
-    --radio-focus-color: #d97706;
+    --radio-border: var(--v-color-warn-border);
+    --radio-bg: var(--v-color-warn);
+    --radio-color: var(--v-color-white);
+    --radio-label-color: var(--v-color-control-text);
+    --radio-focus-color: var(--v-color-warn);
   }
 
   &.st-error {
-    --radio-border: #b91c1c;
-    --radio-bg: #dc2626;
-    --radio-color: #ffffff;
-    --radio-label-color: #1f2937;
-    --radio-focus-color: #dc2626;
+    --radio-border: var(--v-color-error-border);
+    --radio-bg: var(--v-color-error);
+    --radio-color: var(--v-color-white);
+    --radio-label-color: var(--v-color-control-text);
+    --radio-focus-color: var(--v-color-error);
   }
 
   &.st-disabled {
-    opacity: 0.55;
-    cursor: not-allowed;
+    .v-disabled(var(--v-opacity-disabled-light));
 
-    .sc-radio__input,
-    .sc-radio__label {
+    .v-radio__input,
+    .v-radio__label {
       cursor: not-allowed;
     }
   }
@@ -118,14 +118,13 @@
   &__control {
     box-sizing: border-box;
     position: relative;
-    display: inline-flex;
+    .v-inline-flex-center();
     flex-shrink: 0;
-    align-items: center;
-    justify-content: center;
     width: var(--radio-size);
     height: var(--radio-size);
     border-radius: 50%;
-    transition: box-shadow 0.15s ease;
+    --v-focus-ring-current: var(--radio-focus-ring);
+    transition: box-shadow var(--v-duration-fast) var(--v-ease-default);
 
     // 轮廓环 → border
     &::before {
@@ -145,70 +144,35 @@
       border-radius: 50%;
       background-color: var(--radio-bg);
       opacity: 0;
-      transition: opacity 0.15s ease;
+      transition: opacity var(--v-duration-fast) var(--v-ease-default);
     }
 
-    &:has(.sc-radio__input:checked)::after {
+    &:has(.v-radio__input:checked)::after {
       opacity: 1;
     }
 
     // 鼠标点击：瞬时外扩光晕后消失（类 antd wave）
-    &:has(.sc-radio__input:focus:not(:focus-visible)) {
-      animation: sc-radio-focus-wave 0.4s ease-out;
+    &:has(.v-radio__input:focus:not(:focus-visible)) {
+      animation: v-focus-wave var(--v-duration-focus) var(--v-ease-out);
     }
 
     // 键盘聚焦：外扩光晕并保留
-    &:has(.sc-radio__input:focus-visible) {
-      box-shadow: 0 0 0 3px var(--radio-focus-ring);
-      animation: sc-radio-focus-halo 0.4s ease-out;
+    &:has(.v-radio__input:focus-visible) {
+      box-shadow: 0 0 0 var(--v-focus-ring-width) var(--radio-focus-ring);
+      animation: v-focus-halo var(--v-duration-focus) var(--v-ease-out);
     }
   }
 
-  &.is-checked .sc-radio__control::after {
+  &.is-checked .v-radio__control::after {
     opacity: 1;
   }
 
   &__input {
-    appearance: none;
-    box-sizing: border-box;
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    opacity: 0;
-    border: none;
-    outline: none;
-    cursor: pointer;
+    .v-overlay-input();
   }
 
   &__label {
     min-width: 0;
     color: inherit;
-  }
-}
-
-@keyframes sc-radio-focus-halo {
-  from {
-    box-shadow: 0 0 0 0 var(--radio-focus-ring);
-  }
-
-  to {
-    box-shadow: 0 0 0 3px var(--radio-focus-ring);
-  }
-}
-
-@keyframes sc-radio-focus-wave {
-  0% {
-    box-shadow: 0 0 0 0 var(--radio-focus-ring);
-  }
-
-  50% {
-    box-shadow: 0 0 0 4px var(--radio-focus-ring);
-  }
-
-  100% {
-    box-shadow: 0 0 0 4px transparent;
   }
 }
