@@ -7,7 +7,7 @@ todos:
     status: completed
   - id: common-less
     content: 实现 common.less：import vars + mixin/keyframes（含注释）
-    status: pending
+    status: completed
   - id: migrate-less
     content: 8 个组件 less：用 token/mixin，sc- → v-
     status: pending

@@ -1,0 +1,152 @@
+// 公共 mixin / keyframes
+// 组件 less 顶部：@import "../../theme/common.less";（自动带上 basic-vars）
+
+@import "./basic-vars.less";
+
+/* —— Layout —— */
+
+/**
+ * 行内居中 flex 容器（button 根节点、icon 按钮关闭钮等）。
+ * 自带 box-sizing，避免与全局重置不一致。
+ */
+.v-inline-flex-center() {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/**
+ * 统一字族。组件仍用局部 --xxx-font-family 做 alias，默认指向 --v-font-family。
+ */
+.v-font-base() {
+  font-family: var(--v-font-family);
+}
+
+/* —— Motion —— */
+
+/**
+ * 标准颜色 / 边框 / 阴影过渡（对齐 button）。
+ * link / input 若只需子集，可自行写 transition，不必强行套用。
+ */
+.v-transition-colors() {
+  transition:
+    background-color var(--v-duration-fast) var(--v-ease-default),
+    border-color var(--v-duration-fast) var(--v-ease-default),
+    color var(--v-duration-fast) var(--v-ease-default),
+    opacity var(--v-duration-fast) var(--v-ease-default),
+    box-shadow var(--v-duration-fast) var(--v-ease-default);
+}
+
+/* —— State —— */
+
+/**
+ * 禁用态：透明度 + not-allowed。
+ * @opacity 默认 --v-opacity-disabled（0.5，button/tag/link）；
+ * checkbox / radio / input / textarea 传 var(--v-opacity-disabled-light)（0.55）。
+ * 配合 st-disabled 或 :disabled；子元素 cursor 由组件自行覆盖。
+ */
+.v-disabled(@opacity: var(--v-opacity-disabled)) {
+  opacity: @opacity;
+  cursor: not-allowed;
+}
+
+/* —— Surface —— */
+
+/**
+ * Plain / 浅主题色底：color-mix 12% 透明。
+ * @color 通常传主题边框色（如 var(--btn-border)、var(--tag-border)、#16a34a）。
+ * 用于 button/tag plain、alert 语义浅底；字色/边框由调用方另设。
+ * 更深一档（active）可用：color-mix(in srgb, @color var(--v-mix-plain-hover), transparent)。
+ */
+.v-plain-surface(@color) {
+  background-color: color-mix(
+    in srgb,
+    @color var(--v-mix-plain-bg),
+    transparent
+  );
+}
+
+/**
+ * checkbox / radio 透明叠层原生 input。
+ * 挂在 __control 内绝对定位铺满，点击热区由 input 承担；视觉画在 __control。
+ */
+.v-overlay-input() {
+  appearance: none;
+  box-sizing: border-box;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  opacity: 0;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+
+/* —— Focus —— */
+
+/**
+ * 交互焦点：鼠标点击 wave、键盘 focus-visible 保留 halo。
+ * @ring 为 ring 色（通常是组件局部 --xxx-focus-ring）。
+ * 会写入 --v-focus-ring-current，供下方统一 keyframes 读取。
+ *
+ * 适用：焦点落在自身的控件（button、link）。
+ *
+ * checkbox / radio 焦点在原生 input、光晕画在 __control 时：
+ * 在 __control 上设 --v-focus-ring-current: var(--xxx-focus-ring)；
+ * 再对 :has(input:focus:not(:focus-visible)) / :has(input:focus-visible)
+ * 分别挂 animation: v-focus-wave / v-focus-halo，以及 focus-visible 的 box-shadow。
+ */
+.v-focus-interactive(@ring) {
+  --v-focus-ring-current: @ring;
+
+  // 鼠标点击：瞬时外扩光晕后消失（类 antd wave）
+  &:focus:not(:focus-visible) {
+    animation: v-focus-wave var(--v-duration-focus) var(--v-ease-out);
+  }
+
+  // 键盘聚焦：外扩光晕并保留
+  &:focus-visible {
+    box-shadow: 0 0 0 var(--v-focus-ring-width) @ring;
+    animation: v-focus-halo var(--v-duration-focus) var(--v-ease-out);
+  }
+}
+
+/**
+ * 静态 focus ring（input :focus-within、textarea :focus）。
+ * @color 传组件 --xxx-focus-ring；宽度用 --v-focus-ring-width。
+ */
+.v-focus-ring-static(@color) {
+  box-shadow: 0 0 0 var(--v-focus-ring-width) @color;
+}
+
+/**
+ * 统一 focus halo / wave。
+ * 依赖元素上的 --v-focus-ring-current（由 .v-focus-interactive 或组件手动设置）。
+ */
+@keyframes v-focus-halo {
+  from {
+    box-shadow: 0 0 0 0 var(--v-focus-ring-current);
+  }
+
+  to {
+    box-shadow: 0 0 0 var(--v-focus-ring-width) var(--v-focus-ring-current);
+  }
+}
+
+@keyframes v-focus-wave {
+  0% {
+    box-shadow: 0 0 0 0 var(--v-focus-ring-current);
+  }
+
+  50% {
+    box-shadow: 0 0 0 4px var(--v-focus-ring-current);
+  }
+
+  100% {
+    box-shadow: 0 0 0 4px transparent;
+  }
+}
