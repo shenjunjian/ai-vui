@@ -15,7 +15,8 @@
   "dependencies": {
     "vue": "catalog:",
     "@vue/shared": "catalog:",
-    "@opentiny/icons": "catalog:"
+    "@opentiny/icons": "catalog:",
+    "nanoid": "catalog:"
   },
   "devDependencies": {
     "@types/node": "catalog:",

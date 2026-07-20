@@ -1,5 +1,7 @@
 import { onUnmounted, shallowReactive, watch, type ShallowReactive } from "vue";
 import "../theme/popper.less";
+import { random } from "../utils/dataHelper";
+import { applyClass } from "../utils/cssHelper";
 
 export type PopperPlacement =
   | "top"
@@ -60,7 +62,6 @@ export interface PopperOption {
 }
 
 const BASE_GAP = 8;
-const DEFAULT_ARROW_SIZE = 8;
 const POPPER_CLASS = "vai-popper";
 const ARROW_CLASS = "vai-popper--arrow";
 const NO_ANIMATE_CLASS = "vai-popper--no-animate";
@@ -92,7 +93,7 @@ const DEFAULT_OPTION: Required<PopperOption> = {
   placement: "bottom",
   offset: 0,
   arrowVisible: true,
-  arrowSize: DEFAULT_ARROW_SIZE,
+  arrowSize: 8,
   arrowSafeOffset: 8,
   boundary: null,
   boundaryPadding: 0,
@@ -101,41 +102,6 @@ const DEFAULT_OPTION: Required<PopperOption> = {
   customClass: "",
 };
 
-function createAnchorId() {
-  return `vai${Math.random().toString(36).slice(2, 10)}`;
-}
-
-function parseOffset(offset: number | [number, number]): [number, number] {
-  return Array.isArray(offset) ? offset : [offset, 0];
-}
-
-function resolveGap(
-  arrowVisible: boolean,
-  awayOffset: number,
-  arrowSize: number,
-) {
-  return (arrowVisible ? BASE_GAP + arrowSize : BASE_GAP) + awayOffset;
-}
-
-function setAnchorName(el: Element, name: string) {
-  (el as HTMLElement).style.setProperty("anchor-name", name);
-}
-
-function clearAnchorName(el: Element) {
-  (el as HTMLElement).style.removeProperty("anchor-name");
-}
-
-function normalizeClasses(classes: string) {
-  return classes.replaceAll(",", " ").split(/\s+/).filter(Boolean).join(" ");
-}
-
-function applyClasses(el: HTMLElement, classes: string, isAdd: boolean) {
-  if (!classes) return;
-  const list = classes.split(" ");
-  if (isAdd) el.classList.add(...list);
-  else el.classList.remove(...list);
-}
-
 /**
  * 弹出层：基于 Popover API + CSS Anchor Positioning，将 popper 锚定到 reference。
  * 返回可写的 shallowReactive 配置，修改 `show` 等字段即可驱动显示与定位。
@@ -143,7 +109,7 @@ function applyClasses(el: HTMLElement, classes: string, isAdd: boolean) {
 export function usePopper(
   option: PopperOption = { reference: null, popper: null },
 ): ShallowReactive<Required<PopperOption>> {
-  const anchorName = `--vai-popper-${createAnchorId()}`;
+  const anchorName = `--vai-popper-${random()}`;
   const state = shallowReactive<Required<PopperOption>>({
     ...DEFAULT_OPTION,
     ...option,
@@ -181,7 +147,7 @@ export function usePopper(
 
   function unbindReference() {
     if (!boundReference) return;
-    clearAnchorName(boundReference);
+    (boundReference as HTMLElement).style.removeProperty("anchor-name");
     boundReference = null;
   }
 
@@ -196,7 +162,7 @@ export function usePopper(
       }
     }
     if (appliedCustomClass) {
-      applyClasses(boundPopper, appliedCustomClass, false);
+      applyClass(boundPopper, appliedCustomClass, false);
       appliedCustomClass = "";
     }
     boundPopper.classList.remove(POPPER_CLASS, ARROW_CLASS, NO_ANIMATE_CLASS);
@@ -217,9 +183,11 @@ export function usePopper(
   }
 
   function applyPlacementStyles(popper: HTMLElement) {
-    const [cross, away] = parseOffset(state.offset);
+    const [cross, away] = Array.isArray(state.offset)
+      ? state.offset
+      : [state.offset, 0];
     const arrowSize = Math.max(0, state.arrowSize);
-    const gap = resolveGap(state.arrowVisible, away, arrowSize);
+    const gap = (state.arrowVisible ? BASE_GAP + arrowSize : BASE_GAP) + away;
     const placement = state.placement;
 
     popper.dataset.placement = placement;
@@ -260,7 +228,7 @@ export function usePopper(
     if (boundReference !== reference) {
       unbindReference();
       if (reference) {
-        setAnchorName(reference, anchorName);
+        (reference as HTMLElement).style.setProperty("anchor-name", anchorName);
         boundReference = reference;
         // 未显式指定 boundary 时，默认取 reference.offsetParent（仅初始化一次）
         if (!boundaryInitialized) {
@@ -290,11 +258,10 @@ export function usePopper(
     popper.classList.toggle(ARROW_CLASS, state.arrowVisible);
     popper.classList.toggle(NO_ANIMATE_CLASS, !state.animate);
 
-    const nextClass = normalizeClasses(state.customClass);
-    if (appliedCustomClass !== nextClass) {
-      if (appliedCustomClass) applyClasses(popper, appliedCustomClass, false);
-      if (nextClass) applyClasses(popper, nextClass, true);
-      appliedCustomClass = nextClass;
+    if (appliedCustomClass !== state.customClass) {
+      if (appliedCustomClass) applyClass(popper, appliedCustomClass, false);
+      if (state.customClass) applyClass(popper, state.customClass, true);
+      appliedCustomClass = state.customClass;
     }
   }
 
@@ -320,30 +287,13 @@ export function usePopper(
     syncAutoHide(state.show && state.autoHide);
   }
 
-  function sync() {
-    bindElements();
-    syncPopperChrome();
-    syncVisibility();
-  }
-
   watch(
-    () =>
-      [
-        state.reference,
-        state.popper,
-        state.show,
-        state.placement,
-        state.offset,
-        state.arrowVisible,
-        state.arrowSize,
-        state.arrowSafeOffset,
-        state.boundary,
-        state.boundaryPadding,
-        state.autoHide,
-        state.animate,
-        state.customClass,
-      ] as const,
-    sync,
+    () => state,
+    () => {
+      bindElements();
+      syncPopperChrome();
+      syncVisibility();
+    },
     { flush: "post", immediate: true },
   );
 

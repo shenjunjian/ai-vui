@@ -21,7 +21,7 @@ const proxyDataSkipKey = /*@__PURE__*/ "__skip_proxy_data";
 export function proxyData<D>(
   data: D,
   mapping: Record<string, string>,
-  mapToSelf: string[] = ["children"] // 假设它就是数组的场景
+  mapToSelf: string[] = ["children"], // 假设它就是数组的场景
 ): D {
   // 1、数组时
   if (isArray(data)) {
@@ -91,7 +91,7 @@ export function transferData(
   data: any,
   mapping: Record<string, string>,
   mapToSelf: string[] = ["children"], // 假设它就是数组的场景
-  isRevert = false
+  isRevert = false,
 ): any {
   if (isArray(data)) {
     return data.map((item) => transferData(item, mapping, mapToSelf));
@@ -115,7 +115,7 @@ export function transferData(
     if (mapToSelf.includes(from) || mapToSelf.includes(to)) {
       if (isArray(data[to])) {
         data[to] = data[to].map((item) =>
-          transferData(item, mapping, mapToSelf, isRevert)
+          transferData(item, mapping, mapToSelf, isRevert),
         );
       } else if (isObject(data[to])) {
         data[to] = transferData(data[to], mapping, mapToSelf, isRevert);
@@ -157,7 +157,7 @@ export const clamp = (value: number, min: number, max: number) =>
 /** 生成随机字符
  * Math.random 最快，但只能生成数字
  * nanoid 是最好的随机器，参见：nanoid 的 [readme](https://github.com/ai/nanoid/blob/main/README.zh-CN.md#基准值)
- * crypto.randomUUID 虽然比nanoid快速，但它的容量更小,只生成0-9 a-f。
+ * crypto.randomUUID 虽然比nanoid快速，但它的容量更小,只生成0-9 a-f, 且只能用在 https 安全的场景，否则报错。
  *
  * @param len 字符长度,建议不超过16
  * @param fast  是否使用快速模式, 快速模式只生成数字，默认值为false。
