@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import AlertDemo from "./components/alert-demo.vue";
 import ButtonDemo from "./components/button-demo.vue";
+import CheckboxDemo from "./components/checkbox-demo.vue";
 import InputDemo from "./components/input-demo.vue";
 import LinkDemo from "./components/link-demo.vue";
 import TagDemo from "./components/tag-demo.vue";
@@ -9,8 +10,15 @@ import TextAreaDemo from "./components/text-area-demo.vue";
 import UsePopperDemo from "./components/use-popper-demo.vue";
 
 const tab = ref<
-  "button" | "link" | "tag" | "alert" | "input" | "text-area" | "use-popper"
->("text-area");
+  | "button"
+  | "link"
+  | "tag"
+  | "alert"
+  | "input"
+  | "text-area"
+  | "checkbox"
+  | "use-popper"
+>("checkbox");
 </script>
 
 <template>
@@ -67,6 +75,14 @@ const tab = ref<
       <button
         type="button"
         class="site-app__tab"
+        :class="{ 'is-active': tab === 'checkbox' }"
+        @click="tab = 'checkbox'"
+      >
+        Checkbox
+      </button>
+      <button
+        type="button"
+        class="site-app__tab"
         :class="{ 'is-active': tab === 'use-popper' }"
         @click="tab = 'use-popper'"
       >
@@ -79,6 +95,7 @@ const tab = ref<
     <AlertDemo v-else-if="tab === 'alert'" />
     <InputDemo v-else-if="tab === 'input'" />
     <TextAreaDemo v-else-if="tab === 'text-area'" />
+    <CheckboxDemo v-else-if="tab === 'checkbox'" />
     <UsePopperDemo v-else />
   </div>
 </template>
