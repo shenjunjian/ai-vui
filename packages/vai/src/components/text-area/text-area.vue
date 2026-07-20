@@ -1,14 +1,7 @@
 <template>
   <div ref="rootRef" class="sc-textarea" :class="state.rootClass">
-    <textarea
-      ref="textareaRef"
-      class="sc-textarea__inner"
-      :disabled="disabled"
-      :value="modelValue"
-      :style="state.textareaStyle"
-      v-bind="state.textareaAttrs"
-      @input="api.handleInput"
-    />
+    <textarea ref="textareaRef" class="sc-textarea__inner" :disabled="disabled" :value="modelValue"
+      :style="state.textareaStyle" v-bind="state.textareaAttrs" @input="api.handleInput" />
     <span v-if="showCount" class="sc-textarea__count" aria-hidden="true">
       {{ state.charCountText }}
     </span>
@@ -30,7 +23,7 @@ export interface TextAreaAutoSize {
 const props = withDefaults(
   defineProps<{
     /** 尺寸 */
-    size?: "xs" | "sm" | "md" | "lg";
+    size?: "sm" | "md" | "lg";
     /** 语义主题色，只影响 border 和文字 */
     theme?: "success" | "info" | "warn" | "error" | "dark";
     /** 禁用态 */

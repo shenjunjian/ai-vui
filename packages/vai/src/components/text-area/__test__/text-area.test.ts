@@ -15,10 +15,10 @@ describe("TextArea", () => {
 
   test("applies size and theme classes", () => {
     const wrapper = mount(TextArea, {
-      props: { size: "xs", theme: "error" },
+      props: { size: "lg", theme: "error" },
     });
 
-    expect(wrapper.classes()).toContain("st-xs");
+    expect(wrapper.classes()).toContain("st-lg");
     expect(wrapper.classes()).toContain("st-error");
     expect(wrapper.classes()).not.toContain("st-control");
   });

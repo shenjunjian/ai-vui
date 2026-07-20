@@ -34,7 +34,6 @@ const textareaRef = ref<{
     <section class="textarea-demo__section">
       <h2>尺寸 size</h2>
       <div class="textarea-demo__stack">
-        <TextArea size="xs" placeholder="Extra Small" rows="2" />
         <TextArea size="sm" placeholder="Small" rows="2" />
         <TextArea size="md" placeholder="Medium" rows="2" />
         <TextArea size="lg" placeholder="Large" rows="2" />

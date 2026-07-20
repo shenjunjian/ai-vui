@@ -19,7 +19,6 @@ export default function useVm(ctx: TextAreaCtx) {
 
   const sizeClass = computed(() => {
     const sizeMap: Record<string, string> = {
-      xs: "st-xs",
       sm: "st-sm",
       md: "st-md",
       lg: "st-lg",
