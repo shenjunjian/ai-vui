@@ -1,0 +1,92 @@
+@POPPER_CLASS: vai-popper;
+@ARROW_CLASS: vai-popper--arrow;
+@NO_ANIMATE_CLASS: vai-popper--no-animate;
+
+.@{POPPER_CLASS} {
+  position: absolute;
+  inset: auto;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  /* Popover UA 默认 overflow:auto，会裁掉伸出盒外的箭头 ::before */
+  overflow: visible;
+  position-try-fallbacks: flip-block, flip-inline;
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease,
+    overlay 0.15s allow-discrete,
+    display 0.15s allow-discrete;
+  opacity: 0;
+  transform: scale(0.96);
+}
+.@{POPPER_CLASS}:popover-open {
+  opacity: 1;
+  transform: scale(1);
+}
+@starting-style {
+  .@{POPPER_CLASS}:popover-open {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+.@{POPPER_CLASS}.@{NO_ANIMATE_CLASS} {
+  transition: none;
+}
+.@{POPPER_CLASS}.@{ARROW_CLASS}::before {
+  content: "";
+  position: absolute;
+  width: var(--vai-popper-arrow-size, 8px);
+  height: var(--vai-popper-arrow-size, 8px);
+  background: inherit;
+  /* 与面板同色边框；内侧两条透明，只保留朝外的尖角描边 */
+  border: inherit;
+  rotate: 45deg;
+  box-sizing: border-box;
+  pointer-events: none;
+}
+.@{POPPER_CLASS}[data-placement^="top"].@{ARROW_CLASS}::before {
+  bottom: 0;
+  left: clamp(
+    var(--vai-popper-arrow-safe),
+    calc(50% - var(--vai-popper-arrow-size, 8px) / 2),
+    calc(100% - var(--vai-popper-arrow-safe) - var(--vai-popper-arrow-size, 8px))
+  );
+  translate: 0 50%;
+  border-top-color: transparent;
+  border-left-color: transparent;
+}
+.@{POPPER_CLASS}[data-placement^="bottom"].@{ARROW_CLASS}::before {
+  top: 0;
+  left: clamp(
+    var(--vai-popper-arrow-safe),
+    calc(50% - var(--vai-popper-arrow-size, 8px) / 2),
+    calc(100% - var(--vai-popper-arrow-safe) - var(--vai-popper-arrow-size, 8px))
+  );
+  translate: 0 -50%;
+  border-bottom-color: transparent;
+  border-right-color: transparent;
+}
+.@{POPPER_CLASS}[data-placement^="left"].@{ARROW_CLASS}::before {
+  right: 0;
+  top: clamp(
+    var(--vai-popper-arrow-safe),
+    calc(50% - var(--vai-popper-arrow-size, 8px) / 2),
+    calc(100% - var(--vai-popper-arrow-safe) - var(--vai-popper-arrow-size, 8px))
+  );
+  translate: 50% 0;
+  /* 尖角朝右（指向 reference） */
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+}
+.@{POPPER_CLASS}[data-placement^="right"].@{ARROW_CLASS}::before {
+  left: 0;
+  top: clamp(
+    var(--vai-popper-arrow-safe),
+    calc(50% - var(--vai-popper-arrow-size, 8px) / 2),
+    calc(100% - var(--vai-popper-arrow-safe) - var(--vai-popper-arrow-size, 8px))
+  );
+  translate: -50% 0;
+  /* 尖角朝左（指向 reference） */
+  border-top-color: transparent;
+  border-right-color: transparent;
+}

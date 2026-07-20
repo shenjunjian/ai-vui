@@ -24,6 +24,7 @@ const placement = ref<PopperPlacement>("bottom");
 const crossOffset = ref(0);
 const awayOffset = ref(0);
 const arrowVisible = ref(true);
+const arrowSize = ref(8);
 const arrowSafeOffset = ref(8);
 const animate = ref(true);
 const autoHide = ref(false);
@@ -36,6 +37,7 @@ const popper = usePopper({
   placement: placement.value,
   offset: [crossOffset.value, awayOffset.value],
   arrowVisible: arrowVisible.value,
+  arrowSize: arrowSize.value,
   arrowSafeOffset: arrowSafeOffset.value,
   animate: animate.value,
   autoHide: autoHide.value,
@@ -91,6 +93,9 @@ watch([crossOffset, awayOffset], ([cross, away]) => {
 });
 watch(arrowVisible, (v) => {
   popper.arrowVisible = v;
+});
+watch(arrowSize, (v) => {
+  popper.arrowSize = v;
 });
 watch(arrowSafeOffset, (v) => {
   popper.arrowSafeOffset = v;
@@ -167,6 +172,11 @@ function toggleScrollPopper() {
         <label class="popper-demo__field">
           <span>offset 远离轴</span>
           <input v-model.number="awayOffset" type="number" step="2" />
+        </label>
+
+        <label class="popper-demo__field">
+          <span>arrowSize</span>
+          <input v-model.number="arrowSize" type="number" min="0" step="1" />
         </label>
 
         <label class="popper-demo__field">
@@ -310,7 +320,7 @@ function toggleScrollPopper() {
 .popper-demo__panel {
   min-width: 160px;
   padding: 12px 14px;
-  display: flex;
+  /* 勿在关闭态写死 display，否则会盖住 Popover UA 的 display:none */
   flex-direction: column;
   gap: 4px;
   font-size: 13px;
@@ -319,6 +329,9 @@ function toggleScrollPopper() {
   border: 1px solid #d1d5db;
   border-radius: 8px;
   box-shadow: 0 8px 24px rgb(15 23 42 / 12%);
+}
+.popper-demo__panel:popover-open {
+  display: flex;
 }
 
 .popper-demo__panel strong {

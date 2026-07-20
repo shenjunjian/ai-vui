@@ -1,9 +1,5 @@
-import {
-  onUnmounted,
-  shallowReactive,
-  watch,
-  type ShallowReactive,
-} from "vue";
+import { onUnmounted, shallowReactive, watch, type ShallowReactive } from "vue";
+import "../theme/popper.less";
 
 export type PopperPlacement =
   | "top"
@@ -40,6 +36,8 @@ export interface PopperOption {
   offset?: number | [number, number];
   /** 是否显示箭头，默认 true */
   arrowVisible?: boolean;
+  /** 箭头边长（px），默认 8；写入 `--vai-popper-arrow-size` */
+  arrowSize?: number;
   /** 箭头到弹出层四角的安全距离，默认 8 */
   arrowSafeOffset?: number;
   /**
@@ -62,8 +60,7 @@ export interface PopperOption {
 }
 
 const BASE_GAP = 8;
-const ARROW_SIZE = 8;
-const STYLE_ID = "vai-use-popper-style";
+const DEFAULT_ARROW_SIZE = 8;
 const POPPER_CLASS = "vai-popper";
 const ARROW_CLASS = "vai-popper--arrow";
 const NO_ANIMATE_CLASS = "vai-popper--no-animate";
@@ -95,6 +92,7 @@ const DEFAULT_OPTION: Required<PopperOption> = {
   placement: "bottom",
   offset: 0,
   arrowVisible: true,
+  arrowSize: DEFAULT_ARROW_SIZE,
   arrowSafeOffset: 8,
   boundary: null,
   boundaryPadding: 0,
@@ -107,117 +105,16 @@ function createAnchorId() {
   return `vai${Math.random().toString(36).slice(2, 10)}`;
 }
 
-function getPopperStyleText() {
-  return `
-.${POPPER_CLASS} {
-  position: absolute;
-  inset: auto;
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  /* Popover UA 默认 overflow:auto，会裁掉伸出盒外的箭头 ::before */
-  overflow: visible;
-  position-try-fallbacks: flip-block, flip-inline;
-  transition:
-    opacity 0.15s ease,
-    transform 0.15s ease,
-    overlay 0.15s allow-discrete,
-    display 0.15s allow-discrete;
-  opacity: 0;
-  transform: scale(0.96);
-}
-.${POPPER_CLASS}:popover-open {
-  opacity: 1;
-  transform: scale(1);
-}
-@starting-style {
-  .${POPPER_CLASS}:popover-open {
-    opacity: 0;
-    transform: scale(0.96);
-  }
-}
-.${POPPER_CLASS}.${NO_ANIMATE_CLASS} {
-  transition: none;
-}
-.${POPPER_CLASS}.${ARROW_CLASS}::before {
-  content: "";
-  position: absolute;
-  width: ${ARROW_SIZE}px;
-  height: ${ARROW_SIZE}px;
-  background: inherit;
-  /* 与面板同色边框；内侧两条透明，只保留朝外的尖角描边 */
-  border: inherit;
-  rotate: 45deg;
-  box-sizing: border-box;
-  pointer-events: none;
-}
-.${POPPER_CLASS}[data-placement^="top"].${ARROW_CLASS}::before {
-  bottom: 0;
-  left: clamp(
-    var(--vai-popper-arrow-safe),
-    calc(50% - ${ARROW_SIZE / 2}px),
-    calc(100% - var(--vai-popper-arrow-safe) - ${ARROW_SIZE}px)
-  );
-  translate: 0 50%;
-  border-top-color: transparent;
-  border-left-color: transparent;
-}
-.${POPPER_CLASS}[data-placement^="bottom"].${ARROW_CLASS}::before {
-  top: 0;
-  left: clamp(
-    var(--vai-popper-arrow-safe),
-    calc(50% - ${ARROW_SIZE / 2}px),
-    calc(100% - var(--vai-popper-arrow-safe) - ${ARROW_SIZE}px)
-  );
-  translate: 0 -50%;
-  border-bottom-color: transparent;
-  border-right-color: transparent;
-}
-.${POPPER_CLASS}[data-placement^="left"].${ARROW_CLASS}::before {
-  right: 0;
-  top: clamp(
-    var(--vai-popper-arrow-safe),
-    calc(50% - ${ARROW_SIZE / 2}px),
-    calc(100% - var(--vai-popper-arrow-safe) - ${ARROW_SIZE}px)
-  );
-  translate: 50% 0;
-  /* 尖角朝右（指向 reference） */
-  border-bottom-color: transparent;
-  border-left-color: transparent;
-}
-.${POPPER_CLASS}[data-placement^="right"].${ARROW_CLASS}::before {
-  left: 0;
-  top: clamp(
-    var(--vai-popper-arrow-safe),
-    calc(50% - ${ARROW_SIZE / 2}px),
-    calc(100% - var(--vai-popper-arrow-safe) - ${ARROW_SIZE}px)
-  );
-  translate: -50% 0;
-  /* 尖角朝左（指向 reference） */
-  border-top-color: transparent;
-  border-right-color: transparent;
-}
-`.trim();
-}
-
-function ensureStyles() {
-  if (typeof document === "undefined") return;
-  const css = getPopperStyleText();
-  let style = document.getElementById(STYLE_ID) as HTMLStyleElement | null;
-  if (!style) {
-    style = document.createElement("style");
-    style.id = STYLE_ID;
-    document.head.appendChild(style);
-  }
-  if (style.textContent !== css) style.textContent = css;
-}
-
 function parseOffset(offset: number | [number, number]): [number, number] {
   return Array.isArray(offset) ? offset : [offset, 0];
 }
 
-function resolveGap(arrowVisible: boolean, awayOffset: number) {
-  return (arrowVisible ? BASE_GAP + ARROW_SIZE : BASE_GAP) + awayOffset;
+function resolveGap(
+  arrowVisible: boolean,
+  awayOffset: number,
+  arrowSize: number,
+) {
+  return (arrowVisible ? BASE_GAP + arrowSize : BASE_GAP) + awayOffset;
 }
 
 function setAnchorName(el: Element, name: string) {
@@ -229,11 +126,7 @@ function clearAnchorName(el: Element) {
 }
 
 function normalizeClasses(classes: string) {
-  return classes
-    .replaceAll(",", " ")
-    .split(/\s+/)
-    .filter(Boolean)
-    .join(" ");
+  return classes.replaceAll(",", " ").split(/\s+/).filter(Boolean).join(" ");
 }
 
 function applyClasses(el: HTMLElement, classes: string, isAdd: boolean) {
@@ -250,8 +143,6 @@ function applyClasses(el: HTMLElement, classes: string, isAdd: boolean) {
 export function usePopper(
   option: PopperOption = { reference: null, popper: null },
 ): ShallowReactive<Required<PopperOption>> {
-  ensureStyles();
-
   const anchorName = `--vai-popper-${createAnchorId()}`;
   const state = shallowReactive<Required<PopperOption>>({
     ...DEFAULT_OPTION,
@@ -316,6 +207,7 @@ export function usePopper(
     boundPopper.style.removeProperty("translate");
     boundPopper.style.removeProperty("--vai-popper-gap");
     boundPopper.style.removeProperty("--vai-popper-cross");
+    boundPopper.style.removeProperty("--vai-popper-arrow-size");
     boundPopper.style.removeProperty("--vai-popper-arrow-safe");
     boundPopper.style.removeProperty("--vai-popper-boundary-padding");
     if (boundPopper.getAttribute("popover") === "manual") {
@@ -326,7 +218,8 @@ export function usePopper(
 
   function applyPlacementStyles(popper: HTMLElement) {
     const [cross, away] = parseOffset(state.offset);
-    const gap = resolveGap(state.arrowVisible, away);
+    const arrowSize = Math.max(0, state.arrowSize);
+    const gap = resolveGap(state.arrowVisible, away, arrowSize);
     const placement = state.placement;
 
     popper.dataset.placement = placement;
@@ -334,6 +227,7 @@ export function usePopper(
     popper.style.setProperty("position-area", POSITION_AREA_MAP[placement]);
     popper.style.setProperty("--vai-popper-gap", `${gap}px`);
     popper.style.setProperty("--vai-popper-cross", `${cross}px`);
+    popper.style.setProperty("--vai-popper-arrow-size", `${arrowSize}px`);
     popper.style.setProperty(
       "--vai-popper-arrow-safe",
       `${Math.max(0, state.arrowSafeOffset)}px`,
@@ -441,6 +335,7 @@ export function usePopper(
         state.placement,
         state.offset,
         state.arrowVisible,
+        state.arrowSize,
         state.arrowSafeOffset,
         state.boundary,
         state.boundaryPadding,

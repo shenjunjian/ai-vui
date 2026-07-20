@@ -69,7 +69,6 @@ describe("usePopper", () => {
     wrappers.forEach((w) => w.unmount());
     reference.remove();
     popper.remove();
-    document.getElementById("vai-use-popper-style")?.remove();
   });
 
   function setup(option: Omit<PopperOption, "reference" | "popper"> = {}) {
@@ -88,6 +87,7 @@ describe("usePopper", () => {
 
     expect(api.placement).toBe("top");
     expect(api.arrowVisible).toBe(true);
+    expect(api.arrowSize).toBe(8);
     expect(api.arrowSafeOffset).toBe(8);
     expect(api.animate).toBe(true);
     expect(api.offset).toBe(0);
@@ -121,6 +121,7 @@ describe("usePopper", () => {
       placement: "top",
       offset: [2, 4],
       arrowVisible: true,
+      arrowSize: 8,
     });
     await nextTick();
 
@@ -129,17 +130,19 @@ describe("usePopper", () => {
     // base 8 + arrow 8 + away 4
     expect(popper.style.getPropertyValue("--vai-popper-gap")).toBe("20px");
     expect(popper.style.getPropertyValue("--vai-popper-cross")).toBe("2px");
+    expect(popper.style.getPropertyValue("--vai-popper-arrow-size")).toBe("8px");
     expect(popper.classList.contains("vai-popper--arrow")).toBe(true);
-    const css = document.getElementById("vai-use-popper-style")?.textContent;
-    // Popover UA 默认 overflow:auto 会裁剪箭头，样式层必须放开
-    expect(css).toContain("overflow: visible");
-    // 箭头需继承面板边框，避免纯色方块“咬边”
-    expect(css).toContain("border: inherit");
+
+    api.arrowSize = 12;
+    await nextTick();
+    // base 8 + arrow 12 + away 4
+    expect(popper.style.getPropertyValue("--vai-popper-arrow-size")).toBe("12px");
+    expect(popper.style.getPropertyValue("--vai-popper-gap")).toBe("24px");
 
     api.arrowVisible = false;
     await nextTick();
     expect(popper.classList.contains("vai-popper--arrow")).toBe(false);
-    // base 8 + away 4
+    // base 8 + away 4（隐藏箭头时 arrowSize 不计入 gap）
     expect(popper.style.getPropertyValue("--vai-popper-gap")).toBe("12px");
   });
 
@@ -218,13 +221,4 @@ describe("usePopper", () => {
     expect(popper.classList.contains("x")).toBe(false);
   });
 
-  test("injects shared stylesheet once", async () => {
-    setup();
-    await nextTick();
-    expect(document.getElementById("vai-use-popper-style")).toBeTruthy();
-
-    setup();
-    await nextTick();
-    expect(document.querySelectorAll("#vai-use-popper-style").length).toBe(1);
-  });
 });

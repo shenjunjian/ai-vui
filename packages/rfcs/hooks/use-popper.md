@@ -53,6 +53,8 @@ interface PopperOption {
   offset?: number | [number, number];
   /** ✅ 是否显示箭头, 默认为true */
   arrowVisible?: boolean;
+  /** ✅ 箭头边长（px），默认 8；写入 CSS 变量 `--vai-popper-arrow-size`，有箭头时也会计入与 reference 的间隙 */
+  arrowSize?: number;
   /** ✅ 箭头的安全距离， 防止箭头到弹出层的外面去，默认值为8, 表示箭头的位置启动在弹出层的四个边上，且到四个角有8px的安全距离 */
   arrowSafeOffset?: number;
 
@@ -102,7 +104,7 @@ popperOption.show = false;
 
 1. 用户初始传入目标元素和弹出层元素，给它绑定上popover API（`popover="manual"`）与 `anchor-name` / `position-anchor`
 2. 通过 `position-area` + `position-try-fallbacks: flip-block, flip-inline` 做 12 方位与边界翻转
-3. 小箭头使用 `::before` 伪元素实现（`background/border: inherit`，内侧两边透明），并用 `arrowSafeOffset` 做四角 clamp；`.vai-popper` 需 `overflow: visible`，以覆盖 Popover UA 默认的 `overflow: auto`（否则箭头会被裁切）
+3. 小箭头使用 `::before` 伪元素实现（`background/border: inherit`，内侧两边透明）；`arrowSize` 注入 `--vai-popper-arrow-size`，`arrowSafeOffset` 做四角 clamp；`.vai-popper` 需 `overflow: visible`，以覆盖 Popover UA 默认的 `overflow: auto`（否则箭头会被裁切）
 4. `show` 驱动 `showPopover` / `hidePopover`；`animate` 控制 CSS 过渡；`autoHide` 在捕获阶段监听 scroll
 5. 组件卸载时，清除锚点、类名、popover 状态与滚动监听
 
