@@ -23,7 +23,7 @@
       @focus="api.handleFocus"
       @blur="api.handleBlur"
     />
-    <span v-if="charCount" class="sc-input__count" aria-hidden="true">
+    <span v-if="showCount" class="sc-input__count" aria-hidden="true">
       {{ state.charCountText }}
     </span>
     <span v-if="$slots.suffix" class="sc-input__suffix">
@@ -93,8 +93,8 @@ const props = withDefaults(
     clearable?: boolean;
     /** 是否显示为 password */
     password?: boolean;
-    /** 是否在后面显示字符数（位于 suffix 前） */
-    charCount?: boolean;
+    /** 是否显示字符数（位于 suffix 前） */
+    showCount?: boolean;
     /** 清除前拦截；返回 true 允许清除 */
     beforeClear?: () => boolean | Promise<boolean>;
     /** 自动提示数据项 */
@@ -111,7 +111,7 @@ const props = withDefaults(
     disabled: false,
     clearable: false,
     password: false,
-    charCount: false,
+    showCount: false,
     popItems: () => [],
     variant: "input",
     label: "",

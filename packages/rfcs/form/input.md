@@ -8,7 +8,7 @@
 
 支持主题色（仅影响 border 与文字）、前后置装饰。用户自定义事件与 input 常见属性，通过属性继承传递到内部 `<input>` 元素。
 
-结构：`#prefix` + `input` + `char-count` + `#suffix` + `clear-icon`
+结构：`#prefix` + `input` + `count` + `#suffix` + `clear-icon`
 
 自动提示：输入时以 debounce=300ms 匹配 `pop-items`。值为 `string[]` / `Option[]` / 异步函数。`Option` 为 `{ label: string }`。Tab / Enter 选中当前项；无匹配时关闭弹出层；↑↓ 在匹配项间切换。
 
@@ -28,7 +28,7 @@
 | `disabled`      | `boolean`                                                                  | `false`   | 禁用态                                                                               |
 | `clearable`     | `boolean`                                                                  | `false`   | 有值时是否显示清除按钮                                                               |
 | `password`      | `boolean`                                                                  | `false`   | 是否显示为 password                                                                  |
-| `char-count`    | `boolean`                                                                  | `false`   | 是否显示字符数（位于 suffix 前）；若透传 `maxlength` 则显示 `当前/最大`              |
+| `show-count`    | `boolean`                                                                  | `false`   | 是否显示字符数（位于 suffix 前）；若透传 `maxlength` 则显示 `当前/最大`              |
 | `beforeClear`   | `() => boolean \| Promise<boolean>`                                        | —         | 清除前拦截；返回 `true` 允许清除，返回 `false` / Promise reject / 异步错误时阻止清除 |
 | `pop-items`     | `string[] \| Option[] \| (query: string) => Promise<string[] \| Option[]>` | `[]`      | 自动提示数据项                                                                       |
 | `popper-option` | `Partial<Omit<PopperOption, 'reference' \| 'popper' \| 'show'>>`           | —         | 自动提示弹出层配置（透传 `usePopper`）                                               |

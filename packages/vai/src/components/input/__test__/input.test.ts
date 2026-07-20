@@ -123,9 +123,9 @@ describe("Input", () => {
     expect(input.attributes("name")).toBe("username");
   });
 
-  test("charCount shows length and maxlength", async () => {
+  test("showCount shows length and maxlength", async () => {
     const wrapper = mount(Input, {
-      props: { modelValue: "abc", charCount: true },
+      props: { modelValue: "abc", showCount: true },
       attrs: { maxlength: "10" },
     });
 
@@ -137,7 +137,7 @@ describe("Input", () => {
 
   test("prefix and suffix slots render in order", () => {
     const wrapper = mount(Input, {
-      props: { charCount: true, modelValue: "a", clearable: true },
+      props: { showCount: true, modelValue: "a", clearable: true },
       slots: {
         prefix: '<span class="p">P</span>',
         suffix: '<span class="s">S</span>',
@@ -383,7 +383,7 @@ describe("Input", () => {
         modelValue: "a@b.com",
         clearable: true,
         theme: "info",
-        charCount: true,
+        showCount: true,
       },
       slots: {
         prefix: '<span class="p">@</span>',

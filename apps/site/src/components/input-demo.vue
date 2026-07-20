@@ -90,7 +90,7 @@ const promiseFalse = () =>
         </Input>
         <Input
           v-model="counted"
-          char-count
+          show-count
           maxlength="20"
           placeholder="字符统计"
         />
@@ -196,7 +196,7 @@ const promiseFalse = () =>
           v-model="lineCounted"
           variant="line"
           label="字符统计"
-          char-count
+          show-count
           maxlength="20"
         />
         <Input
