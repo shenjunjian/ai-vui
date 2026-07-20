@@ -1,5 +1,6 @@
-// Radio styles：原生 radio + appearance:none，双态图标用 mask
-// 注意：mask 会裁切 input 自身的 box-shadow / outline，焦点光晕必须画在无 mask 的 __control 上
+// Radio styles：原生 radio + appearance:none
+// 色值对齐 Button：轮廓=border，内圈=bg；mask 画在 __control 伪元素上（input 透明叠层）
+// 注意：焦点光晕画在无 mask 的 __control 上
 
 .sc-radio {
   --radio-font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -7,6 +8,9 @@
   --radio-line-height: 1.4;
   --radio-gap: 8px;
   --radio-size: 18px;
+  // 颜色由 theme 类驱动；无 theme 时组件挂 st-control（对齐 Button control）
+  --radio-border: #d1d5db;
+  --radio-bg: #f3f4f6;
   --radio-color: #1f2937;
   --radio-label-color: #1f2937;
   --radio-focus-color: #6b7280;
@@ -16,9 +20,8 @@
     transparent
   );
 
-  // 未选中 / 选中（fill 用 black，配合 mask + currentColor）
-  --radio-icon-unchecked: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath fill-rule='evenodd' fill='%23000' d='M8 1C11.87 1 15 4.13 15 8C15 11.87 11.87 15 8 15C4.13 15 1 11.87 1 8C1 4.13 4.13 1 8 1ZM8 2.87C5.16 2.87 2.87 5.16 2.87 8C2.87 10.84 5.16 13.13 8 13.13C10.84 13.13 13.13 10.84 13.13 8C13.13 5.16 10.84 2.87 8 2.87Z'/%3E%3C/svg%3E");
-  --radio-icon-checked: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath fill-rule='evenodd' fill='%23000' d='M8 1C11.87 1 15 4.13 15 8C15 11.87 11.87 15 8 15C4.13 15 1 11.87 1 8C1 4.13 4.13 1 8 1ZM8 2.87C5.16 2.87 2.87 5.16 2.87 8C2.87 10.84 5.16 13.13 8 13.13C10.84 13.13 13.13 10.84 13.13 8C13.13 5.16 10.84 2.87 8 2.87ZM8 5C9.66 5 11 6.34 11 8C11 9.66 9.66 11 8 11C6.34 11 5 9.66 5 8C5 6.34 6.34 5 8 5Z'/%3E%3C/svg%3E");
+  // 轮廓环（与 icons/no-checked.svg 一致）
+  --radio-icon-ring: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath fill-rule='evenodd' fill='%23000' d='M8 1C11.87 1 15 4.13 15 8C15 11.87 11.87 15 8 15C4.13 15 1 11.87 1 8C1 4.13 4.13 1 8 1ZM8 2.87C5.16 2.87 2.87 5.16 2.87 8C2.87 10.84 5.16 13.13 8 13.13C10.84 13.13 13.13 10.84 13.13 8C13.13 5.16 10.84 2.87 8 2.87Z'/%3E%3C/svg%3E");
 
   box-sizing: border-box;
   display: inline-flex;
@@ -51,34 +54,53 @@
     --radio-size: 22px;
   }
 
-  // themes：影响图标与焦点光晕
+  // themes：色值对齐 Button 同名主题
+  // 无 theme → st-control
   &.st-control {
+    --radio-border: #d1d5db;
+    --radio-bg: #d1d5db;
     --radio-color: #1f2937;
+    --radio-label-color: #1f2937;
     --radio-focus-color: #6b7280;
   }
 
   &.st-dark {
-    --radio-color: #1f2937;
+    --radio-border: #111827;
+    --radio-bg: #1f2937;
+    --radio-color: #f9fafb;
+    --radio-label-color: #1f2937;
     --radio-focus-color: #1f2937;
   }
 
   &.st-success {
-    --radio-color: #16a34a;
+    --radio-border: #15803d;
+    --radio-bg: #16a34a;
+    --radio-color: #ffffff;
+    --radio-label-color: #1f2937;
     --radio-focus-color: #16a34a;
   }
 
   &.st-info {
-    --radio-color: #2563eb;
+    --radio-border: #1d4ed8;
+    --radio-bg: #2563eb;
+    --radio-color: #ffffff;
+    --radio-label-color: #1f2937;
     --radio-focus-color: #2563eb;
   }
 
   &.st-warn {
-    --radio-color: #d97706;
+    --radio-border: #b45309;
+    --radio-bg: #d97706;
+    --radio-color: #ffffff;
+    --radio-label-color: #1f2937;
     --radio-focus-color: #d97706;
   }
 
   &.st-error {
-    --radio-color: #dc2626;
+    --radio-border: #b91c1c;
+    --radio-bg: #dc2626;
+    --radio-color: #ffffff;
+    --radio-label-color: #1f2937;
     --radio-focus-color: #dc2626;
   }
 
@@ -92,9 +114,10 @@
     }
   }
 
-  // 无 mask：承载与 button 相同的 box-shadow 光晕
+  // 绘制层：轮廓 + 内圈；焦点光晕也挂在此
   &__control {
     box-sizing: border-box;
+    position: relative;
     display: inline-flex;
     flex-shrink: 0;
     align-items: center;
@@ -103,6 +126,31 @@
     height: var(--radio-size);
     border-radius: 50%;
     transition: box-shadow 0.15s ease;
+
+    // 轮廓环 → border
+    &::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-color: var(--radio-border);
+      -webkit-mask: var(--radio-icon-ring) center / contain no-repeat;
+      mask: var(--radio-icon-ring) center / contain no-repeat;
+    }
+
+    // 内圈 → bg（勾选时显示；尺寸对齐 icons/checked 内圆 6/16）
+    &::after {
+      content: "";
+      position: absolute;
+      inset: 31.25%;
+      border-radius: 50%;
+      background-color: var(--radio-bg);
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+
+    &:has(.sc-radio__input:checked)::after {
+      opacity: 1;
+    }
 
     // 鼠标点击：瞬时外扩光晕后消失（类 antd wave）
     &:has(.sc-radio__input:focus:not(:focus-visible)) {
@@ -116,31 +164,23 @@
     }
   }
 
+  &.is-checked .sc-radio__control::after {
+    opacity: 1;
+  }
+
   &__input {
     appearance: none;
     box-sizing: border-box;
-    display: block;
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     margin: 0;
     padding: 0;
-    color: var(--radio-color);
-    background-color: currentColor;
+    opacity: 0;
     border: none;
     outline: none;
     cursor: pointer;
-    -webkit-mask: var(--radio-icon-unchecked) center / contain no-repeat;
-    mask: var(--radio-icon-unchecked) center / contain no-repeat;
-
-    &:checked {
-      -webkit-mask-image: var(--radio-icon-checked);
-      mask-image: var(--radio-icon-checked);
-    }
-  }
-
-  &.is-checked .sc-radio__input {
-    -webkit-mask-image: var(--radio-icon-checked);
-    mask-image: var(--radio-icon-checked);
   }
 
   &__label {

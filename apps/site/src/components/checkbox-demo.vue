@@ -57,7 +57,7 @@ function onChange(event: Event) {
     <section class="checkbox-demo__section">
       <h2>主题 theme</h2>
       <p class="checkbox-demo__hint">
-        未指定 theme 时使用 control 中性色；主题影响图标与焦点光晕
+        未指定 theme 时使用 control 色系（对齐 Button：轮廓 border / 底 bg / 对号 color）
       </p>
       <div class="checkbox-demo__row">
         <Checkbox checked label="Default" />

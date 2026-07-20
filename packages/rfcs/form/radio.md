@@ -6,7 +6,15 @@
 
 单选框。用原生 `<input type="radio">` + `appearance: none` 自定义样式来实现。用户自定义事件与 input 常见属性，通过属性继承传递到内部 `<input>` 元素。
 
-支持主题色（影响图标与焦点光晕）。支持 `label` 属性，根节点为 `<label>`，自动与内部 input 关联。
+支持主题色；**未指定 `theme` 时使用 control 色系**（根节点挂 `st-control`，色值对齐 Button）。支持 `label` 属性，根节点为 `<label>`，自动与内部 input 关联。
+
+色值映射（与 Button 同名 CSS 变量一致）：
+
+| 用途     | 对应 Button         | control 示例 |
+| -------- | ------------------- | ------------ |
+| 轮廓环   | `--btn-border`      | `#d1d5db`    |
+| 勾选内圈 | `--btn-bg`          | `#d1d5db`    |
+| 焦点光晕 | `--btn-focus-color` | `#6b7280`    |
 
 同组互斥可通过透传原生 `name` / `value` 实现（与原生 radio 一致）；更完整的组控见 `RadioGroup`。
 
@@ -27,13 +35,13 @@
 
 ## Props
 
-| 属性              | 类型                                                 | 默认值  | 说明                                                         |
-| ----------------- | ---------------------------------------------------- | ------- | ------------------------------------------------------------ |
-| `v-model:checked` | `boolean`                                            | `false` | 是否勾选                                                     |
-| `size`            | `'sm' \| 'md' \| 'lg'`                               | `'md'`  | 尺寸（映射 `st-*`）                                          |
-| `theme`           | `'success' \| 'info' \| 'warn' \| 'error' \| 'dark'` | —       | 语义主题色，影响图标与焦点光晕；未指定时使用 control 中性色 |
-| `disabled`        | `boolean`                                            | `false` | 禁用态                                                       |
-| `label`           | `string`                                             | `''`    | 文本内容；无默认插槽时作为 label 显示                        |
+| 属性              | 类型                                                 | 默认值  | 说明                                                                       |
+| ----------------- | ---------------------------------------------------- | ------- | -------------------------------------------------------------------------- |
+| `v-model:checked` | `boolean`                                            | `false` | 是否勾选                                                                   |
+| `size`            | `'sm' \| 'md' \| 'lg'`                               | `'md'`  | 尺寸（映射 `st-*`）                                                        |
+| `theme`           | `'success' \| 'info' \| 'warn' \| 'error' \| 'dark'` | —       | 语义主题色，色值对齐 Button 同名主题；未指定时使用 control（`st-control`） |
+| `disabled`        | `boolean`                                            | `false` | 禁用态                                                                     |
+| `label`           | `string`                                             | `''`    | 文本内容；无默认插槽时作为 label 显示                                      |
 
 ## Events
 
@@ -86,17 +94,17 @@ interface RadioState {
 
 ## Hook 依赖（hooks）
 
-| Hook | 用途 |
-| ---- | ---- |
+| Hook | 用途        |
+| ---- | ----------- |
 | —    | 无额外 hook |
 
 ## 实现逻辑
 
-1. 解析 props；根元素为 `<label class="sc-radio">` + `st-*` / `is-*` 状态类
+1. 解析 props；根元素为 `<label class="sc-radio">` + `st-*` / `is-*` 状态类；**无 `theme` 时挂 `st-control`（control 色系）**，有 theme 时映射为 `st-success` / `st-info` / `st-warn` / `st-error` / `st-dark`
 2. `v-model:checked` 绑定原生 radio 的勾选态
 3. 常见 input 属性 / 事件经 `inheritAttrs: false` 透传到内部 input；`change` 按上文「透传策略」合并内部同步与用户监听
-4. 双态图标：`appearance: none` + CSS `mask`（未选 / 选中）
-5. 焦点光晕画在无 mask 的 `sc-radio__control` 上（mask 会裁切 input 自身的 box-shadow / outline），交互对齐 Button：`:focus-visible` 保留 halo，鼠标点击播 wave
+4. 图标绘制在 `sc-radio__control`：`::before` 轮廓环用 border 色，勾选时 `::after` 内圈用 bg 色；input 透明叠层接收交互
+5. 焦点光晕画在 `sc-radio__control` 上，交互对齐 Button：`:focus-visible` 保留 halo，鼠标点击播 wave
 
 ## 无障碍（a11y）
 

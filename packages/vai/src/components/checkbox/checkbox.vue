@@ -27,7 +27,7 @@ const props = withDefaults(
   defineProps<{
     /** 尺寸 */
     size?: "sm" | "md" | "lg";
-    /** 语义主题色；未指定时使用 control 中性色 */
+    /** 语义主题色；未指定时使用 control 色系（st-control） */
     theme?: "success" | "info" | "warn" | "error" | "dark";
     /** 禁用态 */
     disabled?: boolean;

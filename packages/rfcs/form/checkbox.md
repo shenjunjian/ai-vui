@@ -6,7 +6,16 @@
 
 复选框。用原生 `<input type="checkbox">` + `appearance: none` 自定义样式来实现。用户自定义事件与 input 常见属性，通过属性继承传递到内部 `<input>` 元素。它与 switch 类似，区别在于切换 switch 会直接触发状态改变，而 checkbox 一般用于状态标记，需要和提交操作配合。
 
-支持主题色（影响图标与焦点光晕）。支持 `label` 属性，根节点为 `<label>`，自动与内部 input 关联。
+支持主题色；**未指定 `theme` 时使用 control 色系**（根节点挂 `st-control`，色值对齐 Button）。支持 `label` 属性，根节点为 `<label>`，自动与内部 input 关联。
+
+色值映射（与 Button 同名 CSS 变量一致）：
+
+| 用途 | 对应 Button | control 示例 |
+| ---- | ----------- | ------------ |
+| 轮廓边框 | `--btn-border` | `#d1d5db` |
+| 勾选底色 / 半选内块 | `--btn-bg` | `#f3f4f6` |
+| 对号 | `--btn-color` | `#1f2937` |
+| 焦点光晕 | `--btn-focus-color` | `#6b7280` |
 
 支持 `indeterminate` 属性，透传到 input 实例的 `indeterminate` 属性（DOM 属性，非 HTML attribute）。半选优先级高于勾选：为 `true` 时无论 `checked` 为何值均显示半选图标。
 
@@ -31,7 +40,7 @@
 | ----------------- | ---------------------------------------------------- | ------- | ------------------------------------------------------------ |
 | `v-model:checked` | `boolean`                                            | `false` | 是否勾选                                                     |
 | `size`            | `'sm' \| 'md' \| 'lg'`                               | `'md'`  | 尺寸（映射 `st-*`）                                          |
-| `theme`           | `'success' \| 'info' \| 'warn' \| 'error' \| 'dark'` | —       | 语义主题色，影响图标与焦点光晕；未指定时使用 control 中性色 |
+| `theme`           | `'success' \| 'info' \| 'warn' \| 'error' \| 'dark'` | —       | 语义主题色，色值对齐 Button 同名主题；未指定时使用 control（`st-control`） |
 | `disabled`        | `boolean`                                            | `false` | 禁用态                                                       |
 | `label`           | `string`                                             | `''`    | 文本内容；无默认插槽时作为 label 显示                        |
 | `indeterminate`   | `boolean`                                            | `false` | 半选；为 true 时优先显示半选，并同步到 `input.indeterminate` |
@@ -93,12 +102,12 @@ interface CheckboxState {
 
 ## 实现逻辑
 
-1. 解析 props；根元素为 `<label class="sc-checkbox">` + `st-*` / `is-*` 状态类
+1. 解析 props；根元素为 `<label class="sc-checkbox">` + `st-*` / `is-*` 状态类；**无 `theme` 时挂 `st-control`（control 色系）**，有 theme 时映射为 `st-success` / `st-info` / `st-warn` / `st-error` / `st-dark`
 2. `v-model:checked` 绑定原生 checkbox 的勾选态
 3. `watch` 将 `indeterminate` 同步到 `input.indeterminate`；点击后若 prop 仍为 true 则立即恢复
 4. 常见 input 属性 / 事件经 `inheritAttrs: false` 透传到内部 input；`change` 按上文「透传策略」合并内部同步与用户监听
-5. 三态图标：`appearance: none` + CSS `mask`（未选 / 半选 / 选中）
-6. 焦点光晕画在无 mask 的 `sc-checkbox__control` 上（mask 会裁切 input 自身的 box-shadow / outline），交互对齐 Button：`:focus-visible` 保留 halo，鼠标点击播 wave
+5. 图标绘制在 `sc-checkbox__control`：边框用 border 色；勾选底用 bg 色、对号用 color 色；半选内块用 bg 色；input 透明叠层接收交互
+6. 焦点光晕画在 `sc-checkbox__control` 上，交互对齐 Button：`:focus-visible` 保留 halo，鼠标点击播 wave
 
 ## 无障碍（a11y）
 

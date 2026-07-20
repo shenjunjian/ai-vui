@@ -61,7 +61,7 @@ function onChange(event: Event) {
     <section class="radio-demo__section">
       <h2>主题 theme</h2>
       <p class="radio-demo__hint">
-        未指定 theme 时使用 control 中性色；主题影响图标与焦点光晕
+        未指定 theme 时使用 control 色系（对齐 Button：轮廓 border / 内圈 bg）
       </p>
       <div class="radio-demo__row">
         <Radio checked label="Default" />
