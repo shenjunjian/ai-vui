@@ -25,7 +25,7 @@ const checkboxRef = ref<{
   <div class="checkbox-demo">
     <header class="checkbox-demo__header">
       <h1>Checkbox</h1>
-      <p>覆盖尺寸、label、半选、禁用、属性透传与 api 的演示</p>
+      <p>覆盖尺寸、主题、label、半选、禁用、属性透传与 api 的演示</p>
     </header>
 
     <section class="checkbox-demo__section">
@@ -40,6 +40,21 @@ const checkboxRef = ref<{
         <Checkbox size="sm" label="Small" />
         <Checkbox v-model:checked="sized" size="md" label="Medium" />
         <Checkbox size="lg" label="Large" />
+      </div>
+    </section>
+
+    <section class="checkbox-demo__section">
+      <h2>主题 theme</h2>
+      <p class="checkbox-demo__hint">
+        未指定 theme 时使用 control 中性色；主题影响图标与焦点光晕
+      </p>
+      <div class="checkbox-demo__row">
+        <Checkbox checked label="Default" />
+        <Checkbox theme="success" checked label="Success" />
+        <Checkbox theme="info" checked label="Info" />
+        <Checkbox theme="warn" checked label="Warn" />
+        <Checkbox theme="error" checked label="Error" />
+        <Checkbox theme="dark" checked label="Dark" />
       </div>
     </section>
 

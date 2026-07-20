@@ -18,6 +18,18 @@ export default function useVm(ctx: CheckboxCtx) {
     return sizeMap[props.size] || "st-md";
   });
 
+  const themeClass = computed(() => {
+    if (!props.theme) return "st-control";
+    const themeMap: Record<string, string> = {
+      dark: "st-dark",
+      success: "st-success",
+      info: "st-info",
+      warn: "st-warn",
+      error: "st-error",
+    };
+    return themeMap[props.theme] || "st-control";
+  });
+
   /** 视觉态：半选优先于勾选 */
   const visualState = computed(() => {
     if (props.indeterminate) return "indeterminate";
@@ -40,6 +52,7 @@ export default function useVm(ctx: CheckboxCtx) {
 
   const rootClass = computed(() => [
     sizeClass.value,
+    themeClass.value,
     {
       "st-disabled": props.disabled,
       "is-checked": visualState.value === "checked",
@@ -83,6 +96,7 @@ export default function useVm(ctx: CheckboxCtx) {
 
   const state = reactive({
     sizeClass,
+    themeClass,
     visualState,
     showLabel,
     inputAttrs,

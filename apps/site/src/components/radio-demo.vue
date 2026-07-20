@@ -29,7 +29,7 @@ function selectFruit(value: "apple" | "banana" | "orange") {
   <div class="radio-demo">
     <header class="radio-demo__header">
       <h1>Radio</h1>
-      <p>覆盖尺寸、label、禁用、同组 name、属性透传与 api 的演示</p>
+      <p>覆盖尺寸、主题、label、禁用、同组 name、属性透传与 api 的演示</p>
     </header>
 
     <section class="radio-demo__section">
@@ -44,6 +44,21 @@ function selectFruit(value: "apple" | "banana" | "orange") {
         <Radio size="sm" label="Small" />
         <Radio v-model:checked="sized" size="md" label="Medium" />
         <Radio size="lg" label="Large" />
+      </div>
+    </section>
+
+    <section class="radio-demo__section">
+      <h2>主题 theme</h2>
+      <p class="radio-demo__hint">
+        未指定 theme 时使用 control 中性色；主题影响图标与焦点光晕
+      </p>
+      <div class="radio-demo__row">
+        <Radio checked label="Default" />
+        <Radio theme="success" checked label="Success" />
+        <Radio theme="info" checked label="Info" />
+        <Radio theme="warn" checked label="Warn" />
+        <Radio theme="error" checked label="Error" />
+        <Radio theme="dark" checked label="Dark" />
       </div>
     </section>
 

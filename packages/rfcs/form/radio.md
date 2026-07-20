@@ -6,7 +6,7 @@
 
 单选框。用原生 `<input type="radio">` + `appearance: none` 自定义样式来实现。用户自定义事件与 input 常见属性，通过属性继承传递到内部 `<input>` 元素。
 
-支持 `label` 属性，根节点为 `<label>`，自动与内部 input 关联。
+支持主题色（影响图标与焦点光晕）。支持 `label` 属性，根节点为 `<label>`，自动与内部 input 关联。
 
 同组互斥可通过透传原生 `name` / `value` 实现（与原生 radio 一致）；更完整的组控见 `RadioGroup`。
 
@@ -27,12 +27,13 @@
 
 ## Props
 
-| 属性              | 类型                   | 默认值  | 说明                                  |
-| ----------------- | ---------------------- | ------- | ------------------------------------- |
-| `v-model:checked` | `boolean`              | `false` | 是否勾选                              |
-| `size`            | `'sm' \| 'md' \| 'lg'` | `'md'`  | 尺寸（映射 `st-*`）                   |
-| `disabled`        | `boolean`              | `false` | 禁用态                                |
-| `label`           | `string`               | `''`    | 文本内容；无默认插槽时作为 label 显示 |
+| 属性              | 类型                                                 | 默认值  | 说明                                                         |
+| ----------------- | ---------------------------------------------------- | ------- | ------------------------------------------------------------ |
+| `v-model:checked` | `boolean`                                            | `false` | 是否勾选                                                     |
+| `size`            | `'sm' \| 'md' \| 'lg'`                               | `'md'`  | 尺寸（映射 `st-*`）                                          |
+| `theme`           | `'success' \| 'info' \| 'warn' \| 'error' \| 'dark'` | —       | 语义主题色，影响图标与焦点光晕；未指定时使用 control 中性色 |
+| `disabled`        | `boolean`                                            | `false` | 禁用态                                                       |
+| `label`           | `string`                                             | `''`    | 文本内容；无默认插槽时作为 label 显示                        |
 
 ## Events
 
@@ -63,6 +64,7 @@
 ```ts
 interface RadioState {
   sizeClass: string;
+  themeClass: string;
   /** unchecked | checked */
   visualState: "unchecked" | "checked";
   showLabel: boolean;

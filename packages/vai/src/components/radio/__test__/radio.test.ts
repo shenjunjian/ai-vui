@@ -9,17 +9,20 @@ describe("Radio", () => {
 
     expect(wrapper.classes()).toContain("sc-radio");
     expect(wrapper.classes()).toContain("st-md");
+    expect(wrapper.classes()).toContain("st-control");
     expect(wrapper.find("input.sc-radio__input").exists()).toBe(true);
     expect(wrapper.find("input").attributes("type")).toBe("radio");
   });
 
-  test("applies size classes", () => {
+  test("applies size and theme classes", () => {
     const wrapper = mount(Radio, {
-      props: { size: "lg" },
+      props: { size: "lg", theme: "error" },
     });
 
     expect(wrapper.classes()).toContain("st-lg");
+    expect(wrapper.classes()).toContain("st-error");
     expect(wrapper.classes()).not.toContain("st-md");
+    expect(wrapper.classes()).not.toContain("st-control");
   });
 
   test("disabled applies class and disables input", () => {

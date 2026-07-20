@@ -6,7 +6,7 @@
 
 复选框。用原生 `<input type="checkbox">` + `appearance: none` 自定义样式来实现。用户自定义事件与 input 常见属性，通过属性继承传递到内部 `<input>` 元素。它与 switch 类似，区别在于切换 switch 会直接触发状态改变，而 checkbox 一般用于状态标记，需要和提交操作配合。
 
-支持 `label` 属性，根节点为 `<label>`，自动与内部 input 关联。
+支持主题色（影响图标与焦点光晕）。支持 `label` 属性，根节点为 `<label>`，自动与内部 input 关联。
 
 支持 `indeterminate` 属性，透传到 input 实例的 `indeterminate` 属性（DOM 属性，非 HTML attribute）。半选优先级高于勾选：为 `true` 时无论 `checked` 为何值均显示半选图标。
 
@@ -27,13 +27,14 @@
 
 ## Props
 
-| 属性              | 类型                   | 默认值  | 说明                                                         |
-| ----------------- | ---------------------- | ------- | ------------------------------------------------------------ |
-| `v-model:checked` | `boolean`              | `false` | 是否勾选                                                     |
-| `size`            | `'sm' \| 'md' \| 'lg'` | `'md'`  | 尺寸（映射 `st-*`）                                          |
-| `disabled`        | `boolean`              | `false` | 禁用态                                                       |
-| `label`           | `string`               | `''`    | 文本内容；无默认插槽时作为 label 显示                        |
-| `indeterminate`   | `boolean`              | `false` | 半选；为 true 时优先显示半选，并同步到 `input.indeterminate` |
+| 属性              | 类型                                                 | 默认值  | 说明                                                         |
+| ----------------- | ---------------------------------------------------- | ------- | ------------------------------------------------------------ |
+| `v-model:checked` | `boolean`                                            | `false` | 是否勾选                                                     |
+| `size`            | `'sm' \| 'md' \| 'lg'`                               | `'md'`  | 尺寸（映射 `st-*`）                                          |
+| `theme`           | `'success' \| 'info' \| 'warn' \| 'error' \| 'dark'` | —       | 语义主题色，影响图标与焦点光晕；未指定时使用 control 中性色 |
+| `disabled`        | `boolean`                                            | `false` | 禁用态                                                       |
+| `label`           | `string`                                             | `''`    | 文本内容；无默认插槽时作为 label 显示                        |
+| `indeterminate`   | `boolean`                                            | `false` | 半选；为 true 时优先显示半选，并同步到 `input.indeterminate` |
 
 ## Events
 
@@ -64,6 +65,7 @@
 ```ts
 interface CheckboxState {
   sizeClass: string;
+  themeClass: string;
   /** unchecked | checked | indeterminate（半选优先） */
   visualState: "unchecked" | "checked" | "indeterminate";
   showLabel: boolean;

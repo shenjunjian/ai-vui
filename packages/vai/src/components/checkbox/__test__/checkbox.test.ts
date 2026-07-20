@@ -9,17 +9,20 @@ describe("Checkbox", () => {
 
     expect(wrapper.classes()).toContain("sc-checkbox");
     expect(wrapper.classes()).toContain("st-md");
+    expect(wrapper.classes()).toContain("st-control");
     expect(wrapper.find("input.sc-checkbox__input").exists()).toBe(true);
     expect(wrapper.find("input").attributes("type")).toBe("checkbox");
   });
 
-  test("applies size classes", () => {
+  test("applies size and theme classes", () => {
     const wrapper = mount(Checkbox, {
-      props: { size: "lg" },
+      props: { size: "lg", theme: "error" },
     });
 
     expect(wrapper.classes()).toContain("st-lg");
+    expect(wrapper.classes()).toContain("st-error");
     expect(wrapper.classes()).not.toContain("st-md");
+    expect(wrapper.classes()).not.toContain("st-control");
   });
 
   test("disabled applies class and disables input", () => {

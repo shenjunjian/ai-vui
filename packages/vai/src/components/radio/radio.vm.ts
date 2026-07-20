@@ -17,6 +17,18 @@ export default function useVm(ctx: RadioCtx) {
     return sizeMap[props.size] || "st-md";
   });
 
+  const themeClass = computed(() => {
+    if (!props.theme) return "st-control";
+    const themeMap: Record<string, string> = {
+      dark: "st-dark",
+      success: "st-success",
+      info: "st-info",
+      warn: "st-warn",
+      error: "st-error",
+    };
+    return themeMap[props.theme] || "st-control";
+  });
+
   const visualState = computed(() =>
     models.checked.value ? "checked" : "unchecked",
   );
@@ -37,6 +49,7 @@ export default function useVm(ctx: RadioCtx) {
 
   const rootClass = computed(() => [
     sizeClass.value,
+    themeClass.value,
     {
       "st-disabled": props.disabled,
       "is-checked": visualState.value === "checked",
@@ -63,6 +76,7 @@ export default function useVm(ctx: RadioCtx) {
 
   const state = reactive({
     sizeClass,
+    themeClass,
     visualState,
     showLabel,
     inputAttrs,
