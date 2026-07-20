@@ -3,6 +3,7 @@ import {
   computed,
   watch,
   nextTick,
+  useId,
   type InputHTMLAttributes,
 } from "vue";
 import type { InputCtx, InputOption } from "./input.vue";
@@ -32,6 +33,7 @@ function filterStaticItems(
 export default function useVm(ctx: InputCtx) {
   const { props, models, refs, emit, attrs } = ctx;
 
+  const inputId = useId();
   const filteredItems = reactive<InputOption[]>([]);
   const activeIndexState = reactive({ value: 0 });
   let matchSeq = 0;
@@ -123,10 +125,20 @@ export default function useVm(ctx: InputCtx) {
     return rest;
   });
 
+  const showLabel = computed(
+    () => props.variant === "line" && !!props.label,
+  );
+
+  const isFilled = computed(
+    () => !!models.modelValue.value && models.modelValue.value.length > 0,
+  );
+
   const rootClass = computed(() => [
     sizeClass.value,
     themeClass.value,
     {
+      "is-line": props.variant === "line",
+      "is-filled": isFilled.value,
       "st-disabled": props.disabled,
       "is-clearable": showClear.value,
       "is-pop-open": popper.show,
@@ -303,6 +315,8 @@ export default function useVm(ctx: InputCtx) {
     filteredItems,
     activeIndex,
     popVisible,
+    inputId,
+    showLabel,
   });
 
   const api = {

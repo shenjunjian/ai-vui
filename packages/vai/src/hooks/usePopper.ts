@@ -287,8 +287,9 @@ export function usePopper(
     syncAutoHide(state.show && state.autoHide);
   }
 
+  // 直接 watch shallowReactive：根级字段变更（reference/popper/show/placement…）均会触发
   watch(
-    () => state,
+    state,
     () => {
       bindElements();
       syncPopperChrome();

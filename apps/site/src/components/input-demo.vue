@@ -10,10 +10,23 @@ const clearable = ref("可清除内容");
 const suggest = ref("");
 const asyncSuggest = ref("");
 
+const lineBasic = ref("");
+const lineThemed = ref("hello");
+const linePassword = ref("secret");
+const lineCounted = ref("字符统计");
+const lineClearable = ref("可清除内容");
+const lineSuggest = ref("");
+const lineAsyncSuggest = ref("");
+
 const clearedLog = ref<string[]>([]);
+const lineClearedLog = ref<string[]>([]);
 
 function onCleared(label: string) {
   clearedLog.value = [...clearedLog.value, `cleared: ${label}`];
+}
+
+function onLineCleared(label: string) {
+  lineClearedLog.value = [...lineClearedLog.value, `cleared: ${label}`];
 }
 
 const fruits = ["apple", "apricot", "banana", "blueberry", "cherry", "grape"];
@@ -134,6 +147,123 @@ const promiseFalse = () =>
         suggest={{ suggest || "(空)" }} / async={{ asyncSuggest || "(空)" }}
       </p>
     </section>
+
+    <header class="input-demo__header input-demo__header--line">
+      <h1>Input · line 变体</h1>
+      <p>与上方示例一一对应；样式为下划线 + 浮动 label，功能保持一致</p>
+    </header>
+
+    <section class="input-demo__section">
+      <h2>基础 / v-model（line）</h2>
+      <Input v-model="lineBasic" variant="line" label="请输入内容" />
+      <p class="input-demo__hint">值：{{ lineBasic || "(空)" }}</p>
+    </section>
+
+    <section class="input-demo__section">
+      <h2>尺寸 size（line）</h2>
+      <div class="input-demo__stack">
+        <Input variant="line" size="sm" label="Small" />
+        <Input variant="line" size="md" label="Medium" />
+        <Input variant="line" size="lg" label="Large" />
+      </div>
+    </section>
+
+    <section class="input-demo__section">
+      <h2>主题 theme（line）</h2>
+      <p class="input-demo__hint">未指定 theme 时使用 control 中性色；主题只影响边框与文字</p>
+      <div class="input-demo__stack">
+        <Input v-model="lineThemed" variant="line" label="Default / Control" />
+        <Input variant="line" theme="success" label="Success" model-value="Success" />
+        <Input variant="line" theme="info" label="Info" model-value="Info" />
+        <Input variant="line" theme="warn" label="Warn" model-value="Warn" />
+        <Input variant="line" theme="error" label="Error" model-value="Error" />
+        <Input variant="line" theme="dark" label="Dark" model-value="Dark" />
+      </div>
+    </section>
+
+    <section class="input-demo__section">
+      <h2>前后缀 / 字数 / 密码（line）</h2>
+      <div class="input-demo__stack">
+        <Input variant="line" label="带前后缀">
+          <template #prefix>
+            <span class="input-demo__addon">@</span>
+          </template>
+          <template #suffix>
+            <span class="input-demo__addon">.com</span>
+          </template>
+        </Input>
+        <Input
+          v-model="lineCounted"
+          variant="line"
+          label="字符统计"
+          char-count
+          maxlength="20"
+        />
+        <Input
+          v-model="linePassword"
+          variant="line"
+          label="密码"
+          password
+        />
+        <Input variant="line" label="禁用态" disabled model-value="禁用态" />
+      </div>
+    </section>
+
+    <section class="input-demo__section">
+      <h2>可清除 clearable / beforeClear（line）</h2>
+      <div class="input-demo__stack">
+        <Input
+          v-model="lineClearable"
+          variant="line"
+          label="可清除"
+          clearable
+          @cleared="onLineCleared('default')"
+        />
+        <Input
+          variant="line"
+          label="拦截清除"
+          model-value="拦截清除"
+          clearable
+          :before-clear="() => false"
+          @cleared="onLineCleared('false')"
+        />
+        <Input
+          variant="line"
+          label="异步拦截"
+          model-value="异步拦截"
+          clearable
+          :before-clear="promiseFalse"
+          @cleared="onLineCleared('promise false')"
+        />
+      </div>
+      <p class="input-demo__hint">
+        事件日志：{{ lineClearedLog.join(" → ") || "尚未清除" }}
+      </p>
+    </section>
+
+    <section class="input-demo__section">
+      <h2>自动提示 pop-items（line）</h2>
+      <p class="input-demo__hint">
+        输入时 debounce 300ms 匹配；↑↓ 选择，Enter / Tab 确认
+      </p>
+      <div class="input-demo__stack">
+        <Input
+          v-model="lineSuggest"
+          variant="line"
+          label="输入水果名，如 ap"
+          :pop-items="fruits"
+        />
+        <Input
+          v-model="lineAsyncSuggest"
+          variant="line"
+          label="异步搜索库名，如 vi"
+          :pop-items="searchLibs"
+        />
+      </div>
+      <p class="input-demo__hint">
+        suggest={{ lineSuggest || "(空)" }} / async={{ lineAsyncSuggest || "(空)" }}
+      </p>
+    </section>
   </div>
 </template>
 
@@ -158,6 +288,12 @@ const promiseFalse = () =>
   margin: 0;
   color: #6b7280;
   font-size: 15px;
+}
+
+.input-demo__header--line {
+  margin-top: 24px;
+  padding-top: 32px;
+  border-top: 1px solid #e5e7eb;
 }
 
 .input-demo__section h2 {

@@ -1,25 +1,59 @@
 <template>
   <div ref="rootRef" class="sc-input" :class="state.rootClass">
+    <label
+      v-if="state.showLabel"
+      class="sc-input__label"
+      :for="state.inputId"
+    >
+      {{ label }}
+    </label>
     <span v-if="$slots.prefix" class="sc-input__prefix">
       <slot name="prefix" v-bind="{ state, api, props }" />
     </span>
-    <input ref="inputRef" class="sc-input__inner" :type="state.inputType" :disabled="disabled" :value="modelValue"
-      v-bind="state.inputAttrs" @input="api.handleInput" @keydown="api.handleKeydown" @focus="api.handleFocus"
-      @blur="api.handleBlur" />
+    <input
+      :id="state.inputId"
+      ref="inputRef"
+      class="sc-input__inner"
+      :type="state.inputType"
+      :disabled="disabled"
+      :value="modelValue"
+      v-bind="state.inputAttrs"
+      @input="api.handleInput"
+      @keydown="api.handleKeydown"
+      @focus="api.handleFocus"
+      @blur="api.handleBlur"
+    />
     <span v-if="charCount" class="sc-input__count" aria-hidden="true">
       {{ state.charCountText }}
     </span>
     <span v-if="$slots.suffix" class="sc-input__suffix">
       <slot name="suffix" v-bind="{ state, api, props }" />
     </span>
-    <button v-if="state.showClear" type="button" class="sc-input__clear" aria-label="清除" tabindex="-1"
-      @click="api.clear">
+    <button
+      v-if="state.showClear"
+      type="button"
+      class="sc-input__clear"
+      aria-label="清除"
+      tabindex="-1"
+      @click="api.clear"
+    >
       <i class="ci-close" aria-hidden="true" />
     </button>
-    <div ref="popperRef" class="sc-input__suggest" role="listbox" :aria-hidden="!state.popVisible">
-      <div v-for="(item, index) in state.filteredItems" :key="`${item.label}-${index}`" class="sc-input__suggest-item"
-        :class="{ 'is-active': index === state.activeIndex }" role="option" :aria-selected="index === state.activeIndex"
-        @mousedown.prevent="api.selectItem(item)">
+    <div
+      ref="popperRef"
+      class="sc-input__suggest"
+      role="listbox"
+      :aria-hidden="!state.popVisible"
+    >
+      <div
+        v-for="(item, index) in state.filteredItems"
+        :key="`${item.label}-${index}`"
+        class="sc-input__suggest-item"
+        :class="{ 'is-active': index === state.activeIndex }"
+        role="option"
+        :aria-selected="index === state.activeIndex"
+        @mousedown.prevent="api.selectItem(item)"
+      >
         {{ item.label }}
       </div>
     </div>
@@ -67,6 +101,10 @@ const props = withDefaults(
     popItems?: InputPopItems;
     /** 自动提示弹出层配置 */
     popperOption?: InputPopperOption;
+    /** 变体：input 边框框体 / line 下划线 */
+    variant?: "input" | "line";
+    /** line 变体时的标题（浮动 label） */
+    label?: string;
   }>(),
   {
     size: "md",
@@ -75,6 +113,8 @@ const props = withDefaults(
     password: false,
     charCount: false,
     popItems: () => [],
+    variant: "input",
+    label: "",
   },
 );
 

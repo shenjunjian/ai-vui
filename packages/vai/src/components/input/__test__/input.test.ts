@@ -51,7 +51,7 @@ describe("Input", () => {
     vi.useRealTimers();
   });
 
-  test("renders with default classes", () => {
+  test("renders with default classes", async () => {
     const wrapper = mount(Input);
 
     expect(wrapper.classes()).toContain("sc-input");
@@ -59,6 +59,11 @@ describe("Input", () => {
     expect(wrapper.classes()).toContain("st-control");
     expect(wrapper.find("input.sc-input__inner").exists()).toBe(true);
     expect(wrapper.find("input").attributes("type")).toBe("text");
+
+    await nextTick();
+    const suggest = wrapper.find(".sc-input__suggest").element as HTMLElement;
+    expect(suggest.getAttribute("popover")).toBe("manual");
+    expect(suggest.classList.contains("vai-popper")).toBe(true);
   });
 
   test("applies size and theme classes", () => {
@@ -326,6 +331,111 @@ describe("Input", () => {
     expect(items.length).toBeGreaterThan(0);
     await items[0]!.trigger("mousedown");
     expect(wrapper.emitted("update:modelValue")?.at(-1)).toEqual(["alpha"]);
+
+    wrapper.unmount();
+  });
+
+  test("line variant applies is-line and renders floating label", async () => {
+    const wrapper = mount(Input, {
+      props: { variant: "line", label: "用户名", modelValue: "" },
+    });
+
+    expect(wrapper.classes()).toContain("is-line");
+    expect(wrapper.classes()).not.toContain("is-filled");
+    expect(wrapper.vm.state.showLabel).toBe(true);
+
+    const label = wrapper.find("label.sc-input__label");
+    expect(label.exists()).toBe(true);
+    expect(label.text()).toBe("用户名");
+    expect(label.attributes("for")).toBe(wrapper.vm.state.inputId);
+    expect(wrapper.find("input").attributes("id")).toBe(
+      wrapper.vm.state.inputId,
+    );
+
+    await wrapper.setProps({ modelValue: "tom" });
+    expect(wrapper.classes()).toContain("is-filled");
+  });
+
+  test("line variant does not render label when label is empty", () => {
+    const wrapper = mount(Input, {
+      props: { variant: "line", label: "" },
+    });
+
+    expect(wrapper.classes()).toContain("is-line");
+    expect(wrapper.find("label.sc-input__label").exists()).toBe(false);
+    expect(wrapper.vm.state.showLabel).toBe(false);
+  });
+
+  test("input variant ignores label prop for rendering", () => {
+    const wrapper = mount(Input, {
+      props: { variant: "input", label: "隐藏" },
+    });
+
+    expect(wrapper.classes()).not.toContain("is-line");
+    expect(wrapper.find("label.sc-input__label").exists()).toBe(false);
+  });
+
+  test("line variant keeps clearable / theme / slots behavior", async () => {
+    const wrapper = mount(Input, {
+      props: {
+        variant: "line",
+        label: "邮箱",
+        modelValue: "a@b.com",
+        clearable: true,
+        theme: "info",
+        charCount: true,
+      },
+      slots: {
+        prefix: '<span class="p">@</span>',
+        suffix: '<span class="s">.com</span>',
+      },
+    });
+
+    expect(wrapper.classes()).toContain("is-line");
+    expect(wrapper.classes()).toContain("st-info");
+    expect(wrapper.classes()).toContain("is-filled");
+    expect(wrapper.find(".sc-input__clear").exists()).toBe(true);
+    expect(wrapper.find(".sc-input__count").exists()).toBe(true);
+    expect(wrapper.find(".p").exists()).toBe(true);
+    expect(wrapper.find(".s").exists()).toBe(true);
+
+    await wrapper.find(".sc-input__clear").trigger("click");
+    await flushPromises();
+
+    expect(wrapper.emitted("update:modelValue")?.at(-1)).toEqual([""]);
+    expect(wrapper.emitted("cleared")).toHaveLength(1);
+    expect(wrapper.classes()).not.toContain("is-filled");
+  });
+
+  test("line variant autocomplete works the same as input", async () => {
+    const wrapper = mount(Input, {
+      props: {
+        variant: "line",
+        label: "水果",
+        modelValue: "",
+        popItems: ["apple", "apricot", "banana"],
+      },
+      attachTo: document.body,
+    });
+
+    patchPopoverApi(
+      wrapper.find(".sc-input__suggest").element as HTMLElement,
+    );
+
+    await wrapper.find("input").setValue("ap");
+    await vi.advanceTimersByTimeAsync(300);
+    await flushPromises();
+    await nextTick();
+
+    expect(wrapper.vm.state.popVisible).toBe(true);
+    expect(wrapper.vm.state.filteredItems.map((i) => i.label)).toEqual([
+      "apple",
+      "apricot",
+    ]);
+
+    await wrapper.find("input").trigger("keydown", { key: "Enter" });
+    expect(wrapper.emitted("update:modelValue")?.at(-1)).toEqual(["apple"]);
+    expect(wrapper.classes()).toContain("is-filled");
 
     wrapper.unmount();
   });

@@ -221,4 +221,35 @@ describe("usePopper", () => {
     expect(popper.classList.contains("x")).toBe(false);
   });
 
+  test("binds reference/popper assigned after init", async () => {
+    const { api, wrapper } = mountUsePopper({
+      reference: null,
+      popper: null,
+      show: false,
+      placement: "bottom-start",
+      arrowVisible: false,
+    });
+    wrappers.push(wrapper);
+    await nextTick();
+
+    expect(popper.getAttribute("popover")).toBeNull();
+
+    api.reference = reference;
+    api.popper = popper;
+    await nextTick();
+
+    expect(popper.getAttribute("popover")).toBe("manual");
+    expect(popper.classList.contains("vai-popper")).toBe(true);
+    expect(reference.style.getPropertyValue("anchor-name")).toMatch(
+      /^--vai-popper-/,
+    );
+    expect(popper.style.getPropertyValue("position-area")).toBe(
+      "bottom span-right",
+    );
+
+    const showSpy = vi.spyOn(popper, "showPopover");
+    api.show = true;
+    await nextTick();
+    expect(showSpy).toHaveBeenCalled();
+  });
 });
