@@ -102,7 +102,7 @@ popperOption.show = false;
 
 1. 用户初始传入目标元素和弹出层元素，给它绑定上popover API（`popover="manual"`）与 `anchor-name` / `position-anchor`
 2. 通过 `position-area` + `position-try-fallbacks: flip-block, flip-inline` 做 12 方位与边界翻转
-3. 小箭头使用 `::before` 伪元素实现，并用 `arrowSafeOffset` 做四角 clamp
+3. 小箭头使用 `::before` 伪元素实现（`background/border: inherit`，内侧两边透明），并用 `arrowSafeOffset` 做四角 clamp；`.vai-popper` 需 `overflow: visible`，以覆盖 Popover UA 默认的 `overflow: auto`（否则箭头会被裁切）
 4. `show` 驱动 `showPopover` / `hidePopover`；`animate` 控制 CSS 过渡；`autoHide` 在捕获阶段监听 scroll
 5. 组件卸载时，清除锚点、类名、popover 状态与滚动监听
 

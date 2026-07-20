@@ -107,18 +107,16 @@ function createAnchorId() {
   return `vai${Math.random().toString(36).slice(2, 10)}`;
 }
 
-function ensureStyles() {
-  if (typeof document === "undefined") return;
-  if (document.getElementById(STYLE_ID)) return;
-
-  const style = document.createElement("style");
-  style.id = STYLE_ID;
-  style.textContent = `
+function getPopperStyleText() {
+  return `
 .${POPPER_CLASS} {
   position: absolute;
   inset: auto;
   margin: 0;
+  padding: 0;
   box-sizing: border-box;
+  /* Popover UA 默认 overflow:auto，会裁掉伸出盒外的箭头 ::before */
+  overflow: visible;
   position-try-fallbacks: flip-block, flip-inline;
   transition:
     opacity 0.15s ease,
@@ -147,6 +145,8 @@ function ensureStyles() {
   width: ${ARROW_SIZE}px;
   height: ${ARROW_SIZE}px;
   background: inherit;
+  /* 与面板同色边框；内侧两条透明，只保留朝外的尖角描边 */
+  border: inherit;
   rotate: 45deg;
   box-sizing: border-box;
   pointer-events: none;
@@ -159,6 +159,8 @@ function ensureStyles() {
     calc(100% - var(--vai-popper-arrow-safe) - ${ARROW_SIZE}px)
   );
   translate: 0 50%;
+  border-top-color: transparent;
+  border-left-color: transparent;
 }
 .${POPPER_CLASS}[data-placement^="bottom"].${ARROW_CLASS}::before {
   top: 0;
@@ -168,6 +170,8 @@ function ensureStyles() {
     calc(100% - var(--vai-popper-arrow-safe) - ${ARROW_SIZE}px)
   );
   translate: 0 -50%;
+  border-bottom-color: transparent;
+  border-right-color: transparent;
 }
 .${POPPER_CLASS}[data-placement^="left"].${ARROW_CLASS}::before {
   right: 0;
@@ -177,6 +181,9 @@ function ensureStyles() {
     calc(100% - var(--vai-popper-arrow-safe) - ${ARROW_SIZE}px)
   );
   translate: 50% 0;
+  /* 尖角朝右（指向 reference） */
+  border-bottom-color: transparent;
+  border-left-color: transparent;
 }
 .${POPPER_CLASS}[data-placement^="right"].${ARROW_CLASS}::before {
   left: 0;
@@ -186,9 +193,23 @@ function ensureStyles() {
     calc(100% - var(--vai-popper-arrow-safe) - ${ARROW_SIZE}px)
   );
   translate: -50% 0;
+  /* 尖角朝左（指向 reference） */
+  border-top-color: transparent;
+  border-right-color: transparent;
 }
 `.trim();
-  document.head.appendChild(style);
+}
+
+function ensureStyles() {
+  if (typeof document === "undefined") return;
+  const css = getPopperStyleText();
+  let style = document.getElementById(STYLE_ID) as HTMLStyleElement | null;
+  if (!style) {
+    style = document.createElement("style");
+    style.id = STYLE_ID;
+    document.head.appendChild(style);
+  }
+  if (style.textContent !== css) style.textContent = css;
 }
 
 function parseOffset(offset: number | [number, number]): [number, number] {

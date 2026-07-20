@@ -5,8 +5,11 @@ import ButtonDemo from "./components/button-demo.vue";
 import InputDemo from "./components/input-demo.vue";
 import LinkDemo from "./components/link-demo.vue";
 import TagDemo from "./components/tag-demo.vue";
+import UsePopperDemo from "./components/use-popper-demo.vue";
 
-const tab = ref<"button" | "link" | "tag" | "alert" | "input">("input");
+const tab = ref<
+  "button" | "link" | "tag" | "alert" | "input" | "use-popper"
+>("use-popper");
 </script>
 
 <template>
@@ -52,12 +55,21 @@ const tab = ref<"button" | "link" | "tag" | "alert" | "input">("input");
       >
         Input
       </button>
+      <button
+        type="button"
+        class="site-app__tab"
+        :class="{ 'is-active': tab === 'use-popper' }"
+        @click="tab = 'use-popper'"
+      >
+        usePopper
+      </button>
     </nav>
     <ButtonDemo v-if="tab === 'button'" />
     <LinkDemo v-else-if="tab === 'link'" />
     <TagDemo v-else-if="tab === 'tag'" />
     <AlertDemo v-else-if="tab === 'alert'" />
-    <InputDemo v-else />
+    <InputDemo v-else-if="tab === 'input'" />
+    <UsePopperDemo v-else />
   </div>
 </template>
 

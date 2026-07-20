@@ -130,6 +130,11 @@ describe("usePopper", () => {
     expect(popper.style.getPropertyValue("--vai-popper-gap")).toBe("20px");
     expect(popper.style.getPropertyValue("--vai-popper-cross")).toBe("2px");
     expect(popper.classList.contains("vai-popper--arrow")).toBe(true);
+    const css = document.getElementById("vai-use-popper-style")?.textContent;
+    // Popover UA 默认 overflow:auto 会裁剪箭头，样式层必须放开
+    expect(css).toContain("overflow: visible");
+    // 箭头需继承面板边框，避免纯色方块“咬边”
+    expect(css).toContain("border: inherit");
 
     api.arrowVisible = false;
     await nextTick();
