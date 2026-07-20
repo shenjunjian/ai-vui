@@ -43,6 +43,17 @@
 
 常见原生事件（如 `change`、`focus`）经属性透传到内部 `<input>`。
 
+### `change` 透传策略
+
+组件内部需监听原生 `change` 以同步 `v-model:checked`，同时不得覆盖用户传入的 `@change`。实现约定：
+
+1. `inheritAttrs: false`，非 prop 属性与监听器进入 `attrs`
+2. 从 `attrs` 中取出 `onChange`（用户 `@change`），其余属性透传到内部 `<input>`
+3. 组装统一的 `onChange` 挂到 input：**先**执行内部同步（更新 `checked`），**再**调用用户 `onChange`（支持单个函数或函数数组）
+4. 模板上不要再写独立的 `@change="handleChange"` 覆盖 `v-bind`，否则会丢掉用户监听
+
+因此 `@change` 与 `v-model:checked` 可同时使用；`change` 的 payload 仍为原生 `Event`（`event.target` 为内部 input）。
+
 ## Slots
 
 | 插槽      | 说明                                       |
@@ -83,7 +94,7 @@ interface RadioState {
 
 1. 解析 props；根元素为 `<label class="sc-radio">` + `st-*` / `is-*` 状态类
 2. `v-model:checked` 绑定原生 radio 的勾选态
-3. 常见 input 属性 / 事件经 `inheritAttrs: false` 透传到内部 input
+3. 常见 input 属性 / 事件经 `inheritAttrs: false` 透传到内部 input；`change` 按上文「透传策略」合并内部同步与用户监听
 4. 双态图标：`appearance: none` + CSS `mask`（未选 / 选中）
 5. 焦点光晕画在无 mask 的 `sc-radio__control` 上（mask 会裁切 input 自身的 box-shadow / outline），交互对齐 Button：`:focus-visible` 保留 halo，鼠标点击播 wave
 

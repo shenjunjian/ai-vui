@@ -1,4 +1,4 @@
-import { describe, expect, test } from "vite-plus/test";
+import { describe, expect, test, vi } from "vite-plus/test";
 import { mount } from "@vue/test-utils";
 import { nextTick } from "vue";
 import Radio from "../radio.vue";
@@ -43,6 +43,18 @@ describe("Radio", () => {
     expect((input.element as HTMLInputElement).checked).toBe(false);
 
     await input.setValue(true);
+    expect(wrapper.emitted("update:checked")?.at(-1)).toEqual([true]);
+  });
+
+  test("forwards native change listener", async () => {
+    const onChange = vi.fn();
+    const wrapper = mount(Radio, {
+      props: { checked: false },
+      attrs: { onChange },
+    });
+
+    await wrapper.find("input").setValue(true);
+    expect(onChange).toHaveBeenCalledTimes(1);
     expect(wrapper.emitted("update:checked")?.at(-1)).toEqual([true]);
   });
 

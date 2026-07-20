@@ -38,6 +38,31 @@ export default function useVm(ctx: CheckboxCtx) {
 
   const showLabel = computed(() => !!props.label || !!slots.default);
 
+  function syncIndeterminate() {
+    const el = refs.inputRef.value;
+    if (!el) return;
+    el.indeterminate = !!props.indeterminate;
+  }
+
+  function handleChange(event: Event) {
+    const target = event.target as HTMLInputElement;
+    models.checked.value = target.checked;
+    // 原生点击会清掉 indeterminate，受控 prop 为 true 时立即恢复
+    syncIndeterminate();
+  }
+
+  function invokeChange(
+    listener: ((e: Event) => void) | ((e: Event) => void)[] | undefined,
+    event: Event,
+  ) {
+    if (!listener) return;
+    if (Array.isArray(listener)) {
+      listener.forEach((fn) => fn(event));
+      return;
+    }
+    listener(event);
+  }
+
   const inputAttrs = computed(() => {
     const {
       class: _c,
@@ -45,9 +70,19 @@ export default function useVm(ctx: CheckboxCtx) {
       type: _t,
       disabled: _d,
       checked: _checked,
+      onChange,
       ...rest
-    } = attrs as InputHTMLAttributes & Record<string, unknown>;
-    return rest;
+    } = attrs as InputHTMLAttributes &
+      Record<string, unknown> & {
+        onChange?: ((e: Event) => void) | ((e: Event) => void)[];
+      };
+    return {
+      ...rest,
+      onChange: (event: Event) => {
+        handleChange(event);
+        invokeChange(onChange, event);
+      },
+    };
   });
 
   const rootClass = computed(() => [
@@ -60,12 +95,6 @@ export default function useVm(ctx: CheckboxCtx) {
     },
   ]);
 
-  function syncIndeterminate() {
-    const el = refs.inputRef.value;
-    if (!el) return;
-    el.indeterminate = !!props.indeterminate;
-  }
-
   watch(
     () => [props.indeterminate, refs.inputRef.value] as const,
     () => {
@@ -73,13 +102,6 @@ export default function useVm(ctx: CheckboxCtx) {
     },
     { immediate: true },
   );
-
-  function handleChange(event: Event) {
-    const target = event.target as HTMLInputElement;
-    models.checked.value = target.checked;
-    // 原生点击会清掉 indeterminate，受控 prop 为 true 时立即恢复
-    syncIndeterminate();
-  }
 
   function focus() {
     refs.inputRef.value?.focus();

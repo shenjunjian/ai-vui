@@ -8,7 +8,6 @@
         :checked="checked"
         :disabled="disabled"
         v-bind="state.inputAttrs"
-        @change="api.handleChange"
       />
     </span>
     <span v-if="state.showLabel" class="sc-radio__label">

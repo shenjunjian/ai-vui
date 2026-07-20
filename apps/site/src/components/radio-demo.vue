@@ -11,6 +11,9 @@ const disabledOff = ref(false);
 
 const fruit = ref<"apple" | "banana" | "orange">("apple");
 
+const changeDemo = ref(false);
+const changeLog = ref<string[]>([]);
+
 const apiDemo = ref(false);
 const radioRef = ref<{
   api: {
@@ -23,13 +26,21 @@ const radioRef = ref<{
 function selectFruit(value: "apple" | "banana" | "orange") {
   fruit.value = value;
 }
+
+function onChange(event: Event) {
+  const target = event.target as HTMLInputElement;
+  changeLog.value = [
+    ...changeLog.value,
+    `change: checked=${target.checked}`,
+  ].slice(-5);
+}
 </script>
 
 <template>
   <div class="radio-demo">
     <header class="radio-demo__header">
       <h1>Radio</h1>
-      <p>覆盖尺寸、主题、label、禁用、同组 name、属性透传与 api 的演示</p>
+      <p>覆盖尺寸、主题、label、禁用、同组 name、change、属性透传与 api 的演示</p>
     </header>
 
     <section class="radio-demo__section">
@@ -111,6 +122,23 @@ function selectFruit(value: "apple" | "banana" | "orange") {
         <Radio v-model:checked="disabledOff" disabled label="禁用未选" />
         <Radio v-model:checked="disabledOn" disabled label="禁用已选" />
       </div>
+    </section>
+
+    <section class="radio-demo__section">
+      <h2>事件 change</h2>
+      <p class="radio-demo__hint">
+        原生 change 经属性透传到内部 input；可与 v-model:checked 同时使用
+      </p>
+      <Radio
+        v-model:checked="changeDemo"
+        label="切换我触发 change"
+        @change="onChange"
+      />
+      <p class="radio-demo__hint">
+        checked：{{ changeDemo }}；事件日志：{{
+          changeLog.join(" → ") || "尚未触发"
+        }}
+      </p>
     </section>
 
     <section class="radio-demo__section">

@@ -11,6 +11,9 @@ const halfOn = ref(true);
 const disabledOn = ref(true);
 const disabledOff = ref(false);
 
+const changeDemo = ref(false);
+const changeLog = ref<string[]>([]);
+
 const apiDemo = ref(false);
 const checkboxRef = ref<{
   api: {
@@ -19,13 +22,21 @@ const checkboxRef = ref<{
     setCheck: (value: boolean) => void;
   };
 } | null>(null);
+
+function onChange(event: Event) {
+  const target = event.target as HTMLInputElement;
+  changeLog.value = [
+    ...changeLog.value,
+    `change: checked=${target.checked}`,
+  ].slice(-5);
+}
 </script>
 
 <template>
   <div class="checkbox-demo">
     <header class="checkbox-demo__header">
       <h1>Checkbox</h1>
-      <p>覆盖尺寸、主题、label、半选、禁用、属性透传与 api 的演示</p>
+      <p>覆盖尺寸、主题、label、半选、禁用、change、属性透传与 api 的演示</p>
     </header>
 
     <section class="checkbox-demo__section">
@@ -101,6 +112,23 @@ const checkboxRef = ref<{
         <Checkbox v-model:checked="disabledOff" disabled label="禁用未选" />
         <Checkbox v-model:checked="disabledOn" disabled label="禁用已选" />
       </div>
+    </section>
+
+    <section class="checkbox-demo__section">
+      <h2>事件 change</h2>
+      <p class="checkbox-demo__hint">
+        原生 change 经属性透传到内部 input；可与 v-model:checked 同时使用
+      </p>
+      <Checkbox
+        v-model:checked="changeDemo"
+        label="切换我触发 change"
+        @change="onChange"
+      />
+      <p class="checkbox-demo__hint">
+        checked：{{ changeDemo }}；事件日志：{{
+          changeLog.join(" → ") || "尚未触发"
+        }}
+      </p>
     </section>
 
     <section class="checkbox-demo__section">

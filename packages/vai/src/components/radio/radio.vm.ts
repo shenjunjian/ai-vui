@@ -35,6 +35,23 @@ export default function useVm(ctx: RadioCtx) {
 
   const showLabel = computed(() => !!props.label || !!slots.default);
 
+  function handleChange(event: Event) {
+    const target = event.target as HTMLInputElement;
+    models.checked.value = target.checked;
+  }
+
+  function invokeChange(
+    listener: ((e: Event) => void) | ((e: Event) => void)[] | undefined,
+    event: Event,
+  ) {
+    if (!listener) return;
+    if (Array.isArray(listener)) {
+      listener.forEach((fn) => fn(event));
+      return;
+    }
+    listener(event);
+  }
+
   const inputAttrs = computed(() => {
     const {
       class: _c,
@@ -42,9 +59,19 @@ export default function useVm(ctx: RadioCtx) {
       type: _t,
       disabled: _d,
       checked: _checked,
+      onChange,
       ...rest
-    } = attrs as InputHTMLAttributes & Record<string, unknown>;
-    return rest;
+    } = attrs as InputHTMLAttributes &
+      Record<string, unknown> & {
+        onChange?: ((e: Event) => void) | ((e: Event) => void)[];
+      };
+    return {
+      ...rest,
+      onChange: (event: Event) => {
+        handleChange(event);
+        invokeChange(onChange, event);
+      },
+    };
   });
 
   const rootClass = computed(() => [
@@ -55,11 +82,6 @@ export default function useVm(ctx: RadioCtx) {
       "is-checked": visualState.value === "checked",
     },
   ]);
-
-  function handleChange(event: Event) {
-    const target = event.target as HTMLInputElement;
-    models.checked.value = target.checked;
-  }
 
   function focus() {
     refs.inputRef.value?.focus();
