@@ -1,154 +1,158 @@
-import { onMounted, onBeforeUnmount, reactive, type Ref } from "vue";
+import {
+  onBeforeUnmount,
+  ref,
+  toValue,
+  type MaybeRef,
+  type Ref,
+} from "vue";
 
-/** 可以自动聚焦的功能
- * container: 需要捕获焦点的容器，tab时会循环每一个可聚焦元素。
- * initialFocus: 初始聚焦的区域，如果为空，则自动聚焦到容器内第一个可聚焦元素。比如 dialog时，可以传入正文区域，这样就不会第一时间聚焦于close按钮了。
+const FOCUSABLE_SELECTOR = [
+  'input:not([type="hidden"]):not([disabled])',
+  "select:not([disabled])",
+  "textarea:not([disabled])",
+  "button:not([disabled])",
+  "a[href]",
+  "area[href]",
+  "summary",
+  '[tabindex]:not([tabindex="-1"])',
+  '[contenteditable="true"]',
+].join(",");
+
+function isVisible(el: HTMLElement): boolean {
+  if (el.hasAttribute("hidden") || el.closest("[inert]")) return false;
+  if (typeof el.checkVisibility === "function") {
+    return el.checkVisibility({
+      checkOpacity: false,
+      checkVisibilityCSS: true,
+    });
+  }
+  const style = getComputedStyle(el);
+  if (style.display === "none" || style.visibility === "hidden") return false;
+  return el.getClientRects().length > 0;
+}
+
+function getFocusableElements(container: HTMLElement): HTMLElement[] {
+  return Array.from(
+    container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR),
+  ).filter(isVisible);
+}
+
+function isProgrammaticallyFocusable(el: HTMLElement): boolean {
+  if (!isVisible(el)) return false;
+  if (el.matches(FOCUSABLE_SELECTOR)) return true;
+  // tabindex="-1" 等：可程序聚焦，但不进 Tab 序列
+  return el.tabIndex >= -1 && el.hasAttribute("tabindex");
+}
+
+function findAutofocus(root: HTMLElement): HTMLElement | null {
+  if (root.matches("[autofocus]") && isVisible(root)) return root;
+  const el = root.querySelector<HTMLElement>("[autofocus]");
+  return el && isVisible(el) ? el : null;
+}
+
+/** 焦点陷阱：Tab 在容器内循环；激活时自动聚焦，停用时恢复先前焦点。
+ * @example
+ * const panelRef = useTemplateRef('panel')
+ * const { activate, deactivate } = useFocusTrap(panelRef)
+ * watch(open, (v) => (v ? activate() : deactivate()))
  */
 export function useFocusTrap(
   /** 需要捕获焦点的容器 */
-  container: HTMLElement | null | Ref<HTMLElement | null>,
-  /** 初始聚焦的区域 */
-  initialFocus?: HTMLElement | null | Ref<HTMLElement | null>,
-) {
-  const state = reactive({
-    container,
-    initialFocus,
-  });
-  const focusTrap = new FocusTrap();
+  container: MaybeRef<HTMLElement | null>,
+  /** 初始聚焦元素，或在其内查找首个可聚焦元素的区域 */
+  initialFocus?: MaybeRef<HTMLElement | null>,
+): {
+  activate: () => void;
+  deactivate: () => void;
+  isActive: Ref<boolean>;
+} {
+  const isActive = ref(false);
+  let previousFocus: HTMLElement | null = null;
+  let activeContainer: HTMLElement | null = null;
+
+  function handleKeyDown(e: KeyboardEvent) {
+    if (e.key !== "Tab" || !activeContainer) return;
+
+    const focusables = getFocusableElements(activeContainer);
+    if (focusables.length === 0) {
+      e.preventDefault();
+      if (isProgrammaticallyFocusable(activeContainer)) {
+        activeContainer.focus();
+      }
+      return;
+    }
+
+    const first = focusables[0]!;
+    const last = focusables[focusables.length - 1]!;
+    const current = document.activeElement as HTMLElement | null;
+    const outside =
+      !current ||
+      !activeContainer.contains(current) ||
+      !focusables.includes(current);
+
+    if (e.shiftKey) {
+      if (outside || current === first) {
+        e.preventDefault();
+        last.focus();
+      }
+    } else if (outside || current === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  }
+
+  function resolveInitialTarget(
+    root: HTMLElement,
+    initial: HTMLElement | null,
+  ): HTMLElement | null {
+    const searchRoot = initial ?? root;
+    const autofocusEl = findAutofocus(searchRoot) ?? findAutofocus(root);
+    if (autofocusEl) return autofocusEl;
+
+    if (initial && isProgrammaticallyFocusable(initial)) return initial;
+
+    const scope = initial ?? root;
+    const focusables = getFocusableElements(scope);
+    if (focusables.length > 0) return focusables[0]!;
+
+    if (isProgrammaticallyFocusable(root)) return root;
+    return null;
+  }
 
   function activate() {
-    focusTrap.activate(state.container!, state.initialFocus!);
+    if (isActive.value) return;
+
+    const el = toValue(container);
+    if (!el || !(el instanceof HTMLElement)) {
+      throw new Error("useFocusTrap: 必须传入有效的 DOM 容器元素");
+    }
+
+    const initial = initialFocus != null ? toValue(initialFocus) : null;
+    activeContainer = el;
+    previousFocus = document.activeElement as HTMLElement | null;
+    document.addEventListener("keydown", handleKeyDown);
+
+    const target = resolveInitialTarget(el, initial);
+    target?.focus();
+
+    isActive.value = true;
   }
+
   function deactivate() {
-    focusTrap.deactivate();
-  }
+    if (!isActive.value) return;
 
-  onMounted(() => focusTrap.activate(state.container!, state.initialFocus!));
-  onBeforeUnmount(() => focusTrap.deactivate());
+    document.removeEventListener("keydown", handleKeyDown);
 
-  return { activate, deactivate };
-}
-/** AI生成的焦点捕获 */
-class FocusTrap {
-  container: HTMLElement | null = null;
-  focusableElements: HTMLElement[] = [];
-  previousFocus: HTMLElement | null;
-  isActivated = false;
-
-  constructor() {
-    this.focusableElements = []; // 容器内可聚焦元素集合
-    this.previousFocus = null; // 激活陷阱前的原有焦点元素（用于后续恢复）
-    this.handleKeyDown = this.handleKeyDown.bind(this); // 绑定事件处理函数的 this 指向
-  }
-
-  /**
-   * 1. 获取容器内所有可聚焦元素
-   */
-  getFocusableElements() {
-    const selector = [
-      'input:not([type="hidden"]):not([disabled])',
-      "select:not([disabled])",
-      "textarea:not([disabled])",
-      "button:not([disabled])",
-      "a[href]:not([disabled])",
-      "area[href]",
-      '[tabindex]:not([tabindex="-1"]):not([disabled])',
-      '[contenteditable="true"]',
-    ].join(",");
-
-    // 将 NodeList 转换为数组，方便后续操作
-    return Array.from(
-      this.container!.querySelectorAll<HTMLElement>(selector),
-    ).filter((element: HTMLElement) => {
-      // 额外过滤：元素必须可见（避免隐藏元素被聚焦）
-      const style = window.getComputedStyle(element);
-      return (
-        style.display !== "none" &&
-        style.visibility !== "hidden" &&
-        element.offsetParent !== null
-      );
-    }) as HTMLElement[];
-  }
-
-  /**
-   * 2. 键盘事件处理：控制焦点循环
-   * @param {KeyboardEvent} e
-   */
-  handleKeyDown(e: KeyboardEvent) {
-    // 仅处理 Tab 键事件（排除其他快捷键干扰）
-    if (e.key !== "Tab") return;
-
-    // 获取并缓存可聚焦元素
-    this.focusableElements = this.getFocusableElements();
-
-    const { focusableElements } = this;
-    if (focusableElements.length === 0) return; // 无可用可聚焦元素，直接返回
-
-    const firstElement = focusableElements[0];
-    const lastElement = focusableElements[focusableElements.length - 1];
-    const currentFocus = document.activeElement;
-
-    // 场景 1：Shift+Tab（反向切换），当前焦点是第一个元素 → 跳转到最后一个
-    if (e.shiftKey && currentFocus === firstElement) {
-      e.preventDefault(); // 阻止浏览器默认的焦点跳转行为
-      lastElement!.focus();
+    if (previousFocus?.isConnected) {
+      previousFocus.focus();
     }
 
-    // 场景 2：仅 Tab（正向切换），当前焦点是最后一个元素 → 跳转到第一个
-    if (!e.shiftKey && currentFocus === lastElement) {
-      e.preventDefault();
-      firstElement!.focus();
-    }
+    previousFocus = null;
+    activeContainer = null;
+    isActive.value = false;
   }
 
-  /**
-   * 3. 激活焦点陷阱
-   */
-  activate(container: HTMLElement, initialFocus: HTMLElement) {
-    if (this.isActivated) return;
+  onBeforeUnmount(deactivate);
 
-    if (!container || !(container instanceof HTMLElement)) {
-      throw new Error("必须传入有效的 DOM 容器元素");
-    }
-    this.container = container; // 容器内可聚焦元素集合
-
-    // 记录激活前的焦点元素，用于后续恢复
-    this.previousFocus = document.activeElement as HTMLElement;
-
-    // 绑定键盘事件（监听全局 keydown，确保能捕获 Tab 键操作）
-    document.addEventListener("keydown", this.handleKeyDown);
-
-    // 可选：自动聚焦到容器内第一个可聚焦元素
-    const firstContainer = initialFocus || container;
-    const autoFocusEl =
-      firstContainer.querySelector<HTMLElement>("[autofocus]");
-
-    if (autoFocusEl) {
-      autoFocusEl.focus();
-    } else if (this.focusableElements.length > 0) {
-      this.focusableElements[0]!.focus();
-    }
-
-    this.isActivated = true;
-  }
-
-  /**
-   * 4. 关闭/销毁焦点陷阱
-   */
-  deactivate() {
-    if (!this.isActivated) return;
-
-    // 移除键盘事件监听，防止内存泄漏
-    document.removeEventListener("keydown", this.handleKeyDown);
-
-    // 恢复激活陷阱前的原有焦点
-    if (this.previousFocus && this.previousFocus.focus) {
-      this.previousFocus.focus();
-    }
-
-    // 清空缓存
-    this.focusableElements = [];
-    this.previousFocus = null;
-    this.isActivated = false;
-  }
+  return { activate, deactivate, isActive };
 }

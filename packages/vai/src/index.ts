@@ -16,6 +16,7 @@ export type {
 } from "./components/input/input.vue";
 export type { TextAreaAutoSize } from "./components/text-area/text-area.vue";
 export { useTimer } from "./hooks/useTimer.ts";
+export { useFocusTrap } from "./hooks/useFocusTrap.ts";
 export {
   usePopper,
   type Boundary,

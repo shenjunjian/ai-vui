@@ -1,4 +1,5 @@
 export { useTimer } from "./useTimer.ts";
+export { useFocusTrap } from "./useFocusTrap.ts";
 export {
   usePopper,
   type Boundary,

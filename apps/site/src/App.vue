@@ -11,6 +11,7 @@ import LinkDemo from "./components/link-demo.vue";
 import RadioDemo from "./components/radio-demo.vue";
 import TagDemo from "./components/tag-demo.vue";
 import TextAreaDemo from "./components/text-area-demo.vue";
+import UseFocusTrapDemo from "./components/use-focus-trap-demo.vue";
 import UsePopperDemo from "./components/use-popper-demo.vue";
 
 const tab = ref<
@@ -26,7 +27,8 @@ const tab = ref<
   | "divider"
   | "dialog"
   | "use-popper"
->("dialog");
+  | "use-focus-trap"
+>("use-focus-trap");
 </script>
 
 <template>
@@ -71,6 +73,10 @@ const tab = ref<
         @click="tab = 'use-popper'">
         usePopper
       </button>
+      <button type="button" class="site-app__tab" :class="{ 'is-active': tab === 'use-focus-trap' }"
+        @click="tab = 'use-focus-trap'">
+        useFocusTrap
+      </button>
     </nav>
     <ButtonDemo v-if="tab === 'button'" />
     <LinkDemo v-else-if="tab === 'link'" />
@@ -83,7 +89,8 @@ const tab = ref<
     <RadioDemo v-else-if="tab === 'radio'" />
     <DividerDemo v-else-if="tab === 'divider'" />
     <DialogDemo v-else-if="tab === 'dialog'" />
-    <UsePopperDemo v-else />
+    <UsePopperDemo v-else-if="tab === 'use-popper'" />
+    <UseFocusTrapDemo v-else />
   </div>
 </template>
 
