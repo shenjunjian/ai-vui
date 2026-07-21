@@ -22,6 +22,8 @@
       @change="api.handleChange"
       @keydown="api.handleKeydown"
       @paste="api.handlePaste"
+      @focus="api.handleFocus"
+      @blur="api.handleBlur"
     />
     <button
       v-if="state.showControls"
@@ -37,6 +39,24 @@
     <span v-else-if="state.showUnit" class="v-numeric__unit" aria-hidden="true">
       {{ unit }}
     </span>
+    <div
+      ref="popperRef"
+      class="v-numeric__suggest"
+      role="listbox"
+      :aria-hidden="!state.popVisible"
+    >
+      <div
+        v-for="(item, index) in state.filteredItems"
+        :key="`${item.label}-${index}`"
+        class="v-numeric__suggest-item"
+        :class="{ 'is-active': index === state.activeIndex }"
+        role="option"
+        :aria-selected="index === state.activeIndex"
+        @mousedown.prevent="api.selectItem(item)"
+      >
+        {{ item.label }}
+      </div>
+    </div>
   </div>
 </template>
 
@@ -44,8 +64,23 @@
 import useVm from "./numeric.vm.ts";
 import "./numeric.less";
 import { useAttrs, useTemplateRef } from "vue";
+import type { PopperOption } from "../../hooks/usePopper.ts";
 
 defineOptions({ name: "TinyNumeric", inheritAttrs: false });
+
+export interface NumericOption {
+  label: string;
+}
+
+export type NumericPopItems =
+  | string[]
+  | number[]
+  | NumericOption[]
+  | ((query: string) => Promise<string[] | number[] | NumericOption[]>);
+
+export type NumericPopperOption = Partial<
+  Omit<PopperOption, "reference" | "popper" | "show">
+>;
 
 const props = withDefaults(
   defineProps<{
@@ -61,8 +96,12 @@ const props = withDefaults(
     controls?: boolean;
     /** 单位文案；有单位时不显示 controls */
     unit?: string;
-    /** 粘贴时解析剪贴板文本 */
+    /** 粘贴与选中 pop-items 时解析文本 */
     parse?: (str: string) => number;
+    /** 自动提示数据项 */
+    popItems?: NumericPopItems;
+    /** 自动提示弹出层配置 */
+    popperOption?: NumericPopperOption;
   }>(),
   {
     size: "md",
@@ -70,6 +109,7 @@ const props = withDefaults(
     loop: false,
     controls: true,
     unit: "",
+    popItems: () => [],
   },
 );
 
@@ -89,6 +129,7 @@ const models = {
 const refs = {
   rootRef: useTemplateRef("rootRef"),
   inputRef: useTemplateRef("inputRef"),
+  popperRef: useTemplateRef("popperRef"),
 };
 
 const attrs = useAttrs();

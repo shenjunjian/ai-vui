@@ -18,6 +18,8 @@
   --numeric-unit-color: var(--v-color-gray-600);
   --numeric-btn-color: var(--v-color-gray-600);
   --numeric-btn-hover-bg: var(--v-color-gray-50);
+  --numeric-suggest-bg: var(--v-color-white);
+  --numeric-suggest-active-bg: var(--v-color-gray-100);
   --numeric-focus-ring: color-mix(
     in srgb,
     var(--numeric-border) var(--v-mix-focus-ring),
@@ -226,6 +228,42 @@
     .v-numeric__inner {
       text-align: left;
       padding: 0 var(--v-space-6);
+    }
+  }
+
+  &__suggest {
+    /* 绑定 popover 前勿参与 flex 占位 */
+    display: none;
+    box-sizing: border-box;
+    width: anchor-size(width);
+    min-width: anchor-size(width);
+    max-width: anchor-size(width);
+    max-height: 240px;
+    padding: var(--v-space-2);
+    overflow: auto;
+    font-size: var(--numeric-font-size);
+    color: var(--numeric-color);
+    background: var(--numeric-suggest-bg);
+    border: var(--v-border-width) solid var(--numeric-border);
+    border-radius: var(--numeric-radius);
+    box-shadow: 0 8px 24px
+      color-mix(in srgb, var(--v-color-gray-900) var(--v-mix-plain-bg), transparent);
+
+    &:popover-open {
+      display: block;
+    }
+  }
+
+  &__suggest-item {
+    padding: var(--v-space-3) var(--v-space-5);
+    border-radius: calc(var(--numeric-radius) - 2px);
+    cursor: pointer;
+    user-select: none;
+    text-align: left;
+
+    &.is-active,
+    &:hover {
+      background: var(--numeric-suggest-active-bg);
     }
   }
 }

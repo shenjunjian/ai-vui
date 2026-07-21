@@ -9,6 +9,8 @@ const looped = ref(0);
 const withUnit = ref(1);
 const noControls = ref(10);
 const parsed = ref(Number.NaN);
+const suggest = ref(Number.NaN);
+const asyncSuggest = ref(Number.NaN);
 
 const eventValue = ref(1);
 const eventLog = ref<string[]>([]);
@@ -16,8 +18,15 @@ const eventLog = ref<string[]>([]);
 const apiValue = ref(5);
 const numericRef = ref<InstanceType<typeof Numeric> | null>(null);
 
+const presets = [1, 5, 10, 12, 20, 50, 100];
+
 function parseWeight(str: string) {
   return Number(str.replace(/[^\d.-]/g, ""));
+}
+
+async function searchPresets(query: string) {
+  await new Promise((r) => setTimeout(r, 200));
+  return presets.filter((x) => String(x).includes(query));
 }
 
 function formatNum(n: number) {
@@ -44,7 +53,7 @@ function onChange(value: number) {
   <div class="numeric-demo">
     <header class="numeric-demo__header">
       <h1>Numeric</h1>
-      <p>数字输入：增减控件、单位、边界循环与粘贴解析</p>
+      <p>数字输入：增减控件、单位、边界循环、粘贴解析与自动提示</p>
     </header>
 
     <section class="numeric-demo__section">
@@ -118,17 +127,26 @@ function onChange(value: number) {
     </section>
 
     <section class="numeric-demo__section">
+      <h2>自动提示 pop-items</h2>
+      <p class="numeric-demo__hint">
+        输入时 debounce 300ms 匹配；弹出层打开时 ↑↓ 选择，Enter / Tab
+        确认；关闭时 ↑↓ 仍增减
+      </p>
+      <div class="numeric-demo__stack">
+        <Numeric v-model="suggest" :pop-items="presets" :controls="false" placeholder="输入如 1 / 10" />
+        <Numeric v-model="asyncSuggest" :pop-items="searchPresets" placeholder="异步搜索预设值" />
+      </div>
+      <p class="numeric-demo__hint">
+        suggest={{ formatNum(suggest) }} / async={{ formatNum(asyncSuggest) }}
+      </p>
+    </section>
+
+    <section class="numeric-demo__section">
       <h2>input / change 事件</h2>
       <p class="numeric-demo__hint">
         键入触发 input；失焦触发 change；点 ± 同时触发两者
       </p>
-      <Numeric
-        v-model="eventValue"
-        :min="0"
-        :max="20"
-        @input="onInput"
-        @change="onChange"
-      />
+      <Numeric v-model="eventValue" :min="0" :max="20" @input="onInput" @change="onChange" />
       <p class="numeric-demo__hint">
         值：{{ formatNum(eventValue) }}｜日志：{{
           eventLog.join(" → ") || "尚未触发"
@@ -142,13 +160,7 @@ function onChange(value: number) {
         通过 ref 调用 api.focus / blur / clear / setValue / selectall / increase
         / decrease
       </p>
-      <Numeric
-        ref="numericRef"
-        v-model="apiValue"
-        :min="0"
-        :max="20"
-        :step="1"
-      />
+      <Numeric ref="numericRef" v-model="apiValue" :min="0" :max="20" :step="1" />
       <div class="numeric-demo__actions">
         <button type="button" @click="numericRef?.api.focus()">focus</button>
         <button type="button" @click="numericRef?.api.blur()">blur</button>

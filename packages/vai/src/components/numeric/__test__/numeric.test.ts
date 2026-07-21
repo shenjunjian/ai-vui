@@ -1,10 +1,64 @@
-import { describe, expect, test } from "vite-plus/test";
-import { mount } from "@vue/test-utils";
+import {
+  describe,
+  expect,
+  test,
+  vi,
+  beforeEach,
+  afterEach,
+} from "vite-plus/test";
+import { flushPromises, mount } from "@vue/test-utils";
 import { nextTick } from "vue";
 import Numeric from "../numeric.vue";
 
+function patchPopoverApi(el: HTMLElement) {
+  let open = false;
+  Object.defineProperty(el, "popover", {
+    configurable: true,
+    get: () => el.getAttribute("popover"),
+    set: (v: string | null) => {
+      if (v == null) el.removeAttribute("popover");
+      else el.setAttribute("popover", v);
+    },
+  });
+  Object.defineProperty(el, "matches", {
+    configurable: true,
+    value: (selector: string) => {
+      if (selector === ":popover-open") return open;
+      return HTMLElement.prototype.matches.call(el, selector);
+    },
+  });
+  el.showPopover = () => {
+    if (open) return;
+    open = true;
+    el.dispatchEvent(
+      Object.assign(new Event("toggle"), {
+        newState: "open",
+        oldState: "closed",
+      }),
+    );
+  };
+  el.hidePopover = () => {
+    if (!open) return;
+    open = false;
+    el.dispatchEvent(
+      Object.assign(new Event("toggle"), {
+        newState: "closed",
+        oldState: "open",
+      }),
+    );
+  };
+}
+
 describe("Numeric", () => {
-  test("renders with default classes and controls", () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  test("renders with default classes and controls", async () => {
     const wrapper = mount(Numeric);
 
     expect(wrapper.classes()).toContain("v-numeric");
@@ -17,6 +71,11 @@ describe("Numeric", () => {
     expect(wrapper.find(".v-numeric__btn--plus").exists()).toBe(true);
     expect(wrapper.find(".ci-minus1").exists()).toBe(true);
     expect(wrapper.find(".ci-plus1").exists()).toBe(true);
+
+    await nextTick();
+    const suggest = wrapper.find(".v-numeric__suggest").element as HTMLElement;
+    expect(suggest.getAttribute("popover")).toBe("manual");
+    expect(suggest.classList.contains("vai-popper")).toBe(true);
   });
 
   test("applies size and theme classes", () => {
@@ -315,5 +374,159 @@ describe("Numeric", () => {
     expect(wrapper.find(".v-numeric__btn--plus").attributes("aria-label")).toBe(
       "增加",
     );
+  });
+
+  test("autocomplete filters popItems after debounce and selects on Enter", async () => {
+    const wrapper = mount(Numeric, {
+      props: {
+        modelValue: Number.NaN,
+        controls: false,
+        popItems: [10, 12, 20, 100],
+      },
+      attachTo: document.body,
+    });
+
+    patchPopoverApi(
+      wrapper.find(".v-numeric__suggest").element as HTMLElement,
+    );
+
+    await wrapper.find("input").setValue("1");
+    await vi.advanceTimersByTimeAsync(300);
+    await flushPromises();
+    await nextTick();
+
+    expect(wrapper.vm.state.popVisible).toBe(true);
+    expect(
+      wrapper.vm.state.filteredItems.map((i: { label: string }) => i.label),
+    ).toEqual(["10", "12", "100"]);
+
+    await wrapper.find("input").trigger("keydown", { key: "ArrowDown" });
+    expect(wrapper.vm.state.activeIndex).toBe(1);
+
+    await wrapper.find("input").trigger("keydown", { key: "Enter" });
+    expect(wrapper.emitted("update:modelValue")?.at(-1)).toEqual([12]);
+    expect(wrapper.emitted("input")?.at(-1)).toEqual([12]);
+    expect(wrapper.emitted("change")?.at(-1)).toEqual([12]);
+    expect(wrapper.vm.state.popVisible).toBe(false);
+
+    wrapper.unmount();
+  });
+
+  test("autocomplete closes when no matches", async () => {
+    const wrapper = mount(Numeric, {
+      props: {
+        modelValue: Number.NaN,
+        controls: false,
+        popItems: [10, 20],
+      },
+      attachTo: document.body,
+    });
+
+    patchPopoverApi(
+      wrapper.find(".v-numeric__suggest").element as HTMLElement,
+    );
+
+    await wrapper.find("input").setValue("9");
+    await vi.advanceTimersByTimeAsync(300);
+    await flushPromises();
+
+    expect(wrapper.vm.state.popVisible).toBe(false);
+    expect(wrapper.vm.state.filteredItems).toHaveLength(0);
+
+    wrapper.unmount();
+  });
+
+  test("async popItems resolver", async () => {
+    const popItems = vi.fn(async (query: string) =>
+      [100, 101, 200].filter((x) => String(x).includes(query)),
+    );
+
+    const wrapper = mount(Numeric, {
+      props: { modelValue: Number.NaN, controls: false, popItems },
+      attachTo: document.body,
+    });
+
+    patchPopoverApi(
+      wrapper.find(".v-numeric__suggest").element as HTMLElement,
+    );
+
+    await wrapper.find("input").setValue("10");
+    await vi.advanceTimersByTimeAsync(300);
+    await flushPromises();
+
+    expect(popItems).toHaveBeenCalledWith("10");
+    expect(
+      wrapper.vm.state.filteredItems.map((i: { label: string }) => i.label),
+    ).toEqual(["100", "101"]);
+
+    wrapper.unmount();
+  });
+
+  test("selects item by mousedown", async () => {
+    const wrapper = mount(Numeric, {
+      props: {
+        modelValue: 1,
+        controls: false,
+        popItems: [{ label: "10" }, { label: "20" }],
+      },
+      attachTo: document.body,
+    });
+
+    patchPopoverApi(
+      wrapper.find(".v-numeric__suggest").element as HTMLElement,
+    );
+
+    await wrapper.find("input").setValue("1");
+    await vi.advanceTimersByTimeAsync(300);
+    await flushPromises();
+    await nextTick();
+
+    const items = wrapper.findAll(".v-numeric__suggest-item");
+    expect(items.length).toBeGreaterThan(0);
+    await items[0]!.trigger("mousedown");
+    expect(wrapper.emitted("update:modelValue")?.at(-1)).toEqual([10]);
+    expect(wrapper.emitted("change")?.at(-1)).toEqual([10]);
+
+    wrapper.unmount();
+  });
+
+  test("selectItem prefers parse over Number", async () => {
+    const parse = vi.fn((str: string) => Number(str.replace(/[^\d.-]/g, "")));
+
+    const wrapper = mount(Numeric, {
+      props: {
+        modelValue: Number.NaN,
+        controls: false,
+        parse,
+        popItems: ["约 42 kg", "约 50 kg"],
+      },
+      attachTo: document.body,
+    });
+
+    patchPopoverApi(
+      wrapper.find(".v-numeric__suggest").element as HTMLElement,
+    );
+
+    await wrapper.find("input").setValue("4");
+    await vi.advanceTimersByTimeAsync(300);
+    await flushPromises();
+    await nextTick();
+
+    await wrapper.find("input").trigger("keydown", { key: "Enter" });
+    expect(parse).toHaveBeenCalledWith("约 42 kg");
+    expect(wrapper.emitted("update:modelValue")?.at(-1)).toEqual([42]);
+    expect(wrapper.emitted("change")?.at(-1)).toEqual([42]);
+
+    wrapper.unmount();
+  });
+
+  test("ArrowUp / ArrowDown step when suggest is closed", async () => {
+    const wrapper = mount(Numeric, {
+      props: { modelValue: 5, popItems: [50, 51] },
+      attrs: { step: "1" },
+    });
+
+    await wrapper.find("input").trigger("keydown", { key: "ArrowUp" });
+    expect(wrapper.emitted("update:modelValue")?.at(-1)).toEqual([6]);
   });
 });
