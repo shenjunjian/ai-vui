@@ -124,14 +124,6 @@ export function usePopper(
 
   // #region 1、监听reference和popper元素的变化，并更新boundReference和boundPopper
 
-  const onToggle = (event: Event) => {
-    const e = event as ToggleEvent;
-    if (e.newState === "open") {
-      if (!state.show) state.show = true;
-    } else if (e.newState === "closed") {
-      if (state.show) state.show = false;
-    }
-  };
   function unbindReference() {
     if (!boundReference) return;
     (boundReference as HTMLElement).style.removeProperty("anchor-name");
@@ -140,7 +132,6 @@ export function usePopper(
 
   function unbindPopper() {
     if (!boundPopper) return;
-    boundPopper.removeEventListener("toggle", onToggle);
     if (boundPopper.matches(":popover-open")) {
       try {
         boundPopper.hidePopover();
@@ -192,7 +183,6 @@ export function usePopper(
         boundPopper = popper;
         popper.popover = "manual";
         popper.classList.add(POPPER_CLASS);
-        popper.addEventListener("toggle", onToggle);
       }
     }
   }
