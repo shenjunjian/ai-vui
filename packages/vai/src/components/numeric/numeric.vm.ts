@@ -179,6 +179,17 @@ export default function useVm(ctx: NumericCtx) {
     return { step, min, max, hasMin, hasMax };
   }
 
+  /** 钳制到 [min, max]，不走 loop */
+  function clampBound(value: number): number {
+    const { min, max, hasMin, hasMax } = getBounds();
+    if (!Number.isFinite(value)) return Number.NaN;
+    let next = value;
+    if (hasMin && next < min) next = min;
+    if (hasMax && next > max) next = max;
+    return next;
+  }
+
+  /** 增减 / setValue 等：loop 时越界落到另一端，否则钳制 */
   function applyBound(value: number): number {
     const { min, max, hasMin, hasMax } = getBounds();
     if (!Number.isFinite(value)) return Number.NaN;
@@ -189,10 +200,7 @@ export default function useVm(ctx: NumericCtx) {
       return value;
     }
 
-    let next = value;
-    if (hasMin && next < min) next = min;
-    if (hasMax && next > max) next = max;
-    return next;
+    return clampBound(value);
   }
 
   /** @param commit 为 true 时同时触发 change（增减 / api / 粘贴等） */
@@ -204,8 +212,16 @@ export default function useVm(ctx: NumericCtx) {
     emit("change", value);
   }
 
+  /**
+   * 写入值。
+   * - 键入（commit=false）：不做 min/max 钳制，允许中间态越界
+   * - 确认（commit=true）：按 applyBound 处理后再触发 change
+   */
   function writeValue(value: number, commit = false) {
-    const next = isEmptyNumber(value) ? Number.NaN : applyBound(value);
+    let next = isEmptyNumber(value) ? Number.NaN : value;
+    if (commit && !isEmptyNumber(next)) {
+      next = applyBound(next);
+    }
     const prev = models.modelValue.value;
     models.modelValue.value = next;
     if (!sameNumber(prev, next)) {
@@ -320,8 +336,16 @@ export default function useVm(ctx: NumericCtx) {
     void debounceMatch(target.value);
   }
 
+  /** 失焦确认：钳制到 min/max（不走 loop），再触发 change */
   function handleChange() {
-    emitChange(models.modelValue.value);
+    const current = models.modelValue.value;
+    const next = isEmptyNumber(current) ? Number.NaN : clampBound(current);
+    const prev = models.modelValue.value;
+    models.modelValue.value = next;
+    if (!sameNumber(prev, next)) {
+      emit("input", next);
+    }
+    emitChange(next);
   }
 
   function selectItem(item: NumericOption) {

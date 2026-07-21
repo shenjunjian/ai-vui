@@ -39,7 +39,7 @@
 | ------------------- | -------- | -------------------------------------------------------------------- |
 | `update:modelValue` | `number` | v-model 更新                                                         |
 | `input`             | `number` | 值变化时立即触发（键入、增减、api、粘贴、选中提示等）                |
-| `change`            | `number` | 值确认时触发（原生失焦提交；增减按钮 / `setValue` / `clear` / 粘贴 / 选中提示等） |
+| `change`            | `number` | 值确认时触发（原生失焦提交并做 min/max 钳制；增减按钮 / `setValue` / `clear` / 粘贴 / 选中提示等） |
 
 ## Slots
 
@@ -93,10 +93,10 @@ interface NumericState {
 1. `inheritAttrs: false`，将 `min` / `max` / `step` / `placeholder` 等落到内部 `<input type="number">`；排除 `class` / `style` / `type` / `disabled` / `value`
 2. `v-model` 读写 `valueAsNumber`；输入为空或非法时写 `NaN`，展示为空字符串；值变化时触发 `input`，确认时触发 `change`
 3. `showControls = controls && !unit`；有 `unit` 时右侧展示单位区
-4. 增减：读取 attrs 中的 `step`（默认 `1`）、`min` / `max`；空值时 `+` 落到 `min ?? 0`，`-` 落到 `max ?? 0`；有值则按 step 加减并按小数位修正精度；增减同时触发 `input` + `change`
-5. `loop=false` 时钳制在 `[min, max]`；已到 min 时禁用减号，已到 max 时禁用加号；`loop=true` 时越界落到另一端且不禁用按钮
+4. 增减：读取 attrs 中的 `step`（默认 `1`）、`min` / `max`；空值时 `+` 落到 `min ?? 0`，`-` 落到 `max ?? 0`；有值则按 step 加减并按小数位修正精度；增减同时触发 `input` + `change`（含最值处理）
+5. `loop=false` 时增减钳制在 `[min, max]`；已到 min 时禁用减号，已到 max 时禁用加号；`loop=true` 时增减越界落到另一端且不禁用按钮
 6. 键盘：弹出层打开时 ↑↓ 切换提示项、Enter/Tab 选中、Esc 关闭；关闭时 ↑↓ 走增减逻辑（覆盖原生，保证 loop 一致；边界禁用时 ↑↓ 同样不生效）
-7. 键入过程只触发 `input`；原生 `change`（失焦提交）触发组件 `change`
+7. 键入过程只触发 `input`，**不做** min/max 钳制，允许中间态越界；原生 `change`（失焦提交）时再做最值校验：超出范围则落到 `min` 或 `max`（不走 loop），再触发 `change`
 8. 提供 `parse` 时拦截 `paste`，用解析结果写入并立即 `input` + `change`
 9. `pop-items` 经 `useTimer(300)` debounce 后过滤/请求（匹配用输入框字符串），结果用 `usePopper` 展示；选中项优先用 `parse(label)`，否则 `Number(label)`，再 `writeValue`（`input` + `change`）
 10. 销毁时由 hooks 清理定时器与 popover 绑定

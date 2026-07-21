@@ -147,6 +147,66 @@ describe("Numeric", () => {
     expect(wrapper.emitted("change")?.at(-1)).toEqual([7]);
   });
 
+  test("typing over max keeps value until change then clamps", async () => {
+    const wrapper = mount(Numeric, {
+      props: { modelValue: 5 },
+      attrs: { min: "0", max: "10", step: "0.5" },
+    });
+
+    const input = wrapper.find("input");
+    const el = input.element as HTMLInputElement;
+
+    el.value = "15";
+    await input.trigger("input");
+    expect(wrapper.emitted("update:modelValue")?.at(-1)?.[0]).toBe(15);
+    expect(wrapper.emitted("input")?.at(-1)).toEqual([15]);
+    expect(wrapper.emitted("change")).toBeUndefined();
+
+    el.value = "1055555";
+    await input.trigger("input");
+    expect(wrapper.emitted("update:modelValue")?.at(-1)?.[0]).toBe(1055555);
+    expect(wrapper.emitted("change")).toBeUndefined();
+
+    await input.trigger("change");
+    expect(wrapper.emitted("update:modelValue")?.at(-1)?.[0]).toBe(10);
+    expect(wrapper.emitted("input")?.at(-1)).toEqual([10]);
+    expect(wrapper.emitted("change")?.at(-1)).toEqual([10]);
+  });
+
+  test("typing under min clamps on change", async () => {
+    const wrapper = mount(Numeric, {
+      props: { modelValue: 5 },
+      attrs: { min: "0", max: "10" },
+    });
+
+    const input = wrapper.find("input");
+    const el = input.element as HTMLInputElement;
+    el.value = "-3";
+    await input.trigger("input");
+    expect(wrapper.emitted("update:modelValue")?.at(-1)?.[0]).toBe(-3);
+    expect(wrapper.emitted("change")).toBeUndefined();
+
+    await input.trigger("change");
+    expect(wrapper.emitted("update:modelValue")?.at(-1)?.[0]).toBe(0);
+    expect(wrapper.emitted("change")?.at(-1)).toEqual([0]);
+  });
+
+  test("change clamps even when loop is true", async () => {
+    const wrapper = mount(Numeric, {
+      props: { modelValue: 5, loop: true },
+      attrs: { min: "0", max: "10" },
+    });
+
+    const input = wrapper.find("input");
+    const el = input.element as HTMLInputElement;
+    el.value = "99";
+    await input.trigger("input");
+    await input.trigger("change");
+    // 失焦确认钳制到 max，不因 loop 落到 min
+    expect(wrapper.emitted("update:modelValue")?.at(-1)?.[0]).toBe(10);
+    expect(wrapper.emitted("change")?.at(-1)).toEqual([10]);
+  });
+
   test("emits input and change together on control click", async () => {
     const wrapper = mount(Numeric, {
       props: { modelValue: 1 },
