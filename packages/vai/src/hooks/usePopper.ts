@@ -115,15 +115,14 @@ export function usePopper(
     ...option,
   });
 
+  /** bound元素是记录已经生效的元素。  假如用户后续修改了 state.reference,popper元素， 那么这2个变量也需要更新。 */
   let boundReference: ReferenceElement | null = null;
   let boundPopper: HTMLElement | null = null;
   let appliedCustomClass = "";
   let scrollListening = false;
   let boundaryInitialized = option.boundary != null;
 
-  const onScroll = () => {
-    if (state.show) state.show = false;
-  };
+  // #region 1、监听reference和popper元素的变化，并更新boundReference和boundPopper
 
   const onToggle = (event: Event) => {
     const e = event as ToggleEvent;
@@ -133,18 +132,6 @@ export function usePopper(
       if (state.show) state.show = false;
     }
   };
-
-  function syncAutoHide(enable: boolean) {
-    if (typeof document === "undefined") return;
-    if (enable && !scrollListening) {
-      document.addEventListener("scroll", onScroll, true);
-      scrollListening = true;
-    } else if (!enable && scrollListening) {
-      document.removeEventListener("scroll", onScroll, true);
-      scrollListening = false;
-    }
-  }
-
   function unbindReference() {
     if (!boundReference) return;
     (boundReference as HTMLElement).style.removeProperty("anchor-name");
@@ -182,6 +169,37 @@ export function usePopper(
     boundPopper = null;
   }
 
+  function bindElements() {
+    const { reference, popper } = state;
+
+    if (boundReference !== reference) {
+      unbindReference();
+      if (reference) {
+        boundReference = reference;
+        (reference as HTMLElement).style.setProperty("anchor-name", anchorName);
+        // 未显式指定 boundary 时，默认取 reference.offsetParent（仅初始化一次）
+        if (!boundaryInitialized) {
+          state.boundary =
+            (reference as HTMLElement).offsetParent ?? document.documentElement;
+          boundaryInitialized = true;
+        }
+      }
+    }
+
+    if (boundPopper !== popper) {
+      unbindPopper();
+      if (popper) {
+        boundPopper = popper;
+        popper.popover = "manual";
+        popper.classList.add(POPPER_CLASS);
+        popper.addEventListener("toggle", onToggle);
+      }
+    }
+  }
+
+  //#endregion
+
+  // #region 2、同步popper的样式和所有属性
   function applyPlacementStyles(popper: HTMLElement) {
     const [cross, away] = Array.isArray(state.offset)
       ? state.offset
@@ -221,35 +239,6 @@ export function usePopper(
       popper.style.translate = `0 ${cross}px`;
     }
   }
-
-  function bindElements() {
-    const { reference, popper } = state;
-
-    if (boundReference !== reference) {
-      unbindReference();
-      if (reference) {
-        (reference as HTMLElement).style.setProperty("anchor-name", anchorName);
-        boundReference = reference;
-        // 未显式指定 boundary 时，默认取 reference.offsetParent（仅初始化一次）
-        if (!boundaryInitialized) {
-          state.boundary =
-            (reference as HTMLElement).offsetParent ?? document.documentElement;
-          boundaryInitialized = true;
-        }
-      }
-    }
-
-    if (boundPopper !== popper) {
-      unbindPopper();
-      if (popper) {
-        popper.popover = "manual";
-        popper.classList.add(POPPER_CLASS);
-        popper.addEventListener("toggle", onToggle);
-        boundPopper = popper;
-      }
-    }
-  }
-
   function syncPopperChrome() {
     const popper = boundPopper;
     if (!popper) return;
@@ -262,6 +251,23 @@ export function usePopper(
       if (appliedCustomClass) applyClass(popper, appliedCustomClass, false);
       if (state.customClass) applyClass(popper, state.customClass, true);
       appliedCustomClass = state.customClass;
+    }
+  }
+  //#endregion
+
+  // #region 3、是否弹出的控制
+  const onScroll = () => {
+    if (state.show) state.show = false;
+  };
+
+  function syncAutoHide(enable: boolean) {
+    if (typeof document === "undefined") return;
+    if (enable && !scrollListening) {
+      document.addEventListener("scroll", onScroll, true);
+      scrollListening = true;
+    } else if (!enable && scrollListening) {
+      document.removeEventListener("scroll", onScroll, true);
+      scrollListening = false;
     }
   }
 
@@ -286,6 +292,8 @@ export function usePopper(
 
     syncAutoHide(state.show && state.autoHide);
   }
+
+  //#endregion
 
   // 直接 watch shallowReactive：根级字段变更（reference/popper/show/placement…）均会触发
   watch(
