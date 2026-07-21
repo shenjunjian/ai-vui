@@ -32,100 +32,43 @@ const tab = ref<
 <template>
   <div class="site-app">
     <nav class="site-app__nav">
-      <button
-        type="button"
-        class="site-app__tab"
-        :class="{ 'is-active': tab === 'button' }"
-        @click="tab = 'button'"
-      >
+      <button type="button" class="site-app__tab" :class="{ 'is-active': tab === 'button' }" @click="tab = 'button'">
         Button
       </button>
-      <button
-        type="button"
-        class="site-app__tab"
-        :class="{ 'is-active': tab === 'link' }"
-        @click="tab = 'link'"
-      >
+      <button type="button" class="site-app__tab" :class="{ 'is-active': tab === 'link' }" @click="tab = 'link'">
         Link
       </button>
-      <button
-        type="button"
-        class="site-app__tab"
-        :class="{ 'is-active': tab === 'tag' }"
-        @click="tab = 'tag'"
-      >
+      <button type="button" class="site-app__tab" :class="{ 'is-active': tab === 'tag' }" @click="tab = 'tag'">
         Tag
       </button>
-      <button
-        type="button"
-        class="site-app__tab"
-        :class="{ 'is-active': tab === 'alert' }"
-        @click="tab = 'alert'"
-      >
+      <button type="button" class="site-app__tab" :class="{ 'is-active': tab === 'alert' }" @click="tab = 'alert'">
         Alert
       </button>
-      <button
-        type="button"
-        class="site-app__tab"
-        :class="{ 'is-active': tab === 'input' }"
-        @click="tab = 'input'"
-      >
+      <button type="button" class="site-app__tab" :class="{ 'is-active': tab === 'input' }" @click="tab = 'input'">
         Input
       </button>
-      <button
-        type="button"
-        class="site-app__tab"
-        :class="{ 'is-active': tab === 'numeric' }"
-        @click="tab = 'numeric'"
-      >
+      <button type="button" class="site-app__tab" :class="{ 'is-active': tab === 'numeric' }" @click="tab = 'numeric'">
         Numeric
       </button>
-      <button
-        type="button"
-        class="site-app__tab"
-        :class="{ 'is-active': tab === 'text-area' }"
-        @click="tab = 'text-area'"
-      >
+      <button type="button" class="site-app__tab" :class="{ 'is-active': tab === 'text-area' }"
+        @click="tab = 'text-area'">
         TextArea
       </button>
-      <button
-        type="button"
-        class="site-app__tab"
-        :class="{ 'is-active': tab === 'checkbox' }"
-        @click="tab = 'checkbox'"
-      >
+      <button type="button" class="site-app__tab" :class="{ 'is-active': tab === 'checkbox' }"
+        @click="tab = 'checkbox'">
         Checkbox
       </button>
-      <button
-        type="button"
-        class="site-app__tab"
-        :class="{ 'is-active': tab === 'radio' }"
-        @click="tab = 'radio'"
-      >
+      <button type="button" class="site-app__tab" :class="{ 'is-active': tab === 'radio' }" @click="tab = 'radio'">
         Radio
       </button>
-      <button
-        type="button"
-        class="site-app__tab"
-        :class="{ 'is-active': tab === 'divider' }"
-        @click="tab = 'divider'"
-      >
+      <button type="button" class="site-app__tab" :class="{ 'is-active': tab === 'divider' }" @click="tab = 'divider'">
         Divider
       </button>
-      <button
-        type="button"
-        class="site-app__tab"
-        :class="{ 'is-active': tab === 'dialog' }"
-        @click="tab = 'dialog'"
-      >
+      <button type="button" class="site-app__tab" :class="{ 'is-active': tab === 'dialog' }" @click="tab = 'dialog'">
         Dialog
       </button>
-      <button
-        type="button"
-        class="site-app__tab"
-        :class="{ 'is-active': tab === 'use-popper' }"
-        @click="tab = 'use-popper'"
-      >
+      <button type="button" class="site-app__tab" :class="{ 'is-active': tab === 'use-popper' }"
+        @click="tab = 'use-popper'">
         usePopper
       </button>
     </nav>
@@ -149,6 +92,7 @@ const tab = ref<
   display: flex;
   gap: 8px;
   padding: 16px 24px 0;
+  flex-wrap: wrap;
 }
 
 .site-app__tab {
