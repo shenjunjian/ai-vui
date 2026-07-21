@@ -3,6 +3,7 @@ import { ref } from "vue";
 import AlertDemo from "./components/alert-demo.vue";
 import ButtonDemo from "./components/button-demo.vue";
 import CheckboxDemo from "./components/checkbox-demo.vue";
+import DialogDemo from "./components/dialog-demo.vue";
 import DividerDemo from "./components/divider-demo.vue";
 import InputDemo from "./components/input-demo.vue";
 import NumericDemo from "./components/numeric-demo.vue";
@@ -23,8 +24,9 @@ const tab = ref<
   | "checkbox"
   | "radio"
   | "divider"
+  | "dialog"
   | "use-popper"
->("divider");
+>("dialog");
 </script>
 
 <template>
@@ -113,6 +115,14 @@ const tab = ref<
       <button
         type="button"
         class="site-app__tab"
+        :class="{ 'is-active': tab === 'dialog' }"
+        @click="tab = 'dialog'"
+      >
+        Dialog
+      </button>
+      <button
+        type="button"
+        class="site-app__tab"
         :class="{ 'is-active': tab === 'use-popper' }"
         @click="tab = 'use-popper'"
       >
@@ -129,6 +139,7 @@ const tab = ref<
     <CheckboxDemo v-else-if="tab === 'checkbox'" />
     <RadioDemo v-else-if="tab === 'radio'" />
     <DividerDemo v-else-if="tab === 'divider'" />
+    <DialogDemo v-else-if="tab === 'dialog'" />
     <UsePopperDemo v-else />
   </div>
 </template>
