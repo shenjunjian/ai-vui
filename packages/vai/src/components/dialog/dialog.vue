@@ -46,11 +46,11 @@
     </footer>
 
     <div
-      v-if="state.canResize"
+      v-if="resizable && variant === 'drawer'"
+      ref="resizeRef"
       class="v-modal__resize"
       :class="state.resizeClass"
       aria-hidden="true"
-      @pointerdown="api.handleResizeStart"
     />
   </dialog>
 </template>
@@ -160,6 +160,7 @@ const slots = defineSlots<{
 const refs = {
   rootRef: useTemplateRef<HTMLDialogElement>("rootRef"),
   headerRef: useTemplateRef<HTMLElement>("headerRef"),
+  resizeRef: useTemplateRef<HTMLElement>("resizeRef"),
 };
 const { state, api, titleId } = useVm({ props, slots, refs, models, emit });
 

@@ -1,9 +1,9 @@
 import { describe, expect, test, vi, beforeEach, afterEach } from "vite-plus/test";
 import { defineComponent, h, nextTick, ref } from "vue";
 import { mount, type VueWrapper } from "@vue/test-utils";
-import { useDrag, type DragOption } from "../useDrag.ts";
+import { useDrag, type DragOptionInput } from "../useDrag.ts";
 
-function mountUseDrag(option: Partial<DragOption> = {}) {
+function mountUseDrag(option: DragOptionInput = {}) {
   let api!: ReturnType<typeof useDrag>;
   const wrapper = mount(
     defineComponent({

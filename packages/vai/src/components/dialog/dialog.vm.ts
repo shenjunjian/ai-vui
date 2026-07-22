@@ -8,73 +8,42 @@ import { useDrag } from "../../hooks/useDrag.ts";
 type Point = { x: number; y: number };
 type Size = { width: number; height: number };
 
+const MIN_WIDTH = 240;
+const MIN_HEIGHT = 160;
+
 export default function useVm(ctx: DialogCtx) {
   const { props, refs, models, emit } = ctx;
 
   const titleId = `v-modal-title-${random()}`;
   /** destroyOnClose=false 时始终挂载；true 时仅打开期间挂载整个 dialog */
   const dialogMounted = ref(!props.destroyOnClose || models.open.value);
-  const isDragging = ref(false);
-  const isResizing = ref(false);
+  /** header 拖动结束后的位移（拖动中写 DOM，结束时再同步） */
   const offset = ref<Point>({ x: 0, y: 0 });
-  const size = ref<Size | null>(null);
+  /** drawer 缩放结束后的尺寸（拖动中写 DOM，结束时再同步，避免每帧 Vue 更新） */
+  const size = ref<Partial<Size> | null>(null);
   const closingGuard = ref(false);
-
-  let resizeOrigin: Point | null = null;
-  let resizeSizeStart: Size | null = null;
 
   const canDrag = computed(() => props.draggable && props.variant === "dialog");
 
-  const canResize = computed(() => props.resizable);
+  /** drawer 空闲边：远离贴边的那一侧 */
+  const resizeClass = computed(() => ({
+    "is-edge-left": props.placement === "right",
+    "is-edge-right": props.placement === "left",
+    "is-edge-top": props.placement === "bottom",
+    "is-edge-bottom": props.placement === "top",
+  }));
 
-  const resizeClass = computed(() => {
-    if (props.variant !== "drawer") return "is-corner";
-    return {
-      "is-edge-left": props.placement === "right",
-      "is-edge-right": props.placement === "left",
-      "is-edge-top": props.placement === "bottom",
-      "is-edge-bottom": props.placement === "top",
-    };
-  });
+  const resizeCursor = computed(() =>
+    props.placement === "left" || props.placement === "right"
+      ? "ew-resize"
+      : "ns-resize",
+  );
 
-  const rootClass = computed(() => [
-    {
-      "v-drawer-modal": props.variant === "drawer",
-      "is-no-mask": !props.showMask,
-      "is-mask-blur": props.showMask && props.maskStyle === "blur",
-      "is-dragging": isDragging.value,
-      "is-resizing": isResizing.value,
-      [`is-${props.placement}`]: props.variant === "drawer",
-    },
-  ]);
-
-  const dialogStyle = computed(() => {
-    const style: Record<string, string> = {};
-    if (offset.value.x || offset.value.y) {
-      style.translate = `${offset.value.x}px ${offset.value.y}px`;
-    }
-    if (size.value) {
-      style.width = `${size.value.width}px`;
-      style.height = `${size.value.height}px`;
-    }
-    return style;
-  });
-
-  const state = reactive({
-    rootClass,
-    dialogStyle,
-    dialogMounted,
-    isDragging,
-    isResizing,
-    canDrag,
-    canResize,
-    resizeClass,
-  });
-
+  /** header 拖动：拖动中直接改 el.style.translate，结束时同步 offset */
   const {
     init: initDrag,
     stop: stopDrag,
-    state: dragState,
+    state: moveDragState,
   } = useDrag({
     el: refs.rootRef,
     handler: refs.headerRef,
@@ -89,35 +58,124 @@ export default function useVm(ctx: DialogCtx) {
     startDrag(s) {
       s._.baseX = offset.value.x;
       s._.baseY = offset.value.y;
-      isDragging.value = true;
       emit("drag-start");
     },
     applyDrag(s) {
+      const el = s.el;
+      if (!el) return;
       const { rect, boundary, deltaX, deltaY } = s._;
       const baseX = s._.baseX as number;
       const baseY = s._.baseY as number;
-      const dx = clamp(
-        deltaX,
-        boundary.left - rect.left,
-        boundary.right - rect.right,
-      );
-      const dy = clamp(
-        deltaY,
-        boundary.top - rect.top,
-        boundary.bottom - rect.bottom,
-      );
-      offset.value = { x: baseX + dx, y: baseY + dy };
+      const x =
+        baseX +
+        clamp(deltaX, boundary.left - rect.left, boundary.right - rect.right);
+      const y =
+        baseY +
+        clamp(deltaY, boundary.top - rect.top, boundary.bottom - rect.bottom);
+      s._.currX = x;
+      s._.currY = y;
+      el.style.translate = `${x}px ${y}px`;
       emit("drag-move");
     },
-    endDrag() {
-      isDragging.value = false;
+    endDrag(s) {
+      if (typeof s._.currX === "number" && typeof s._.currY === "number") {
+        offset.value = { x: s._.currX as number, y: s._.currY as number };
+      }
       emit("drag-end");
     },
+  });
+
+  /** drawer 空闲边缩放：手柄为 v-modal__resize；拖动中直接改 el.style，结束时同步 size */
+  const {
+    init: initResize,
+    stop: stopResize,
+    state: resizeDragState,
+  } = useDrag({
+    el: refs.rootRef,
+    handler: refs.resizeRef,
+    cursor: resizeCursor,
+    container: document.documentElement,
+    disabled: computed(
+      () => !(props.resizable && props.variant === "drawer"),
+    ),
+    applyDrag(s) {
+      const el = s.el;
+      if (!el) return;
+      const { rect, deltaX, deltaY } = s._;
+
+      switch (props.placement) {
+        case "right":
+          el.style.width = `${Math.max(MIN_WIDTH, rect.width - deltaX)}px`;
+          break;
+        case "left":
+          el.style.width = `${Math.max(MIN_WIDTH, rect.width + deltaX)}px`;
+          break;
+        case "bottom":
+          el.style.height = `${Math.max(MIN_HEIGHT, rect.height - deltaY)}px`;
+          break;
+        case "top":
+          el.style.height = `${Math.max(MIN_HEIGHT, rect.height + deltaY)}px`;
+          break;
+      }
+    },
+    endDrag(s) {
+      const el = s.el;
+      if (!el) return;
+      if (props.placement === "left" || props.placement === "right") {
+        const width = parseFloat(el.style.width);
+        if (!Number.isNaN(width)) size.value = { width };
+      } else {
+        const height = parseFloat(el.style.height);
+        if (!Number.isNaN(height)) size.value = { height };
+      }
+    },
+  });
+
+  const rootClass = computed(() => [
+    {
+      "v-drawer-modal": props.variant === "drawer",
+      "is-no-mask": !props.showMask,
+      "is-mask-blur": props.showMask && props.maskStyle === "blur",
+      "is-dragging": moveDragState._.isDragging,
+      "is-resizing": resizeDragState._.isDragging,
+      /** dialog 变体：原生 CSS resize:both */
+      "is-resizable": props.resizable && props.variant === "dialog",
+      [`is-${props.placement}`]: props.variant === "drawer",
+    },
+  ]);
+
+  const dialogStyle = computed(() => {
+    const style: Record<string, string> = {};
+    if (offset.value.x || offset.value.y) {
+      style.translate = `${offset.value.x}px ${offset.value.y}px`;
+    }
+    if (size.value?.width != null) {
+      style.width = `${size.value.width}px`;
+    }
+    if (size.value?.height != null) {
+      style.height = `${size.value.height}px`;
+    }
+    return style;
+  });
+
+  const state = reactive({
+    rootClass,
+    dialogStyle,
+    dialogMounted,
+    canDrag,
+    resizeClass,
   });
 
   function resetPositionSize() {
     offset.value = { x: 0, y: 0 };
     size.value = null;
+    /** 拖动 / CSS resize:both 写入的 inline 样式，关闭时清掉 */
+    const el = refs.rootRef.value;
+    if (el) {
+      el.style.removeProperty("translate");
+      el.style.removeProperty("width");
+      el.style.removeProperty("height");
+    }
   }
 
   function focusAfterOpen(el: HTMLDialogElement) {
@@ -199,73 +257,6 @@ export default function useVm(ctx: DialogCtx) {
     syncClosed();
   }
 
-  function currentSize(el: HTMLElement): Size {
-    if (size.value) return { ...size.value };
-    const rect = el.getBoundingClientRect();
-    return { width: rect.width, height: rect.height };
-  }
-
-  function handleResizeStart(event: PointerEvent) {
-    if (!canResize.value || event.button !== 0) return;
-    event.preventDefault();
-    event.stopPropagation();
-
-    const el = refs.rootRef.value;
-    if (!el) return;
-
-    isResizing.value = true;
-    resizeOrigin = { x: event.clientX, y: event.clientY };
-    resizeSizeStart = currentSize(el);
-    el.setPointerCapture?.(event.pointerId);
-    window.addEventListener("pointermove", handleResizeMove);
-    window.addEventListener("pointerup", handleResizeEnd);
-    window.addEventListener("pointercancel", handleResizeEnd);
-  }
-
-  function handleResizeMove(event: PointerEvent) {
-    if (!isResizing.value || !resizeOrigin || !resizeSizeStart) return;
-
-    const dx = event.clientX - resizeOrigin.x;
-    const dy = event.clientY - resizeOrigin.y;
-    const minW = 240;
-    const minH = 160;
-
-    let width = resizeSizeStart.width;
-    let height = resizeSizeStart.height;
-
-    if (props.variant === "drawer") {
-      switch (props.placement) {
-        case "right":
-          width = Math.max(minW, resizeSizeStart.width - dx);
-          break;
-        case "left":
-          width = Math.max(minW, resizeSizeStart.width + dx);
-          break;
-        case "bottom":
-          height = Math.max(minH, resizeSizeStart.height - dy);
-          break;
-        case "top":
-          height = Math.max(minH, resizeSizeStart.height + dy);
-          break;
-      }
-    } else {
-      width = Math.max(minW, resizeSizeStart.width + dx);
-      height = Math.max(minH, resizeSizeStart.height + dy);
-    }
-
-    size.value = { width, height };
-  }
-
-  function handleResizeEnd() {
-    if (!isResizing.value) return;
-    isResizing.value = false;
-    resizeOrigin = null;
-    resizeSizeStart = null;
-    window.removeEventListener("pointermove", handleResizeMove);
-    window.removeEventListener("pointerup", handleResizeEnd);
-    window.removeEventListener("pointercancel", handleResizeEnd);
-  }
-
   watch(
     () => models.open.value,
     (value) => {
@@ -309,8 +300,32 @@ export default function useVm(ctx: DialogCtx) {
     },
   );
 
+  /** drawer resize 手柄晚就绪时主动 init */
+  watch(
+    [
+      dialogMounted,
+      () => props.resizable,
+      () => props.variant,
+      () => refs.rootRef.value,
+      () => refs.resizeRef.value,
+    ],
+    async ([mounted, resizable, variant]) => {
+      stopResize();
+      if (
+        mounted &&
+        resizable &&
+        variant === "drawer" &&
+        refs.rootRef.value &&
+        refs.resizeRef.value
+      ) {
+        await nextTick();
+        initResize();
+      }
+    },
+  );
+
   onUnmounted(() => {
-    handleResizeEnd();
+    stopResize();
   });
 
   const api = {
@@ -319,7 +334,6 @@ export default function useVm(ctx: DialogCtx) {
     requestClose,
     handleCancel,
     handleDialogClose,
-    handleResizeStart,
   };
 
   return { state, api, titleId };

@@ -42,9 +42,3 @@ export const OK = () => true;
 export const isBoolean = (val: any) => typeof val === "boolean";
 /** 是否为 undefined  */
 export const isUndefined = (val: any) => typeof val === "undefined";
-
-export {
-  createSharedComposable, // 创建共享组合函数
-} from "@vueuse/core";
-
-// import './polyfills/index.ts'

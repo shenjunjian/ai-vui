@@ -3,10 +3,10 @@ import {
   onBeforeUnmount,
   onMounted,
   reactive,
-  toValue,
   watch,
   type MaybeRef,
 } from "vue";
+import { NOOP } from "@vue/shared";
 
 export type DragCallbackFn = (state: DragOption) => void;
 /** 返回 false 时不进入拖拽（尚未 capture / 未改状态） */
@@ -28,17 +28,18 @@ export interface DragInternalState {
   [others: string]: unknown;
 }
 
+/** reactive state：MaybeRef 入参解包后的形态 */
 export interface DragOption {
   /** 被拖动的元素 */
-  el: MaybeRef<HTMLElement | null>;
+  el: HTMLElement | null;
   /** 拖动手柄；缺省时与 `el` 相同 */
-  handler: MaybeRef<HTMLElement | null>;
+  handler: HTMLElement | null;
   /** 手柄上光标，默认 `move`；空字符串表示不修改。有的场景是左右或上下拖动，光标用ew-resize	或ns-resize  */
   cursor: string;
   /** 边界参考元素，默认 `document.body`；用于填充 `_.boundary` */
   container: HTMLElement | null;
   /** 是否禁用拖动 */
-  disabled: MaybeRef<boolean>;
+  disabled: boolean;
   /** pointerdown 时决定是否开始拖拽，默认允许；比如点击在拖动手柄中的close按钮了，要拦截它 */
   shouldStart: DragShouldStartFn;
   /** 拖动开始：可记录初始 left/top 等 */
@@ -51,8 +52,32 @@ export interface DragOption {
   _: DragInternalState;
 }
 
-const noop: DragCallbackFn = () => {};
+/** useDrag 入参：可响应字段接受 MaybeRef */
+export type DragOptionInput = Partial<{
+  el: MaybeRef<HTMLElement | null>;
+  handler: MaybeRef<HTMLElement | null>;
+  cursor: MaybeRef<string>;
+  container: MaybeRef<HTMLElement | null>;
+  disabled: MaybeRef<boolean>;
+  shouldStart: DragShouldStartFn;
+  startDrag: DragCallbackFn;
+  applyDrag: DragCallbackFn;
+  endDrag: DragCallbackFn;
+}>;
+
 const allowStart: DragShouldStartFn = () => true;
+
+const defaultOption: Omit<DragOption, "_"> = {
+  el: null,
+  handler: null,
+  cursor: "move",
+  container: null,
+  disabled: false,
+  shouldStart: allowStart,
+  startDrag: NOOP,
+  applyDrag: NOOP,
+  endDrag: NOOP,
+};
 
 function createInternalState(): DragInternalState {
   return {
@@ -66,26 +91,15 @@ function createInternalState(): DragInternalState {
   };
 }
 
-function asElement(value: unknown): HTMLElement | null {
-  const el = toValue(value as MaybeRef<HTMLElement | null>);
-  return el instanceof HTMLElement ? el : null;
-}
-
 /**
  * 通用拖动：在容器坐标系内移动元素。区别于 DnD / useSortable——没有 drop target。
  * `el` / `handler` 若在挂载时尚未就绪，需在 DOM 可用后主动调用 `init()`。
+ * 入参中的 MaybeRef 放入 reactive 后会自动解包，逻辑内按普通值访问即可。
  */
-export function useDrag(option: Partial<DragOption> = {}) {
+export function useDrag(option: DragOptionInput = {}) {
   const state = reactive({
-    el: option.el ?? null,
-    handler: option.handler ?? null,
-    cursor: option.cursor ?? "move",
-    container: option.container ?? null,
-    disabled: option.disabled ?? false,
-    shouldStart: option.shouldStart ?? allowStart,
-    startDrag: option.startDrag ?? noop,
-    applyDrag: option.applyDrag ?? noop,
-    endDrag: option.endDrag ?? noop,
+    ...defaultOption,
+    ...option,
     _: createInternalState(),
   }) as DragOption;
 
@@ -93,26 +107,10 @@ export function useDrag(option: Partial<DragOption> = {}) {
   let boundHandler: HTMLElement | null = null;
   let activePointerId: number | null = null;
 
-  function resolveEl(): HTMLElement | null {
-    return asElement(state.el);
-  }
-
-  function resolveHandler(): HTMLElement | null {
-    return asElement(state.handler) ?? resolveEl();
-  }
-
-  function resolveContainer(): HTMLElement {
-    return state.container ?? document.body;
-  }
-
-  function isDisabled(): boolean {
-    return !!toValue(state.disabled);
-  }
-
   function finishDrag() {
     if (!state._.isDragging) return;
 
-    resolveEl()?.classList.remove("st-dragging");
+    state.el?.classList.remove("st-dragging");
 
     document.removeEventListener("pointermove", onPointerMove);
     document.removeEventListener("pointerup", onPointerUp);
@@ -135,10 +133,10 @@ export function useDrag(option: Partial<DragOption> = {}) {
 
   /** 绑定拖动手柄；幂等。元素未就绪时 warn 并返回，调用方稍后重试。 */
   function init() {
-    if (inited || isDisabled()) return;
+    if (inited || state.disabled) return;
 
-    const el = resolveEl();
-    const handler = resolveHandler();
+    const el = state.el;
+    const handler = state.handler ?? el;
     if (!el || !handler) {
       console.warn("useDrag: el / handler 未就绪，请在 DOM 可用后调用 init()");
       return;
@@ -169,12 +167,12 @@ export function useDrag(option: Partial<DragOption> = {}) {
   }
 
   function onPointerDown(e: PointerEvent) {
-    if (e.button !== 0 || isDisabled()) return;
+    if (e.button !== 0 || state.disabled) return;
     if (activePointerId != null) return;
     if (!state.shouldStart(e)) return;
 
-    const el = resolveEl();
-    const handler = boundHandler ?? resolveHandler();
+    const el = state.el;
+    const handler = boundHandler ?? state.handler ?? el;
     if (!el || !handler) return;
 
     activePointerId = e.pointerId;
@@ -184,7 +182,9 @@ export function useDrag(option: Partial<DragOption> = {}) {
     state._.deltaX = 0;
     state._.deltaY = 0;
     state._.rect = el.getBoundingClientRect();
-    state._.boundary = resolveContainer().getBoundingClientRect();
+    state._.boundary = (
+      state.container ?? document.body
+    ).getBoundingClientRect();
 
     el.classList.add("st-dragging");
     handler.setPointerCapture(e.pointerId);
@@ -210,7 +210,7 @@ export function useDrag(option: Partial<DragOption> = {}) {
   }
 
   watch(
-    () => toValue(state.disabled),
+    () => state.disabled,
     (disabled) => {
       if (disabled) {
         if (inited) stop();
@@ -222,7 +222,7 @@ export function useDrag(option: Partial<DragOption> = {}) {
 
   onMounted(() => {
     nextTick(() => {
-      if (!isDisabled()) init();
+      if (!state.disabled) init();
     });
   });
 

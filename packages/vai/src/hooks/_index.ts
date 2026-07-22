@@ -5,6 +5,7 @@ export {
   type DragCallbackFn,
   type DragInternalState,
   type DragOption,
+  type DragOptionInput,
   type DragShouldStartFn,
 } from "./useDrag.ts";
 export {

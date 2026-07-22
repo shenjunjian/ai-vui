@@ -103,6 +103,11 @@
     --modal-mask-blur: 6px;
   }
 
+  /** dialog 变体：原生右下角缩放（需 overflow ≠ visible） */
+  &.is-resizable {
+    resize: both;
+  }
+
   &.is-dragging,
   &.is-resizing {
     transition: none;
@@ -182,18 +187,11 @@
     border-top: var(--modal-border-width) solid var(--modal-border);
   }
 
+  /** drawer 空闲边缩放手柄；dialog 走 CSS resize，不渲染此节点 */
   &__resize {
     position: absolute;
     z-index: 1;
     box-sizing: border-box;
-
-    &.is-corner {
-      right: 0;
-      bottom: 0;
-      width: var(--modal-resize-size);
-      height: var(--modal-resize-size);
-      cursor: nwse-resize;
-    }
 
     &.is-edge-left,
     &.is-edge-right {

@@ -22,6 +22,7 @@ export {
   type DragCallbackFn,
   type DragInternalState,
   type DragOption,
+  type DragOptionInput,
   type DragShouldStartFn,
 } from "./hooks/useDrag.ts";
 export {

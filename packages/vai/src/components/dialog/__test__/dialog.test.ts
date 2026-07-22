@@ -191,10 +191,11 @@ describe("Dialog", () => {
     expect(wrapper.vm.state.dialogMounted).toBe(true);
   });
 
-  test("resizable renders resize handle; drawer uses edge class", async () => {
+  test("resizable: dialog uses CSS resize class; drawer renders edge handle", async () => {
     const dialogWrapper = mountDialog({ resizable: true });
     await flushPromises();
-    expect(dialogWrapper.find(".v-modal__resize.is-corner").exists()).toBe(true);
+    expect(dialogWrapper.find("dialog").classes()).toContain("is-resizable");
+    expect(dialogWrapper.find(".v-modal__resize").exists()).toBe(false);
     dialogWrapper.unmount();
 
     const drawerWrapper = mountDialog({
@@ -203,9 +204,90 @@ describe("Dialog", () => {
       placement: "right",
     });
     await flushPromises();
+    expect(drawerWrapper.find("dialog").classes()).not.toContain("is-resizable");
     expect(drawerWrapper.find(".v-modal__resize.is-edge-left").exists()).toBe(
       true,
     );
+  });
+
+  test("drawer resizable writes el.style during drag and syncs size on end", async () => {
+    const wrapper = mountDialog({
+      resizable: true,
+      variant: "drawer",
+      placement: "right",
+    });
+    await flushPromises();
+    await nextTick();
+
+    const dialog = wrapper.find("dialog").element as HTMLDialogElement;
+    const handle = wrapper.find(".v-modal__resize").element;
+
+    dialog.getBoundingClientRect = () =>
+      ({
+        x: 800,
+        y: 0,
+        width: 400,
+        height: 600,
+        top: 0,
+        left: 800,
+        right: 1200,
+        bottom: 600,
+        toJSON() {
+          return {};
+        },
+      }) as DOMRect;
+
+    const captured = new Set<number>();
+    handle.setPointerCapture = (id: number) => {
+      captured.add(id);
+    };
+    handle.releasePointerCapture = (id: number) => {
+      captured.delete(id);
+    };
+    handle.hasPointerCapture = (id: number) => captured.has(id);
+
+    handle.dispatchEvent(
+      new PointerEvent("pointerdown", {
+        bubbles: true,
+        cancelable: true,
+        pointerId: 1,
+        button: 0,
+        clientX: 800,
+        clientY: 300,
+      }),
+    );
+    await nextTick();
+    expect(wrapper.find("dialog").classes()).toContain("is-resizing");
+
+    document.dispatchEvent(
+      new PointerEvent("pointermove", {
+        bubbles: true,
+        cancelable: true,
+        pointerId: 1,
+        clientX: 750,
+        clientY: 300,
+      }),
+    );
+    // 拖动中直接写 DOM，不经 size → dialogStyle
+    expect(dialog.style.width).toBe("450px");
+    expect(
+      (wrapper.vm.state.dialogStyle as Record<string, string>).width,
+    ).toBeUndefined();
+
+    document.dispatchEvent(
+      new PointerEvent("pointerup", {
+        bubbles: true,
+        cancelable: true,
+        pointerId: 1,
+        clientX: 750,
+        clientY: 300,
+      }),
+    );
+    await nextTick();
+    expect(wrapper.find("dialog").classes()).not.toContain("is-resizing");
+    expect(
+      (wrapper.vm.state.dialogStyle as Record<string, string>).width,
+    ).toBe("450px");
   });
 
   test("exposes state and api", async () => {
@@ -277,7 +359,8 @@ describe("Dialog", () => {
       }),
     );
     expect(wrapper.emitted("drag-start")?.length).toBe(1);
-    expect(wrapper.vm.state.isDragging).toBe(true);
+    await nextTick();
+    expect(wrapper.find("dialog").classes()).toContain("is-dragging");
 
     document.dispatchEvent(
       new PointerEvent("pointermove", {
@@ -290,8 +373,8 @@ describe("Dialog", () => {
     );
     expect(wrapper.emitted("drag-move")?.length).toBeGreaterThanOrEqual(1);
 
-    const style = wrapper.vm.state.dialogStyle as Record<string, string>;
-    const match = style.translate?.match(
+    // 拖动中直接写 DOM，不经 offset → dialogStyle
+    const match = dialog.style.translate?.match(
       /(-?\d+(?:\.\d+)?)px\s+(-?\d+(?:\.\d+)?)px/,
     );
     expect(match).toBeTruthy();
@@ -302,6 +385,9 @@ describe("Dialog", () => {
     expect(100 + oy + 150).toBeLessThanOrEqual(800.5);
     expect(ox).toBe(700); // 1000 - 300
     expect(oy).toBe(550); // 800 - 250
+    expect(
+      (wrapper.vm.state.dialogStyle as Record<string, string>).translate,
+    ).toBeUndefined();
 
     document.dispatchEvent(
       new PointerEvent("pointerup", {
@@ -312,8 +398,12 @@ describe("Dialog", () => {
         clientY: 0,
       }),
     );
+    await nextTick();
     expect(wrapper.emitted("drag-end")?.length).toBe(1);
-    expect(wrapper.vm.state.isDragging).toBe(false);
+    expect(wrapper.find("dialog").classes()).not.toContain("is-dragging");
+    expect(
+      (wrapper.vm.state.dialogStyle as Record<string, string>).translate,
+    ).toBe("700px 550px");
   });
 
   test("draggable ignores pointerdown on interactive header controls", async () => {
@@ -323,6 +413,6 @@ describe("Dialog", () => {
 
     await wrapper.find(".v-modal__close").trigger("pointerdown");
     expect(wrapper.emitted("drag-start")).toBeUndefined();
-    expect(wrapper.vm.state.isDragging).toBe(false);
+    expect(wrapper.find("dialog").classes()).not.toContain("is-dragging");
   });
 });

@@ -8,7 +8,7 @@
 
 默认结构：头部（左侧标题、右侧关闭按钮）、可滚动正文、页脚（右侧取消 / 确定）。标题、正文、页脚均有插槽。正文按内容溢出自动出现水平 / 垂直滚动条。
 
-支持遮罩、拖拽标题移动、右下角（或 drawer 空闲边）缩放。
+支持遮罩、拖拽标题移动、尺寸缩放（dialog 原生 CSS resize；drawer 空闲边手柄）。
 
 - **包**：`vai`
 - **导出**：`Dialog`
@@ -28,7 +28,7 @@
 | `show-header`      | `boolean`                                    | `true`     | 显示 header                                                                                                                                                  |
 | `show-footer`      | `boolean`                                    | `true`     | 显示 footer                                                                                                                                                  |
 | `draggable`        | `boolean`                                    | `false`    | 是否允许拖动 header 移动；限制在视口（`document.documentElement`）内；`variant=drawer` 时强制失效                                                                                                        |
-| `resizable`        | `boolean`                                    | `false`    | 是否可改尺寸；dialog 为右下角；drawer 为远离贴边的那条边                                                                                                     |
+| `resizable`        | `boolean`                                    | `false`    | 是否可改尺寸；`dialog` 用 CSS `resize: both`（右下角）；`drawer` 在空闲边渲染手柄并用 `useDrag` 改宽/高                                                     |
 | `auto-focus`       | `boolean`                                    | `true`     | 打开后自动聚焦第一个可聚焦元素；为 `false` 时聚焦到 dialog 根节点                                                                                            |
 | `before-close`     | `() => boolean \| Promise<boolean>`          | —          | 关闭前拦截；返回 `false` / reject 则取消关闭                                                                                                                 |
 | `destroy-on-close` | `boolean`                                    | `false`    | `false`：关闭后 dialog 仍挂载，靠 `display: none` + 离散过渡隐藏；`true`：关闭后 `v-if` 销毁整个 `<dialog>` |
@@ -71,8 +71,6 @@ interface DialogState {
   dialogStyle: Record<string, string>;
   /** destroyOnClose 时控制整个 dialog 是否挂载 */
   dialogMounted: boolean;
-  isDragging: boolean;
-  isResizing: boolean;
 }
 ```
 
@@ -80,7 +78,7 @@ interface DialogState {
 
 | Hook | 用途 |
 | ---- | ---- |
-| `useDrag` | header 拖动：位移、`shouldStart` 跳过交互控件、视口边界钳制 |
+| `useDrag` | header 拖动：位移、`shouldStart` 跳过交互控件、视口边界钳制；drawer `resizable` 时绑定空闲边手柄改宽/高 |
 
 ## 实现逻辑
 
@@ -90,9 +88,10 @@ interface DialogState {
 4. `close` 事件：同步 `open=false`，按需卸载 dialog，触发 `closed`。
 5. 关闭态 CSS：`display: none`；打开态：`display: flex`。通过 `transition` 的 `display` / `overlay` + `allow-discrete` 与 `@starting-style` 做进出场动画（`destroy-on-close=false` 时 dialog 常驻 DOM）。
 6. `destroy-on-close=true`：整个 `<dialog>` 用 `v-if="dialogMounted"`，关闭后直接不渲染（不做退场离散动画）。
-7. `variant=drawer`：加 `v-drawer-modal` + `is-{placement}`；忽略 `draggable`；`resizable` 时在空闲边渲染 resize handle。
-8. `draggable`：`useDrag` 绑定 header → dialog；`applyDrag` 用 `rect`/`boundary` 钳制后更新 `dialogStyle.translate`，发出 drag-*；节点晚就绪（如 `destroy-on-close`）时主动 `init()`。
-9. `auto-focus=false`：`showModal` 后将焦点落到 dialog 根（`tabindex="-1"`）。
+7. `variant=drawer`：加 `v-drawer-modal` + `is-{placement}`；忽略 `draggable`；`resizable` 时在空闲边渲染 `v-modal__resize`，由 `useDrag` 在拖动中直接写 `el.style` 宽/高（避免每帧 Vue 更新），`endDrag` 再同步到 `size`；`is-resizing` 类取自 `useDrag` 的 `_.isDragging`。
+8. `draggable`：`useDrag` 绑定 header → dialog；`applyDrag` 用 `rect`/`boundary` 钳制后直接写 `el.style.translate`（避免每帧 Vue 更新），`endDrag` 再同步到 `offset`；发出 drag-*；`is-dragging` 类取自 `useDrag` 的 `_.isDragging`；节点晚就绪（如 `destroy-on-close`）时主动 `init()`。
+9. `resizable` + `variant=dialog`：根节点加 `is-resizable`（`resize: both`），不渲染 resize 手柄；关闭时清除 CSS resize 写入的 inline 尺寸。
+10. `auto-focus=false`：`showModal` 后将焦点落到 dialog 根（`tabindex="-1"`）。
 
 ## 无障碍（a11y）
 
