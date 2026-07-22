@@ -207,6 +207,26 @@ describe("useDrag", () => {
     expect(endDrag).toHaveBeenCalledTimes(1);
   });
 
+  test("shouldStart 返回 false 时不进入拖拽", async () => {
+    const startDrag = vi.fn();
+    const applyDrag = vi.fn();
+    const { api, wrapper } = mountUseDrag({
+      el,
+      handler,
+      shouldStart: () => false,
+      startDrag,
+      applyDrag,
+    });
+    wrappers.push(wrapper);
+    await nextTick();
+
+    dispatchPointer(handler, "pointerdown", { clientX: 0, clientY: 0 });
+    expect(api.state._.isDragging).toBe(false);
+    expect(startDrag).not.toHaveBeenCalled();
+    dispatchPointer(document, "pointermove", { clientX: 10, clientY: 10 });
+    expect(applyDrag).not.toHaveBeenCalled();
+  });
+
   test("卸载时自动 stop", async () => {
     const endDrag = vi.fn();
     const { api, wrapper } = mountUseDrag({ el, handler, endDrag });

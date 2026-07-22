@@ -218,4 +218,111 @@ describe("Dialog", () => {
     expect(typeof wrapper.vm.api.close).toBe("function");
     expect(typeof wrapper.vm.api.requestClose).toBe("function");
   });
+
+  test("draggable emits drag events and clamps to viewport", async () => {
+    const wrapper = mountDialog({ draggable: true, title: "可拖" });
+    await flushPromises();
+    await nextTick();
+
+    const dialog = wrapper.find("dialog").element as HTMLDialogElement;
+    const header = wrapper.find(".v-modal__header").element;
+
+    document.documentElement.getBoundingClientRect = () =>
+      ({
+        x: 0,
+        y: 0,
+        width: 1000,
+        height: 800,
+        top: 0,
+        left: 0,
+        right: 1000,
+        bottom: 800,
+        toJSON() {
+          return {};
+        },
+      }) as DOMRect;
+
+    dialog.getBoundingClientRect = () =>
+      ({
+        x: 100,
+        y: 100,
+        width: 200,
+        height: 150,
+        top: 100,
+        left: 100,
+        right: 300,
+        bottom: 250,
+        toJSON() {
+          return {};
+        },
+      }) as DOMRect;
+
+    const captured = new Set<number>();
+    header.setPointerCapture = (id: number) => {
+      captured.add(id);
+    };
+    header.releasePointerCapture = (id: number) => {
+      captured.delete(id);
+    };
+    header.hasPointerCapture = (id: number) => captured.has(id);
+
+    header.dispatchEvent(
+      new PointerEvent("pointerdown", {
+        bubbles: true,
+        cancelable: true,
+        pointerId: 1,
+        button: 0,
+        clientX: 150,
+        clientY: 120,
+      }),
+    );
+    expect(wrapper.emitted("drag-start")?.length).toBe(1);
+    expect(wrapper.vm.state.isDragging).toBe(true);
+
+    document.dispatchEvent(
+      new PointerEvent("pointermove", {
+        bubbles: true,
+        cancelable: true,
+        pointerId: 1,
+        clientX: 150 + 10_000,
+        clientY: 120 + 10_000,
+      }),
+    );
+    expect(wrapper.emitted("drag-move")?.length).toBeGreaterThanOrEqual(1);
+
+    const style = wrapper.vm.state.dialogStyle as Record<string, string>;
+    const match = style.translate?.match(
+      /(-?\d+(?:\.\d+)?)px\s+(-?\d+(?:\.\d+)?)px/,
+    );
+    expect(match).toBeTruthy();
+    const ox = Number(match![1]);
+    const oy = Number(match![2]);
+    // 超大位移被钳制：视觉右/下边不超过视口 1000×800
+    expect(100 + ox + 200).toBeLessThanOrEqual(1000.5);
+    expect(100 + oy + 150).toBeLessThanOrEqual(800.5);
+    expect(ox).toBe(700); // 1000 - 300
+    expect(oy).toBe(550); // 800 - 250
+
+    document.dispatchEvent(
+      new PointerEvent("pointerup", {
+        bubbles: true,
+        cancelable: true,
+        pointerId: 1,
+        clientX: 0,
+        clientY: 0,
+      }),
+    );
+    expect(wrapper.emitted("drag-end")?.length).toBe(1);
+    expect(wrapper.vm.state.isDragging).toBe(false);
+  });
+
+  test("draggable ignores pointerdown on interactive header controls", async () => {
+    const wrapper = mountDialog({ draggable: true, title: "标题" });
+    await flushPromises();
+    await nextTick();
+
+    await wrapper.find(".v-modal__close").trigger("pointerdown");
+    expect(wrapper.emitted("drag-start")).toBeUndefined();
+    expect(wrapper.vm.state.isDragging).toBe(false);
+  });
 });

@@ -27,7 +27,7 @@
 | `mask-style`       | `'opaque' \| 'blur'`                         | `'opaque'` | 遮罩样式：半透明或毛玻璃                                                                                                                                     |
 | `show-header`      | `boolean`                                    | `true`     | 显示 header                                                                                                                                                  |
 | `show-footer`      | `boolean`                                    | `true`     | 显示 footer                                                                                                                                                  |
-| `draggable`        | `boolean`                                    | `false`    | 是否允许拖动 header 移动；`variant=drawer` 时强制失效                                                                                                        |
+| `draggable`        | `boolean`                                    | `false`    | 是否允许拖动 header 移动；限制在视口（`document.documentElement`）内；`variant=drawer` 时强制失效                                                                                                        |
 | `resizable`        | `boolean`                                    | `false`    | 是否可改尺寸；dialog 为右下角；drawer 为远离贴边的那条边                                                                                                     |
 | `auto-focus`       | `boolean`                                    | `true`     | 打开后自动聚焦第一个可聚焦元素；为 `false` 时聚焦到 dialog 根节点                                                                                            |
 | `before-close`     | `() => boolean \| Promise<boolean>`          | —          | 关闭前拦截；返回 `false` / reject 则取消关闭                                                                                                                 |
@@ -80,7 +80,7 @@ interface DialogState {
 
 | Hook | 用途 |
 | ---- | ---- |
-| —    | 拖拽 / 缩放在组件内用 pointer 事件处理（可后续抽 `useDrag`） |
+| `useDrag` | header 拖动：位移、`shouldStart` 跳过交互控件、视口边界钳制 |
 
 ## 实现逻辑
 
@@ -91,7 +91,7 @@ interface DialogState {
 5. 关闭态 CSS：`display: none`；打开态：`display: flex`。通过 `transition` 的 `display` / `overlay` + `allow-discrete` 与 `@starting-style` 做进出场动画（`destroy-on-close=false` 时 dialog 常驻 DOM）。
 6. `destroy-on-close=true`：整个 `<dialog>` 用 `v-if="dialogMounted"`，关闭后直接不渲染（不做退场离散动画）。
 7. `variant=drawer`：加 `v-drawer-modal` + `is-{placement}`；忽略 `draggable`；`resizable` 时在空闲边渲染 resize handle。
-8. `draggable`：header 上 pointerdown 开始拖动，更新 `dialogStyle` 的 `translate`，并发出 drag-* 事件。
+8. `draggable`：`useDrag` 绑定 header → dialog；`applyDrag` 用 `rect`/`boundary` 钳制后更新 `dialogStyle.translate`，发出 drag-*；节点晚就绪（如 `destroy-on-close`）时主动 `init()`。
 9. `auto-focus=false`：`showModal` 后将焦点落到 dialog 根（`tabindex="-1"`）。
 
 ## 无障碍（a11y）

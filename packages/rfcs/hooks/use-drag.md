@@ -34,6 +34,7 @@ function useDrag(option?: Partial<DragOption>): {
 | `cursor` | `string` | `'move'` | 手柄光标；`''` 表示不改 |
 | `container` | `HTMLElement \| null` | `document.body`（读取时解析） | 边界参考元素，用于 `_ .boundary` |
 | `disabled` | `MaybeRef<boolean>` | `false` | 为 true 时解绑；拖拽中会立即 `stop` 并收尾 |
+| `shouldStart` | `(event: PointerEvent) => boolean` | `() => true` | pointerdown 时决定是否进入拖拽；返回 `false` 则不 capture、不改状态 |
 | `startDrag` | `(state) => void` | `() => {}` | pointerdown 进入拖拽后调用，可缓存初始 left/top 等 |
 | `applyDrag` | `(state) => void` | `() => {}` | pointermove 时调用，根据 `delta*` 写位置 |
 | `endDrag` | `(state) => void` | `() => {}` | pointerup / pointercancel / `stop` 打断时调用 |
@@ -142,7 +143,7 @@ useDrag({
 ## 实现逻辑
 
 1. **init**：解析 `toValue(el)`；`handler` 缺省用 `el`；设 `cursor`；绑定 `pointerdown`；幂等。元素缺失则 `warn` 并返回。
-2. **pointerdown**（仅主按钮、校验 `pointerId`）：记录起点与 `rect`/`boundary`；加 `st-dragging`；`setPointerCapture`；`startDrag`；在 document 上听 `pointermove` / `pointerup` / `pointercancel`。
+2. **pointerdown**（仅主按钮、校验 `pointerId`）：若 `shouldStart(event)` 为 `false` 则直接返回；否则记录起点与 `rect`/`boundary`；加 `st-dragging`；`setPointerCapture`；`startDrag`；在 document 上听 `pointermove` / `pointerup` / `pointercancel`。
 3. **pointermove**：按 `pointerId` 过滤；更新 `delta*` → `applyDrag`。
 4. **pointerup / pointercancel / stop**：去 class、解绑、`releasePointerCapture`、`isDragging = false`、`endDrag`。
 5. **disabled**：`true` → `stop`；`false` 且未 init → 尝试 `init`（仍可能因 DOM 未就绪失败，需调用方稍后 `init`）。
@@ -160,6 +161,7 @@ useDrag({
 - [x] `disabled` 启停正确；禁用中不会 init
 - [x] `el`/`handler` 晚就绪不自动绑定；调用方主动 `init`
 - [x] `startDrag` / `endDrag` 默认 noop；缺省不抛错
+- [x] `shouldStart` 返回 false 时不进入拖拽
 - [x] `handler` 缺省等于 `el`
 - [x] `pointercancel` / 中途 `stop` 完整收尾；`pointerId` 过滤
 - [x] 从 `_index.ts` / 包入口导出

@@ -13,9 +13,9 @@
   >
     <header
       v-if="showHeader"
+      ref="headerRef"
       class="v-modal__header"
       :class="{ 'is-draggable': state.canDrag }"
-      @pointerdown="api.handleDragStart"
     >
       <div :id="titleId" class="v-modal__title">
         <slot name="title" v-bind="{ state, api, props }">{{ title }}</slot>
@@ -159,6 +159,7 @@ const slots = defineSlots<{
 
 const refs = {
   rootRef: useTemplateRef<HTMLDialogElement>("rootRef"),
+  headerRef: useTemplateRef<HTMLElement>("headerRef"),
 };
 const { state, api, titleId } = useVm({ props, slots, refs, models, emit });
 

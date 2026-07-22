@@ -1,17 +1,14 @@
-import {
-  reactive,
-  computed,
-  watch,
-  nextTick,
-  onUnmounted,
-  ref,
-} from "vue";
+import { reactive, computed, watch, nextTick, onUnmounted, ref } from "vue";
 import type { DialogCtx } from "./dialog.vue";
 import { callWithGuard } from "../../utils/promiseHelper.ts";
-import { random } from "../../utils/dataHelper.ts";
+import { random, clamp } from "../../utils/dataHelper.ts";
+import { useDrag } from "../../hooks/useDrag.ts";
 
 type Point = { x: number; y: number };
 type Size = { width: number; height: number };
+
+const INTERACTIVE_SELECTOR =
+  "button, a, input, textarea, select, [contenteditable]";
 
 export default function useVm(ctx: DialogCtx) {
   const { props, refs, models, emit } = ctx;
@@ -25,14 +22,10 @@ export default function useVm(ctx: DialogCtx) {
   const size = ref<Size | null>(null);
   const closingGuard = ref(false);
 
-  let dragOrigin: Point | null = null;
-  let dragOffsetStart: Point | null = null;
   let resizeOrigin: Point | null = null;
   let resizeSizeStart: Size | null = null;
 
-  const canDrag = computed(
-    () => props.draggable && props.variant === "dialog",
-  );
+  const canDrag = computed(() => props.draggable && props.variant === "dialog");
 
   const canResize = computed(() => props.resizable);
 
@@ -79,6 +72,53 @@ export default function useVm(ctx: DialogCtx) {
     canResize,
     resizeClass,
   });
+
+  const dragDisabled = computed(() => !canDrag.value);
+
+  const {
+    init: initDrag,
+    stop: stopDrag,
+    state: dragState,
+  } = useDrag({
+    el: refs.rootRef,
+    handler: refs.headerRef,
+    /** 光标由 header `.is-draggable` CSS 控制 */
+    cursor: "",
+    disabled: dragDisabled,
+    shouldStart(event) {
+      const target = event.target as HTMLElement | null;
+      return !target?.closest(INTERACTIVE_SELECTOR);
+    },
+    startDrag(s) {
+      s._.baseX = offset.value.x;
+      s._.baseY = offset.value.y;
+      isDragging.value = true;
+      emit("drag-start");
+    },
+    applyDrag(s) {
+      const { rect, boundary, deltaX, deltaY } = s._;
+      const baseX = s._.baseX as number;
+      const baseY = s._.baseY as number;
+      const dx = clamp(
+        deltaX,
+        boundary.left - rect.left,
+        boundary.right - rect.right,
+      );
+      const dy = clamp(
+        deltaY,
+        boundary.top - rect.top,
+        boundary.bottom - rect.bottom,
+      );
+      offset.value = { x: baseX + dx, y: baseY + dy };
+      emit("drag-move");
+    },
+    endDrag() {
+      isDragging.value = false;
+      emit("drag-end");
+    },
+  });
+
+  dragState.container = document.documentElement;
 
   function getDialog(): HTMLDialogElement | null {
     return refs.rootRef.value;
@@ -169,46 +209,6 @@ export default function useVm(ctx: DialogCtx) {
 
   function handleDialogClose() {
     syncClosed();
-  }
-
-  function handleDragStart(event: PointerEvent) {
-    if (!canDrag.value || event.button !== 0) return;
-    const target = event.target as HTMLElement | null;
-    if (target?.closest("button, a, input, textarea, select, [contenteditable]")) {
-      return;
-    }
-
-    const el = getDialog();
-    if (!el) return;
-
-    isDragging.value = true;
-    dragOrigin = { x: event.clientX, y: event.clientY };
-    dragOffsetStart = { ...offset.value };
-    el.setPointerCapture?.(event.pointerId);
-    window.addEventListener("pointermove", handleDragMove);
-    window.addEventListener("pointerup", handleDragEnd);
-    window.addEventListener("pointercancel", handleDragEnd);
-    emit("drag-start");
-  }
-
-  function handleDragMove(event: PointerEvent) {
-    if (!isDragging.value || !dragOrigin || !dragOffsetStart) return;
-    offset.value = {
-      x: dragOffsetStart.x + (event.clientX - dragOrigin.x),
-      y: dragOffsetStart.y + (event.clientY - dragOrigin.y),
-    };
-    emit("drag-move");
-  }
-
-  function handleDragEnd() {
-    if (!isDragging.value) return;
-    isDragging.value = false;
-    dragOrigin = null;
-    dragOffsetStart = null;
-    window.removeEventListener("pointermove", handleDragMove);
-    window.removeEventListener("pointerup", handleDragEnd);
-    window.removeEventListener("pointercancel", handleDragEnd);
-    emit("drag-end");
   }
 
   function currentSize(el: HTMLElement): Size {
@@ -304,8 +304,24 @@ export default function useVm(ctx: DialogCtx) {
     },
   );
 
+  /** destroyOnClose / header 晚就绪时主动 init；卸载或不可拖时 stop */
+  watch(
+    [
+      dialogMounted,
+      canDrag,
+      () => refs.rootRef.value,
+      () => refs.headerRef.value,
+    ],
+    async ([mounted, drag]) => {
+      stopDrag();
+      if (mounted && drag && refs.rootRef.value && refs.headerRef.value) {
+        await nextTick();
+        initDrag();
+      }
+    },
+  );
+
   onUnmounted(() => {
-    handleDragEnd();
     handleResizeEnd();
   });
 
@@ -315,7 +331,6 @@ export default function useVm(ctx: DialogCtx) {
     requestClose,
     handleCancel,
     handleDialogClose,
-    handleDragStart,
     handleResizeStart,
   };
 

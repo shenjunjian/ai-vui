@@ -9,6 +9,8 @@ import {
 } from "vue";
 
 export type DragCallbackFn = (state: DragOption) => void;
+/** 返回 false 时不进入拖拽（尚未 capture / 未改状态） */
+export type DragShouldStartFn = (event: PointerEvent) => boolean;
 
 export interface DragInternalState {
   isDragging: boolean;
@@ -37,6 +39,8 @@ export interface DragOption {
   container: HTMLElement | null;
   /** 是否禁用拖动 */
   disabled: MaybeRef<boolean>;
+  /** pointerdown 时决定是否开始拖拽，默认允许；比如点击在拖动手柄中的close按钮了，要拦截它 */
+  shouldStart: DragShouldStartFn;
   /** 拖动开始：可记录初始 left/top 等 */
   startDrag: DragCallbackFn;
   /** 拖动中：根据 `delta*` 写位置（left/top、translate、margin 等由调用方决定） */
@@ -48,6 +52,7 @@ export interface DragOption {
 }
 
 const noop: DragCallbackFn = () => {};
+const allowStart: DragShouldStartFn = () => true;
 
 function createInternalState(): DragInternalState {
   return {
@@ -77,6 +82,7 @@ export function useDrag(option: Partial<DragOption> = {}) {
     cursor: option.cursor ?? "move",
     container: option.container ?? null,
     disabled: option.disabled ?? false,
+    shouldStart: option.shouldStart ?? allowStart,
     startDrag: option.startDrag ?? noop,
     applyDrag: option.applyDrag ?? noop,
     endDrag: option.endDrag ?? noop,
@@ -165,6 +171,7 @@ export function useDrag(option: Partial<DragOption> = {}) {
   function onPointerDown(e: PointerEvent) {
     if (e.button !== 0 || isDisabled()) return;
     if (activePointerId != null) return;
+    if (!state.shouldStart(e)) return;
 
     const el = resolveEl();
     const handler = boundHandler ?? resolveHandler();
