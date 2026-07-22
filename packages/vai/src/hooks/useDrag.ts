@@ -33,7 +33,7 @@ export interface DragOption {
   el: MaybeRef<HTMLElement | null>;
   /** 拖动手柄；缺省时与 `el` 相同 */
   handler: MaybeRef<HTMLElement | null>;
-  /** 手柄光标，默认 `move`；空字符串表示不修改 */
+  /** 手柄上光标，默认 `move`；空字符串表示不修改。有的场景是左右或上下拖动，光标用ew-resize	或ns-resize  */
   cursor: string;
   /** 边界参考元素，默认 `document.body`；用于填充 `_.boundary` */
   container: HTMLElement | null;

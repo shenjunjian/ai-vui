@@ -78,8 +78,8 @@ export default function useVm(ctx: DialogCtx) {
   } = useDrag({
     el: refs.rootRef,
     handler: refs.headerRef,
-    /** 光标由 header `.is-draggable` CSS 控制 */
-    cursor: "",
+    cursor: "move",
+    container: document.documentElement,
     disabled: computed(() => !canDrag.value),
     /** title 插槽可以塞自定义按钮、链接、输入框等，这些节点默认没有 .stop，事件会冒泡到 header，要拦截它 */
     shouldStart(event) {
@@ -114,8 +114,6 @@ export default function useVm(ctx: DialogCtx) {
       emit("drag-end");
     },
   });
-
-  dragState.container = document.documentElement;
 
   function resetPositionSize() {
     offset.value = { x: 0, y: 0 };
