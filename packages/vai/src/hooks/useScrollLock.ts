@@ -16,28 +16,21 @@ function getScrollbarGap(): number {
   return window.innerWidth - document.documentElement.clientWidth;
 }
 
-function hasStableScrollbarGutter(): boolean {
+/** scrollbar-gutter: stable 时滚动条消失后仍占位，无需再补 padding */
+function needsPaddingCompensation(gap: number): boolean {
+  if (gap <= 0) return false;
   const gutter = getComputedStyle(document.documentElement).scrollbarGutter;
-  return Boolean(gutter && gutter !== "auto");
-}
-
-function computePaddingGap(gapBefore: number): number {
-  let gap = Math.max(0, gapBefore - getScrollbarGap());
-  if (gap === 0 && gapBefore > 0 && !hasStableScrollbarGutter()) {
-    // happy-dom 等环境：overflow 变化不一定反映到 clientWidth
-    gap = gapBefore;
-  }
-  return gap;
+  return !gutter || gutter === "auto";
 }
 
 /**
- * 仅用 overflow:hidden 会在部分浏览器把 scrollY 重置为 0（页面闪回顶部）。
- * 用 position:fixed + top:-scrollY 冻结视觉位置，unlock 时再 scrollTo 还原。
+ * 冻结文档视口：overflow hidden + body fixed。
+ * 锁定期间页面宽高不再随子元素进出变化；有经典滚动条时补 padding 防抖。
  */
 function applyDocumentLock() {
   const html = document.documentElement;
   const body = document.body;
-  const gapBefore = getScrollbarGap();
+  const gap = getScrollbarGap();
   savedScrollY = window.scrollY;
 
   savedHtmlOverflow = html.style.overflow;
@@ -51,17 +44,13 @@ function applyDocumentLock() {
 
   html.style.overflow = "hidden";
   body.style.overflow = "hidden";
-
-  const gap = computePaddingGap(gapBefore);
-
-  // 先写 top 再 position:fixed，避免读取/写入间隙里 scrollY 被清零
+  body.style.position = "fixed";
   body.style.top = `-${savedScrollY}px`;
   body.style.left = "0";
   body.style.right = "0";
   body.style.width = "100%";
-  body.style.position = "fixed";
 
-  if (gap > 0) {
+  if (needsPaddingCompensation(gap)) {
     const current = parseFloat(getComputedStyle(body).paddingRight) || 0;
     body.style.paddingRight = `${current + gap}px`;
   }
@@ -94,7 +83,7 @@ function restoreDocumentLock() {
   window.scrollTo(0, y);
 }
 
-/** @internal 测试隔离：强制清零引用计数并恢复文档样式 */
+/** @internal 测试隔离 */
 export function resetScrollLockForTest() {
   if (lockCount > 0) {
     restoreDocumentLock();
@@ -103,12 +92,12 @@ export function resetScrollLockForTest() {
   savedScrollY = 0;
 }
 
-/** 锁定文档滚动并冻结当前视口位置，避免 overflow:hidden 把页面甩回顶部。
- * 多层实例共享引用计数，最后一次 unlock 才恢复样式与 scrollY。
+/**
+ * 锁定文档滚动。有/无滚动条均可；锁定后视口尺寸稳定，不随页面元素进出抖动。
  * @example
- * const { lock, unlock, isLocked } = useScrollLock()
- * lock()          // 先锁在当前位置
+ * lock()
  * dialog.showModal()
+ * unlock()
  */
 export function useScrollLock(): {
   lock: () => void;

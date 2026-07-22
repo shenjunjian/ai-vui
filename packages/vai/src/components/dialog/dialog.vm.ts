@@ -85,13 +85,13 @@ export default function useVm(ctx: DialogCtx) {
     },
   });
 
-  /** drawer 空闲边缩放：手柄为 v-modal__resize；拖动中直接改 el.style 宽/高，结束无需同步 Vue 状态 */
+  /** drawer 空闲边缩放：改 panel 宽高（壳是全视口，不能改壳） */
   const {
     init: initResize,
     stop: stopResize,
     state: resizeDragState,
   } = useDrag({
-    el: refs.rootRef,
+    el: refs.panelRef,
     handler: refs.resizeRef,
     cursor: resizeCursor,
     container: document.documentElement,
@@ -160,7 +160,6 @@ export default function useVm(ctx: DialogCtx) {
       if (!dialog) return;
       const wasOpen = dialog.open;
       if (!wasOpen) {
-        // 先锁在当前滚动位置，再 showModal，避免 overflow/聚焦把页面甩到顶部
         lockScroll();
         dialog.showModal();
       }
@@ -215,12 +214,12 @@ export default function useVm(ctx: DialogCtx) {
   }
 
   function handleDialogClose() {
-    unlockScroll();
     models.open.value = false;
+    emit("closed");
+    unlockScroll();
     if (props.destroyOnClose) {
       dialogMounted.value = false;
     }
-    emit("closed");
   }
 
   watch(
@@ -272,7 +271,7 @@ export default function useVm(ctx: DialogCtx) {
       dialogMounted,
       () => props.resizable,
       () => props.variant,
-      () => refs.rootRef.value,
+      () => refs.panelRef.value,
       () => refs.resizeRef.value,
     ],
     async ([mounted, resizable, variant]) => {
@@ -281,7 +280,7 @@ export default function useVm(ctx: DialogCtx) {
         mounted &&
         resizable &&
         variant === "drawer" &&
-        refs.rootRef.value &&
+        refs.panelRef.value &&
         refs.resizeRef.value
       ) {
         await nextTick();

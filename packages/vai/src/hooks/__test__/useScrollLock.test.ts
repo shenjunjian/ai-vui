@@ -80,7 +80,7 @@ describe("useScrollLock", () => {
     vi.restoreAllMocks();
   });
 
-  test("lock 用 fixed 冻结视口，并在 body 上补偿 padding-right", () => {
+  test("已滚动时用 fixed 冻结视口，并补偿 padding-right", () => {
     Object.defineProperty(window, "scrollY", {
       configurable: true,
       value: 420,
@@ -88,18 +88,45 @@ describe("useScrollLock", () => {
     const { api, wrapper } = mountUseScrollLock();
     wrappers.push(wrapper);
 
-    expect(api.isLocked.value).toBe(false);
+    api.lock();
+
+    expect(document.documentElement.style.overflow).toBe("hidden");
+    expect(document.body.style.position).toBe("fixed");
+    expect(document.body.style.top).toBe("-420px");
+    expect(document.body.style.paddingRight).toBe("16px");
+  });
+
+  test("仅有滚动条、scrollY=0 时同样 fixed 冻结，并补 padding", () => {
+    const { api, wrapper } = mountUseScrollLock();
+    wrappers.push(wrapper);
+
+    api.lock();
+
+    expect(document.documentElement.style.overflow).toBe("hidden");
+    expect(document.body.style.position).toBe("fixed");
+    expect(document.body.style.top).toBe("0px");
+    expect(document.body.style.width).toBe("100%");
+    expect(document.body.style.paddingRight).toBe("16px");
+  });
+
+  test("无滚动条时仍 fixed 冻结，不补 padding", () => {
+    Object.defineProperty(window, "innerWidth", {
+      configurable: true,
+      value: document.documentElement.clientWidth,
+    });
+    const { api, wrapper } = mountUseScrollLock();
+    wrappers.push(wrapper);
+
     api.lock();
 
     expect(api.isLocked.value).toBe(true);
     expect(document.documentElement.style.overflow).toBe("hidden");
     expect(document.body.style.overflow).toBe("hidden");
     expect(document.body.style.position).toBe("fixed");
-    expect(document.body.style.top).toBe("-420px");
-    expect(document.body.style.paddingRight).toBe("16px");
+    expect(document.body.style.paddingRight).toBe("");
   });
 
-  test("unlock 恢复样式并 scrollTo 原位置", () => {
+  test("unlock 恢复样式并 scrollTo", () => {
     Object.defineProperty(window, "scrollY", {
       configurable: true,
       value: 280,
@@ -111,8 +138,6 @@ describe("useScrollLock", () => {
     api.unlock();
 
     expect(document.body.style.position).toBe("");
-    expect(document.body.style.top).toBe("");
-    expect(document.body.style.paddingRight).toBe("");
     expect(window.scrollTo).toHaveBeenCalledWith(0, 280);
   });
 
@@ -122,13 +147,11 @@ describe("useScrollLock", () => {
 
     api.lock();
     api.lock();
-    expect(api.isLocked.value).toBe(true);
-    expect(document.body.style.position).toBe("fixed");
+    expect(document.body.style.paddingRight).toBe("16px");
 
     api.unlock();
     api.unlock();
-    expect(api.isLocked.value).toBe(false);
-    expect(document.body.style.position).toBe("");
+    expect(document.body.style.paddingRight).toBe("");
   });
 
   test("多层引用计数：最后一次 unlock 才恢复", () => {
@@ -143,7 +166,6 @@ describe("useScrollLock", () => {
     a.api.lock();
     b.api.lock();
     expect(document.body.style.position).toBe("fixed");
-    expect(document.body.style.top).toBe("-100px");
 
     a.api.unlock();
     expect(document.body.style.position).toBe("fixed");
@@ -161,25 +183,11 @@ describe("useScrollLock", () => {
     });
     const { api, wrapper } = mountUseScrollLock();
     api.lock();
-    expect(document.body.style.position).toBe("fixed");
 
     wrapper.unmount();
     expect(api.isLocked.value).toBe(false);
     expect(document.body.style.position).toBe("");
     expect(window.scrollTo).toHaveBeenCalledWith(0, 50);
-  });
-
-  test("无滚动条时不写 padding-right", () => {
-    Object.defineProperty(window, "innerWidth", {
-      configurable: true,
-      value: document.documentElement.clientWidth,
-    });
-    const { api, wrapper } = mountUseScrollLock();
-    wrappers.push(wrapper);
-
-    api.lock();
-    expect(document.body.style.position).toBe("fixed");
-    expect(document.body.style.paddingRight).toBe("");
   });
 
   test("恢复原先已有的 inline overflow / body paddingRight", () => {

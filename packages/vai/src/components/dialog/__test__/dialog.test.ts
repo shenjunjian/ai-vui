@@ -235,7 +235,7 @@ describe("Dialog", () => {
     );
   });
 
-  test("drawer resizable writes el.style width/height during drag", async () => {
+  test("drawer resizable writes panel style width/height during drag", async () => {
     const wrapper = mountDialog({
       resizable: true,
       variant: "drawer",
@@ -244,10 +244,10 @@ describe("Dialog", () => {
     await flushPromises();
     await nextTick();
 
-    const dialog = wrapper.find("dialog").element as HTMLDialogElement;
+    const panel = wrapper.find(".v-modal__panel").element as HTMLElement;
     const handle = wrapper.find(".v-modal__resize").element;
 
-    dialog.getBoundingClientRect = () =>
+    panel.getBoundingClientRect = () =>
       ({
         x: 800,
         y: 0,
@@ -293,8 +293,7 @@ describe("Dialog", () => {
         clientY: 300,
       }),
     );
-    // 拖动中直接写 DOM，不经 Vue 状态
-    expect(dialog.style.width).toBe("450px");
+    expect(panel.style.width).toBe("450px");
 
     document.dispatchEvent(
       new PointerEvent("pointerup", {
@@ -307,11 +306,10 @@ describe("Dialog", () => {
     );
     await nextTick();
     expect(wrapper.find("dialog").classes()).not.toContain("is-resizing");
-    // 结束后仍保留 inline 尺寸，无需同步到 state
-    expect(dialog.style.width).toBe("450px");
+    expect(panel.style.width).toBe("450px");
   });
 
-  test("opens locks document scroll; closes unlocks", async () => {
+  test("opens locks document scroll; closes unlocks immediately", async () => {
     const html = document.documentElement;
     const originalInnerWidth = window.innerWidth;
     Object.defineProperty(window, "innerWidth", {
