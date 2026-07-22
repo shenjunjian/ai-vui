@@ -256,6 +256,8 @@ dialog.v-drawer-modal.v-modal {
   background: transparent;
   box-shadow: none;
   transform: none;
+  /* 全视口透明壳会挡住 ::backdrop；穿透后 closedby=any 才能点遮罩关闭 */
+  pointer-events: none;
 
   &[open] {
     transform: none;
@@ -276,6 +278,7 @@ dialog.v-drawer-modal.v-modal {
     margin: 0;
     padding: 0;
     overflow: hidden;
+    pointer-events: auto;
     color: var(--modal-color);
     background-color: var(--modal-bg);
     border: var(--modal-border-width) solid var(--modal-border);

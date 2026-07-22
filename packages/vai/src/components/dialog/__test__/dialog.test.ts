@@ -429,6 +429,8 @@ describe("Dialog", () => {
     // 开始时固化当前屏幕位置为 margin
     expect(dialog.style.marginLeft).toBe("100px");
     expect(dialog.style.marginTop).toBe("100px");
+    // 拖动中关掉 light dismiss，避免 pointerup 落在盒外时被 closedby=any 关掉
+    expect(dialog.getAttribute("closedby")).toBe("closerequest");
 
     document.dispatchEvent(
       new PointerEvent("pointermove", {
@@ -460,6 +462,7 @@ describe("Dialog", () => {
     // 结束后仍保留 inline margin，无需同步到 state
     expect(dialog.style.marginLeft).toBe("800px");
     expect(dialog.style.marginTop).toBe("650px");
+    expect(dialog.getAttribute("closedby")).toBe("any");
   });
 
   test("draggable ignores pointerdown on interactive header controls", async () => {

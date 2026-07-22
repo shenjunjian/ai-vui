@@ -55,11 +55,16 @@ export default function useVm(ctx: DialogCtx) {
       return !target?.closest(INTERACTIVE_SELECTOR);
     },
     startDrag(s) {
-      const el = s.el;
+      const el = s.el as HTMLDialogElement | null;
       if (!el) return;
       const { rect } = s._;
       el.style.marginLeft = `${rect.left}px`;
       el.style.marginTop = `${rect.top}px`;
+      /**
+       * 拖动中 pointer 常移出 dialog 盒；closedby=any 会在 pointerup 时当成点遮罩关掉。
+       * 按下时先关掉 light dismiss，松手后再恢复。
+       */
+      el.setAttribute("closedby", "closerequest");
       emit("drag-start");
     },
     applyDrag(s) {
@@ -82,6 +87,11 @@ export default function useVm(ctx: DialogCtx) {
     },
     endDrag() {
       emit("drag-end");
+      const el = refs.rootRef.value;
+      // 延后恢复，避开同一次 pointerup 上的 native light dismiss 判定
+      nextTick(() => {
+        el?.setAttribute("closedby", props.closedby);
+      });
     },
   });
 
