@@ -4,7 +4,6 @@
     ref="rootRef"
     class="v-modal"
     :class="state.rootClass"
-    :style="state.dialogStyle"
     :closedby="closedby"
     tabindex="-1"
     :aria-labelledby="showHeader ? titleId : undefined"
@@ -87,7 +86,7 @@ const props = withDefaults(
     autoFocus?: boolean;
     /** 关闭前拦截；返回 true 允许关闭 */
     beforeClose?: () => boolean | Promise<boolean>;
-    /** 关闭时是否销毁整个 dialog 元素 */
+    /** 关闭后是否销毁整个 dialog；false 时保留拖动 / 缩放后的位置与尺寸 */
     destroyOnClose?: boolean;
     /** 外观变体 */
     variant?: "dialog" | "drawer";

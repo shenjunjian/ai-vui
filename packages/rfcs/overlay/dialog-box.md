@@ -31,7 +31,7 @@
 | `resizable`        | `boolean`                                    | `false`    | 是否可改尺寸；`dialog` 用 CSS `resize: both`（右下角）；`drawer` 在空闲边渲染手柄并用 `useDrag` 改宽/高                                                     |
 | `auto-focus`       | `boolean`                                    | `true`     | 打开后自动聚焦第一个可聚焦元素；为 `false` 时聚焦到 dialog 根节点                                                                                            |
 | `before-close`     | `() => boolean \| Promise<boolean>`          | —          | 关闭前拦截；返回 `false` / reject 则取消关闭                                                                                                                 |
-| `destroy-on-close` | `boolean`                                    | `false`    | `false`：关闭后 dialog 仍挂载，靠 `display: none` + 离散过渡隐藏；`true`：关闭后 `v-if` 销毁整个 `<dialog>` |
+| `destroy-on-close` | `boolean`                                    | `false`    | `false`：关闭后 dialog 仍挂载，靠 `display: none` + 离散过渡隐藏，并保留拖动 / 缩放后的位置与尺寸；`true`：关闭后 `v-if` 销毁整个 `<dialog>`，再次打开为默认居中位置与默认尺寸 |
 | `variant`          | `'dialog' \| 'drawer'`                       | `'dialog'` | `dialog` 居中浮层；`drawer` 贴边抽屉（此时 `draggable` 失效，`resizable` 作用于空闲边）                                                                      |
 | `placement`        | `'right' \| 'left' \| 'top' \| 'bottom'`     | `'right'`  | 仅 `drawer` 变体：弹出贴边位置                                                                                                                               |
 
@@ -68,11 +68,17 @@
 ```ts
 interface DialogState {
   rootClass: (string | Record<string, boolean>)[];
-  dialogStyle: Record<string, string>;
   /** destroyOnClose 时控制整个 dialog 是否挂载 */
   dialogMounted: boolean;
 }
 ```
+
+位置 / 尺寸不进 Vue 状态：拖动与缩放全程写 `el.style`，模板不绑定 `:style`，避免 `dialogStyle` / `offset` / `size` 引起组件更新。
+
+**位置 / 尺寸保留策略**
+
+- `destroy-on-close=false`：关闭时**不**清除拖动 / 缩放写入的 inline 样式（`margin-left` / `margin-top` / `width` / `height`），再次打开沿用上次位置与尺寸；避免关闭瞬间闪回中央。
+- `destroy-on-close=true`：关闭销毁节点，再次打开是全新挂载，使用默认居中与默认尺寸，无需也不应手动 reset。
 
 ## Hook 依赖（hooks）
 
@@ -85,12 +91,12 @@ interface DialogState {
 1. 根节点为 `<dialog class="v-modal">`，打开时调用 `showModal()`，关闭时调用 `close()`。
 2. `v-model:open` 与 dialog 的 open 状态双向同步；外部设为 `false` 走 `api.close()`（不经拦截）。
 3. 关闭按钮、取消 / 确定、Light Dismiss、Esc 均走 `api.requestClose()` → 原生 `requestClose()` → `cancel` 事件；在 `cancel` 中 `preventDefault` 后异步执行 `before-close`，通过则再 `close()`。
-4. `close` 事件：同步 `open=false`，按需卸载 dialog，触发 `closed`。
+4. `close` 事件：同步 `open=false`；`destroy-on-close=false` 时保留 inline 位置 / 尺寸，`true` 时卸载 dialog；触发 `closed`。
 5. 关闭态 CSS：`display: none`；打开态：`display: flex`。通过 `transition` 的 `display` / `overlay` + `allow-discrete` 与 `@starting-style` 做进出场动画（`destroy-on-close=false` 时 dialog 常驻 DOM）。
-6. `destroy-on-close=true`：整个 `<dialog>` 用 `v-if="dialogMounted"`，关闭后直接不渲染（不做退场离散动画）。
-7. `variant=drawer`：加 `v-drawer-modal` + `is-{placement}`；忽略 `draggable`；`resizable` 时在空闲边渲染 `v-modal__resize`，由 `useDrag` 在拖动中直接写 `el.style` 宽/高（避免每帧 Vue 更新），`endDrag` 再同步到 `size`；`is-resizing` 类取自 `useDrag` 的 `_.isDragging`。
-8. `draggable`：`useDrag` 绑定 header → dialog；`applyDrag` 用 `rect`/`boundary` 钳制后直接写 `el.style.translate`（避免每帧 Vue 更新），`endDrag` 再同步到 `offset`；发出 drag-*；`is-dragging` 类取自 `useDrag` 的 `_.isDragging`；节点晚就绪（如 `destroy-on-close`）时主动 `init()`。
-9. `resizable` + `variant=dialog`：根节点加 `is-resizable`（`resize: both`），不渲染 resize 手柄；关闭时清除 CSS resize 写入的 inline 尺寸。
+6. `destroy-on-close=true`：整个 `<dialog>` 用 `v-if="dialogMounted"`，关闭后直接不渲染（不做退场离散动画）；再次打开为全新节点与默认位置 / 尺寸。
+7. `variant=drawer`：加 `v-drawer-modal` + `is-{placement}`；忽略 `draggable`；`resizable` 时在空闲边渲染 `v-modal__resize`，由 `useDrag` 在拖动开始记录宽/高，拖动中直接写 `el.style` 宽/高（不经 Vue 状态）；`is-resizing` 类取自 `useDrag` 的 `_.isDragging`。
+8. `draggable`：`useDrag` 绑定 header → dialog；dialog 默认 `margin: auto` 居中；`startDrag` 用当前屏幕位置固化 `margin-left` / `margin-top`，`applyDrag` 按 `rect`/`boundary` 钳制后继续写这两项；发出 drag-*；`is-dragging` 类取自 `useDrag` 的 `_.isDragging`；节点晚就绪（如 `destroy-on-close`）时主动 `init()`。
+9. `resizable` + `variant=dialog`：根节点加 `is-resizable`（`resize: both`），不渲染 resize 手柄；CSS resize 写入的 inline 尺寸在 `destroy-on-close=false` 时随关闭保留。
 10. `auto-focus=false`：`showModal` 后将焦点落到 dialog 根（`tabindex="-1"`）。
 
 ## 无障碍（a11y）

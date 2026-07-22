@@ -191,6 +191,26 @@ describe("Dialog", () => {
     expect(wrapper.vm.state.dialogMounted).toBe(true);
   });
 
+  test("preserves drag/resize position when destroyOnClose is false", async () => {
+    const wrapper = mountDialog({ draggable: true, title: "保留位置" });
+    await flushPromises();
+    await nextTick();
+
+    const dialog = wrapper.find("dialog").element as HTMLDialogElement;
+    dialog.style.marginLeft = "120px";
+    dialog.style.marginTop = "80px";
+    dialog.style.width = "420px";
+    dialog.style.height = "300px";
+
+    wrapper.vm.api.close();
+    await flushPromises();
+
+    expect(dialog.style.marginLeft).toBe("120px");
+    expect(dialog.style.marginTop).toBe("80px");
+    expect(dialog.style.width).toBe("420px");
+    expect(dialog.style.height).toBe("300px");
+  });
+
   test("resizable: dialog uses CSS resize class; drawer renders edge handle", async () => {
     const dialogWrapper = mountDialog({ resizable: true });
     await flushPromises();
@@ -210,7 +230,7 @@ describe("Dialog", () => {
     );
   });
 
-  test("drawer resizable writes el.style during drag and syncs size on end", async () => {
+  test("drawer resizable writes el.style width/height during drag", async () => {
     const wrapper = mountDialog({
       resizable: true,
       variant: "drawer",
@@ -268,11 +288,8 @@ describe("Dialog", () => {
         clientY: 300,
       }),
     );
-    // 拖动中直接写 DOM，不经 size → dialogStyle
+    // 拖动中直接写 DOM，不经 Vue 状态
     expect(dialog.style.width).toBe("450px");
-    expect(
-      (wrapper.vm.state.dialogStyle as Record<string, string>).width,
-    ).toBeUndefined();
 
     document.dispatchEvent(
       new PointerEvent("pointerup", {
@@ -285,9 +302,8 @@ describe("Dialog", () => {
     );
     await nextTick();
     expect(wrapper.find("dialog").classes()).not.toContain("is-resizing");
-    expect(
-      (wrapper.vm.state.dialogStyle as Record<string, string>).width,
-    ).toBe("450px");
+    // 结束后仍保留 inline 尺寸，无需同步到 state
+    expect(dialog.style.width).toBe("450px");
   });
 
   test("exposes state and api", async () => {
@@ -301,7 +317,7 @@ describe("Dialog", () => {
     expect(typeof wrapper.vm.api.requestClose).toBe("function");
   });
 
-  test("draggable emits drag events and clamps to viewport", async () => {
+  test("draggable writes margin-left/top and clamps to viewport", async () => {
     const wrapper = mountDialog({ draggable: true, title: "可拖" });
     await flushPromises();
     await nextTick();
@@ -361,6 +377,9 @@ describe("Dialog", () => {
     expect(wrapper.emitted("drag-start")?.length).toBe(1);
     await nextTick();
     expect(wrapper.find("dialog").classes()).toContain("is-dragging");
+    // 开始时固化当前屏幕位置为 margin
+    expect(dialog.style.marginLeft).toBe("100px");
+    expect(dialog.style.marginTop).toBe("100px");
 
     document.dispatchEvent(
       new PointerEvent("pointermove", {
@@ -373,21 +392,9 @@ describe("Dialog", () => {
     );
     expect(wrapper.emitted("drag-move")?.length).toBeGreaterThanOrEqual(1);
 
-    // 拖动中直接写 DOM，不经 offset → dialogStyle
-    const match = dialog.style.translate?.match(
-      /(-?\d+(?:\.\d+)?)px\s+(-?\d+(?:\.\d+)?)px/,
-    );
-    expect(match).toBeTruthy();
-    const ox = Number(match![1]);
-    const oy = Number(match![2]);
-    // 超大位移被钳制：视觉右/下边不超过视口 1000×800
-    expect(100 + ox + 200).toBeLessThanOrEqual(1000.5);
-    expect(100 + oy + 150).toBeLessThanOrEqual(800.5);
-    expect(ox).toBe(700); // 1000 - 300
-    expect(oy).toBe(550); // 800 - 250
-    expect(
-      (wrapper.vm.state.dialogStyle as Record<string, string>).translate,
-    ).toBeUndefined();
+    // 超大位移被钳制：右/下边不超过视口 1000×800 → left=800, top=650
+    expect(dialog.style.marginLeft).toBe("800px"); // 1000 - 200
+    expect(dialog.style.marginTop).toBe("650px"); // 800 - 150
 
     document.dispatchEvent(
       new PointerEvent("pointerup", {
@@ -401,9 +408,9 @@ describe("Dialog", () => {
     await nextTick();
     expect(wrapper.emitted("drag-end")?.length).toBe(1);
     expect(wrapper.find("dialog").classes()).not.toContain("is-dragging");
-    expect(
-      (wrapper.vm.state.dialogStyle as Record<string, string>).translate,
-    ).toBe("700px 550px");
+    // 结束后仍保留 inline margin，无需同步到 state
+    expect(dialog.style.marginLeft).toBe("800px");
+    expect(dialog.style.marginTop).toBe("650px");
   });
 
   test("draggable ignores pointerdown on interactive header controls", async () => {
