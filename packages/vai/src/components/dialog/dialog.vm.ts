@@ -139,7 +139,14 @@ export default function useVm(ctx: DialogCtx) {
   });
 
   function focusAfterOpen(el: HTMLDialogElement) {
-    if (props.autoFocus) return;
+    if (props.autoFocus) {
+      // showModal 已聚焦首个可聚焦节点；再 focus 一次带 preventScroll，避免文档被滚走
+      const active = document.activeElement;
+      if (active instanceof HTMLElement && el.contains(active)) {
+        active.focus({ preventScroll: true });
+      }
+      return;
+    }
     el.focus({ preventScroll: true });
   }
 
@@ -153,8 +160,9 @@ export default function useVm(ctx: DialogCtx) {
       if (!dialog) return;
       const wasOpen = dialog.open;
       if (!wasOpen) {
-        dialog.showModal();
+        // 先锁在当前滚动位置，再 showModal，避免 overflow/聚焦把页面甩到顶部
         lockScroll();
+        dialog.showModal();
       }
       models.open.value = true;
       if (!wasOpen) {

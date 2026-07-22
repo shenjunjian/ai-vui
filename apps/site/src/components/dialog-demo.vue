@@ -104,6 +104,8 @@ const allowCloseAsync = () =>
     </section>
 
     <p class="dialog-demo__hint">事件：{{ eventLog.join(" → ") || "暂无" }}</p>
+
+    <!-- <p style="height: 500px;">占位，制造滚动条</p> -->
   </div>
 </template>
 

@@ -9,16 +9,16 @@ const { lock, unlock, isLocked } = useScrollLock();
     <header class="scroll-lock-demo__header">
       <h1>useScrollLock</h1>
       <p>
-        锁定文档滚动（html + body），并按实际腾出的滚动条宽度补偿
-        <code>body.padding-right</code>；已有
-        <code>scrollbar-gutter: stable</code> 时不再叠补偿，避免左移。
+        用 <code>position: fixed</code> + <code>top: -scrollY</code> 冻结当前视口，避免
+        <code>overflow: hidden</code> 把页面甩回顶部；并按实际腾出的滚动条宽度补偿
+        <code>body.padding-right</code>。
       </p>
     </header>
 
     <section class="scroll-lock-demo__section">
       <h2>基础锁定 <small>isLocked: {{ isLocked }}</small></h2>
       <p class="scroll-lock-demo__hint">
-        先向下滚一点，再点「锁定」：页面应无法继续滚动，右侧滚动条消失且内容不左右跳动；点「解锁」恢复。
+        先向下滚一段，再点「锁定」：页面应停在当前位置无法继续滚，且不闪回顶部；点「解锁」回到可滚状态且仍在原位置。
       </p>
       <div class="scroll-lock-demo__actions">
         <button type="button" class="scroll-lock-demo__btn" @click="lock">

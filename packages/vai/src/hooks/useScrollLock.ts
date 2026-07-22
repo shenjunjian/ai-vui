@@ -2,9 +2,15 @@ import { onBeforeUnmount, ref, type Ref } from "vue";
 
 /** 模块级：多层弹层共享一把文档滚动锁 */
 let lockCount = 0;
+let savedScrollY = 0;
 let savedHtmlOverflow = "";
 let savedBodyOverflow = "";
 let savedBodyPaddingRight = "";
+let savedBodyPosition = "";
+let savedBodyTop = "";
+let savedBodyLeft = "";
+let savedBodyRight = "";
+let savedBodyWidth = "";
 
 function getScrollbarGap(): number {
   return window.innerWidth - document.documentElement.clientWidth;
@@ -15,28 +21,45 @@ function hasStableScrollbarGutter(): boolean {
   return Boolean(gutter && gutter !== "auto");
 }
 
-function applyDocumentLock() {
-  const html = document.documentElement;
-  const body = document.body;
-  const gapBefore = getScrollbarGap();
-
-  savedHtmlOverflow = html.style.overflow;
-  savedBodyOverflow = body.style.overflow;
-  savedBodyPaddingRight = body.style.paddingRight;
-
-  html.style.overflow = "hidden";
-  body.style.overflow = "hidden";
-
-  /**
-   * 只补偿「锁定后实际腾出的」宽度，避免：
-   * - `scrollbar-gutter: stable` 已占位时再加 padding → 内容左移
-   * - overlay 滚动条（gap=0）误补偿
-   */
+function computePaddingGap(gapBefore: number): number {
   let gap = Math.max(0, gapBefore - getScrollbarGap());
   if (gap === 0 && gapBefore > 0 && !hasStableScrollbarGutter()) {
     // happy-dom 等环境：overflow 变化不一定反映到 clientWidth
     gap = gapBefore;
   }
+  return gap;
+}
+
+/**
+ * 仅用 overflow:hidden 会在部分浏览器把 scrollY 重置为 0（页面闪回顶部）。
+ * 用 position:fixed + top:-scrollY 冻结视觉位置，unlock 时再 scrollTo 还原。
+ */
+function applyDocumentLock() {
+  const html = document.documentElement;
+  const body = document.body;
+  const gapBefore = getScrollbarGap();
+  savedScrollY = window.scrollY;
+
+  savedHtmlOverflow = html.style.overflow;
+  savedBodyOverflow = body.style.overflow;
+  savedBodyPaddingRight = body.style.paddingRight;
+  savedBodyPosition = body.style.position;
+  savedBodyTop = body.style.top;
+  savedBodyLeft = body.style.left;
+  savedBodyRight = body.style.right;
+  savedBodyWidth = body.style.width;
+
+  html.style.overflow = "hidden";
+  body.style.overflow = "hidden";
+
+  const gap = computePaddingGap(gapBefore);
+
+  // 先写 top 再 position:fixed，避免读取/写入间隙里 scrollY 被清零
+  body.style.top = `-${savedScrollY}px`;
+  body.style.left = "0";
+  body.style.right = "0";
+  body.style.width = "100%";
+  body.style.position = "fixed";
 
   if (gap > 0) {
     const current = parseFloat(getComputedStyle(body).paddingRight) || 0;
@@ -47,12 +70,28 @@ function applyDocumentLock() {
 function restoreDocumentLock() {
   const html = document.documentElement;
   const body = document.body;
+  const y = savedScrollY;
+
   html.style.overflow = savedHtmlOverflow;
   body.style.overflow = savedBodyOverflow;
   body.style.paddingRight = savedBodyPaddingRight;
+  body.style.position = savedBodyPosition;
+  body.style.top = savedBodyTop;
+  body.style.left = savedBodyLeft;
+  body.style.right = savedBodyRight;
+  body.style.width = savedBodyWidth;
+
   savedHtmlOverflow = "";
   savedBodyOverflow = "";
   savedBodyPaddingRight = "";
+  savedBodyPosition = "";
+  savedBodyTop = "";
+  savedBodyLeft = "";
+  savedBodyRight = "";
+  savedBodyWidth = "";
+  savedScrollY = 0;
+
+  window.scrollTo(0, y);
 }
 
 /** @internal 测试隔离：强制清零引用计数并恢复文档样式 */
@@ -61,13 +100,15 @@ export function resetScrollLockForTest() {
     restoreDocumentLock();
   }
   lockCount = 0;
+  savedScrollY = 0;
 }
 
-/** 锁定文档滚动，防止模态打开后背景仍可滚；按实际腾出宽度补偿，避免布局左移。
- * 多层实例共享引用计数，最后一次 unlock 才恢复。
+/** 锁定文档滚动并冻结当前视口位置，避免 overflow:hidden 把页面甩回顶部。
+ * 多层实例共享引用计数，最后一次 unlock 才恢复样式与 scrollY。
  * @example
  * const { lock, unlock, isLocked } = useScrollLock()
- * watch(open, (v) => (v ? lock() : unlock()))
+ * lock()          // 先锁在当前位置
+ * dialog.showModal()
  */
 export function useScrollLock(): {
   lock: () => void;
