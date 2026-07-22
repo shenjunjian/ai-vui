@@ -2,7 +2,7 @@
   <dialog v-if="state.dialogMounted" ref="rootRef" class="v-modal" :class="state.rootClass" :closedby="closedby"
     tabindex="-1" :aria-labelledby="showHeader ? titleId : undefined" @cancel="api.handleDialogCancel"
     @close="api.handleDialogClose">
-    <header v-if="showHeader" ref="headerRef" class="v-modal__header" :class="{ 'is-draggable': state.canDrag }">
+    <header v-if="showHeader" ref="headerRef" class="v-modal__header">
       <div :id="titleId" class="v-modal__title">
         <slot name="title" v-bind="{ state, api, props }">{{ title }}</slot>
       </div>

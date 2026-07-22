@@ -18,8 +18,6 @@ export default function useVm(ctx: DialogCtx) {
   const closingGuard = ref(false);
   const { lock: lockScroll, unlock: unlockScroll } = useScrollLock();
 
-  const canDrag = computed(() => props.draggable && props.variant === "dialog");
-
   /** drawer 空闲边：远离贴边的那一侧 */
   const resizeClass = computed(() => ({
     "is-edge-left": props.placement === "right",
@@ -51,7 +49,7 @@ export default function useVm(ctx: DialogCtx) {
     handler: refs.headerRef,
     cursor: "move",
     container: document.body,
-    disabled: computed(() => !canDrag.value),
+    disabled: computed(() => !(props.draggable && props.variant === "dialog")),
     /** title 插槽可以塞自定义按钮、链接、输入框等，这些节点默认没有 .stop，事件会冒泡到 header，要拦截它 */
     shouldStart(event) {
       const target = event.target as HTMLElement | null;
@@ -137,7 +135,6 @@ export default function useVm(ctx: DialogCtx) {
   const state = reactive({
     rootClass,
     dialogMounted,
-    canDrag,
     resizeClass,
   });
 
@@ -255,13 +252,20 @@ export default function useVm(ctx: DialogCtx) {
   watch(
     [
       dialogMounted,
-      canDrag,
+      props.draggable,
+      props.variant,
       () => refs.rootRef.value,
       () => refs.headerRef.value,
     ],
-    async ([mounted, drag]) => {
+    async ([mounted, draggable, variant]) => {
       stopDrag();
-      if (mounted && drag && refs.rootRef.value && refs.headerRef.value) {
+      if (
+        mounted &&
+        draggable &&
+        variant === "dialog" &&
+        refs.rootRef.value &&
+        refs.headerRef.value
+      ) {
         await nextTick();
         initDrag();
       }
