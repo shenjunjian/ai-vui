@@ -13,7 +13,7 @@
 3. **多层引用计数**：最后一次 `unlock` 才恢复
 4. **显式启停**：`lock` / `unlock`；卸载自动 `unlock`
 
-**边界：** Top Layer 上对 `<dialog>` 自身做 `translate` 仍可能撑开布局（浏览器特性，祖先 `overflow` 裁不到）。Drawer 须把位移做在壳内 panel，并由壳 `overflow: hidden` + `position: fixed` 裁剪——这是组件 CSS 职责，不是本 hook 的职责。
+**边界：** 本 hook 只负责文档滚动锁定与滚动条 gap 补偿；overlay 自身的进出场动画、贴边定位等由组件 CSS 负责，不在此解决。
 
 **使用方：** Dialog（先 `lock` 再 `showModal`；`close` 时立即 `unlock`）。
 

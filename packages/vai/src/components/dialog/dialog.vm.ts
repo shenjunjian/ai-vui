@@ -6,7 +6,6 @@ import { random, clamp } from "../../utils/dataHelper.ts";
 import { useDrag } from "../../hooks/useDrag.ts";
 import { useScrollLock } from "../../hooks/useScrollLock.ts";
 
-
 const MIN_WIDTH = 240;
 const MIN_HEIGHT = 160;
 
@@ -38,6 +37,10 @@ export default function useVm(ctx: DialogCtx) {
   /**
    * header 拖动：dialog 默认 margin:auto 居中；
    * 开始时把当前屏幕位置固化为 margin-left/top，拖动中只改这两项，不经 Vue 状态。
+   *
+   * 边界用 body：打开时 useScrollLock 会把 body 设为 position:fixed 钉住视口；
+   * 此时 documentElement.getBoundingClientRect() 的 height/bottom 会变成 0，
+   * clamp 上界变成 -dialogHeight，一拖动就把 dialog 拽出视口。
    */
   const {
     init: initDrag,
@@ -47,7 +50,7 @@ export default function useVm(ctx: DialogCtx) {
     el: refs.rootRef,
     handler: refs.headerRef,
     cursor: "move",
-    container: document.documentElement,
+    container: document.body,
     disabled: computed(() => !canDrag.value),
     /** title 插槽可以塞自定义按钮、链接、输入框等，这些节点默认没有 .stop，事件会冒泡到 header，要拦截它 */
     shouldStart(event) {
@@ -60,11 +63,6 @@ export default function useVm(ctx: DialogCtx) {
       const { rect } = s._;
       el.style.marginLeft = `${rect.left}px`;
       el.style.marginTop = `${rect.top}px`;
-      /**
-       * 拖动中 pointer 常移出 dialog 盒；closedby=any 会在 pointerup 时当成点遮罩关掉。
-       * 按下时先关掉 light dismiss，松手后再恢复。
-       */
-      el.setAttribute("closedby", "closerequest");
       emit("drag-start");
     },
     applyDrag(s) {
@@ -87,24 +85,19 @@ export default function useVm(ctx: DialogCtx) {
     },
     endDrag() {
       emit("drag-end");
-      const el = refs.rootRef.value;
-      // 延后恢复，避开同一次 pointerup 上的 native light dismiss 判定
-      nextTick(() => {
-        el?.setAttribute("closedby", props.closedby);
-      });
     },
   });
 
-  /** drawer 空闲边缩放：改 panel 宽高（壳是全视口，不能改壳） */
+  /** drawer 空闲边缩放：直接改 dialog 宽高 */
   const {
     init: initResize,
     stop: stopResize,
     state: resizeDragState,
   } = useDrag({
-    el: refs.panelRef,
+    el: refs.rootRef,
     handler: refs.resizeRef,
     cursor: resizeCursor,
-    container: document.documentElement,
+    container: document.body,
     disabled: computed(() => !(props.resizable && props.variant === "drawer")),
     applyDrag(s) {
       const el = s.el;
@@ -281,7 +274,7 @@ export default function useVm(ctx: DialogCtx) {
       dialogMounted,
       () => props.resizable,
       () => props.variant,
-      () => refs.panelRef.value,
+      () => refs.rootRef.value,
       () => refs.resizeRef.value,
     ],
     async ([mounted, resizable, variant]) => {
@@ -290,7 +283,7 @@ export default function useVm(ctx: DialogCtx) {
         mounted &&
         resizable &&
         variant === "drawer" &&
-        refs.panelRef.value &&
+        refs.rootRef.value &&
         refs.resizeRef.value
       ) {
         await nextTick();

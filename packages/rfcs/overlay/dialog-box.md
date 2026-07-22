@@ -27,7 +27,7 @@
 | `mask-style`       | `'opaque' \| 'blur'`                         | `'opaque'` | 遮罩样式：半透明或毛玻璃                                                                                                                                     |
 | `show-header`      | `boolean`                                    | `true`     | 显示 header                                                                                                                                                  |
 | `show-footer`      | `boolean`                                    | `true`     | 显示 footer                                                                                                                                                  |
-| `draggable`        | `boolean`                                    | `false`    | 是否允许拖动 header 移动；限制在视口（`document.documentElement`）内；`variant=drawer` 时强制失效                                                                                                        |
+| `draggable`        | `boolean`                                    | `false`    | 是否允许拖动 header 移动；限制在视口（`document.body`，与 `useScrollLock` 的 fixed 冻结一致）内；`variant=drawer` 时强制失效                                                                                                        |
 | `resizable`        | `boolean`                                    | `false`    | 是否可改尺寸；`dialog` 用 CSS `resize: both`（右下角）；`drawer` 在空闲边渲染手柄并用 `useDrag` 改宽/高                                                     |
 | `auto-focus`       | `boolean`                                    | `true`     | 打开后自动聚焦第一个可聚焦元素；为 `false` 时聚焦到 dialog 根节点                                                                                            |
 | `before-close`     | `() => boolean \| Promise<boolean>`          | —          | 关闭前拦截；返回 `false` / reject 则取消关闭                                                                                                                 |
@@ -85,7 +85,8 @@ interface DialogState {
 | Hook | 用途 |
 | ---- | ---- |
 | `useDrag` | header 拖动：位移、`shouldStart` 跳过交互控件、视口边界钳制；drawer `resizable` 时绑定空闲边手柄改宽/高 |
-| `useScrollLock` | 打开前 `lock`（冻结视口 + 按需补滚动条 padding）；关闭时立即 `unlock`（drawer 退场由 CSS 自裁剪，无需延迟） |
+| `useScrollLock` | 打开前 `lock`（冻结视口 + 按需补滚动条 padding）；关闭时 `unlock` |
+
 
 
 
@@ -97,11 +98,11 @@ interface DialogState {
 4. `close` 事件：`useScrollLock.unlock`；同步 `open=false`；`destroy-on-close=false` 时保留 inline 位置 / 尺寸，`true` 时卸载 dialog；触发 `closed`。
 5. 关闭态 CSS：`display: none`；打开态：`display: flex`。通过 `transition` 的 `display` / `overlay` + `allow-discrete` 与 `@starting-style` 做进出场动画（`destroy-on-close=false` 时 dialog 常驻 DOM）。
 6. `destroy-on-close=true`：整个 `<dialog>` 用 `v-if="dialogMounted"`，关闭后直接不渲染（不做退场离散动画）；再次打开为全新节点与默认位置 / 尺寸。
-7. `variant=drawer`：加 `v-drawer-modal` + `is-{placement}`；忽略 `draggable`。**dialog 为全视口透明壳**（`position:fixed; inset:0; overflow:hidden`，不 transform），**`.v-modal__panel` 贴边并承担 `translate` 进出场**——位移若做在 Top Layer 的 dialog 上会撑开页面宽高，`html` overflow 挡不住；`position:fixed` 保证 `close` 离开 Top Layer 后的退场仍在壳内裁剪。壳上 `pointer-events: none`、panel 上 `pointer-events: auto`，否则全视口壳会挡住 `::backdrop`，`closedby=any` 点遮罩无法关闭。用 `dialog.v-drawer-modal.v-modal` 覆盖 UA `max-*`。`resizable` 时手柄改 **panel** 的宽/高；`is-resizing` 取自 `useDrag`。
-8. `draggable`：`useDrag` 绑定 header → dialog；dialog 默认 `margin: auto` 居中；`startDrag` 用当前屏幕位置固化 `margin-left` / `margin-top`，`applyDrag` 按 `rect`/`boundary` 钳制后继续写这两项；发出 drag-*；`is-dragging` 类取自 `useDrag` 的 `_.isDragging`；节点晚就绪（如 `destroy-on-close`）时主动 `init()`。拖动期间临时把 `closedby` 设为 `closerequest`（松手 `nextTick` 后恢复），避免 pointer 移出盒后 `closedby=any` 在 `pointerup` 误触发 light dismiss。
+7. `variant=drawer`：加 `v-drawer-modal` + `is-{placement}`；忽略 `draggable`；贴边用显式 `inset` + `margin: 0`；用选择器 `dialog.v-drawer-modal.v-modal`（特异性与 UA `dialog:modal` 同为 0,2,1，靠作者样式覆盖）覆盖 UA 的 `max-width` / `max-height: calc(100% - 2em - 6px)`，否则会在贴边留缝；`is-top` / `is-bottom` 也须写 `max-height: 100vh`（与左右一致）。进出场 `translate` 与尺寸直接作用在 `<dialog>` 根上。**不引入额外 `.v-modal__panel`（或其它内容壳）中间层**：header / body / footer / resize 手柄均为 dialog 的直接子节点；中间层会改变 dialog 的盒模型与命中语义，破坏「dialog 即浮层本体」的认知。`resizable` 时在空闲边渲染 `v-modal__resize`，由 `useDrag` 拖动中直接写 dialog 的 `el.style` 宽/高（不经 Vue 状态）；`is-resizing` 类取自 `useDrag` 的 `_.isDragging`。
+8. `draggable`：`useDrag` 绑定 header → dialog；dialog 默认 `margin: auto` 居中；`startDrag` 用当前屏幕位置固化 `margin-left` / `margin-top`，`applyDrag` 按 `rect`/`boundary` 钳制后继续写这两项；发出 drag-*；`is-dragging` 类取自 `useDrag` 的 `_.isDragging`；节点晚就绪（如 `destroy-on-close`）时主动 `init()`。边界容器用 `document.body`（打开时 body 被 scroll-lock 成 `position:fixed` 钉住视口；若用 `documentElement.getBoundingClientRect()`，其 height/bottom 会变成 0，clamp 上界变成负值，一拖就把 dialog 拽出视口）。拖动期间 `effectiveClosedby` 计算为 `closerequest`（经模板绑定，禁止命令式 `setAttribute`——`is-dragging` 重渲染会把属性盖回 prop），避免 pointer 移出盒后 `closedby=any` 误触发 light dismiss。
 9. `resizable` + `variant=dialog`：根节点加 `is-resizable`（`resize: both`），不渲染 resize 手柄；CSS resize 写入的 inline 尺寸在 `destroy-on-close=false` 时随关闭保留。
 10. `auto-focus=false`：`showModal` 后将焦点落到 dialog 根（`tabindex="-1"`）。
-11. 打开：先 `useScrollLock.lock`，再 `showModal`；聚焦补 `preventScroll`。关闭：立即 `unlock`（drawer 退场由固定裁剪壳保证不撑开文档）。正文 `overscroll-behavior: contain`。
+11. 打开：先 `useScrollLock.lock`，再 `showModal`；聚焦补 `preventScroll`。关闭：`unlock`。正文 `overscroll-behavior: contain`。
 
 ## 无障碍（a11y）
 

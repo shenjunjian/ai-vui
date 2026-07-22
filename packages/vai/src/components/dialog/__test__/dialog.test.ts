@@ -235,7 +235,7 @@ describe("Dialog", () => {
     );
   });
 
-  test("drawer resizable writes panel style width/height during drag", async () => {
+  test("drawer resizable writes dialog style width/height during drag", async () => {
     const wrapper = mountDialog({
       resizable: true,
       variant: "drawer",
@@ -244,10 +244,10 @@ describe("Dialog", () => {
     await flushPromises();
     await nextTick();
 
-    const panel = wrapper.find(".v-modal__panel").element as HTMLElement;
+    const dialog = wrapper.find("dialog").element as HTMLDialogElement;
     const handle = wrapper.find(".v-modal__resize").element;
 
-    panel.getBoundingClientRect = () =>
+    dialog.getBoundingClientRect = () =>
       ({
         x: 800,
         y: 0,
@@ -293,7 +293,7 @@ describe("Dialog", () => {
         clientY: 300,
       }),
     );
-    expect(panel.style.width).toBe("450px");
+    expect(dialog.style.width).toBe("450px");
 
     document.dispatchEvent(
       new PointerEvent("pointerup", {
@@ -306,7 +306,7 @@ describe("Dialog", () => {
     );
     await nextTick();
     expect(wrapper.find("dialog").classes()).not.toContain("is-resizing");
-    expect(panel.style.width).toBe("450px");
+    expect(dialog.style.width).toBe("450px");
   });
 
   test("opens locks document scroll; closes unlocks immediately", async () => {
@@ -374,7 +374,7 @@ describe("Dialog", () => {
     const dialog = wrapper.find("dialog").element as HTMLDialogElement;
     const header = wrapper.find(".v-modal__header").element;
 
-    document.documentElement.getBoundingClientRect = () =>
+    document.body.getBoundingClientRect = () =>
       ({
         x: 0,
         y: 0,

@@ -2,34 +2,31 @@
   <dialog v-if="state.dialogMounted" ref="rootRef" class="v-modal" :class="state.rootClass" :closedby="closedby"
     tabindex="-1" :aria-labelledby="showHeader ? titleId : undefined" @cancel="api.handleDialogCancel"
     @close="api.handleDialogClose">
-    <!-- drawer：位移做在 panel 上，dialog 壳 overflow:hidden 裁剪，避免 translate 撑开页面 -->
-    <div ref="panelRef" class="v-modal__panel">
-      <header v-if="showHeader" ref="headerRef" class="v-modal__header" :class="{ 'is-draggable': state.canDrag }">
-        <div :id="titleId" class="v-modal__title">
-          <slot name="title" v-bind="{ state, api, props }">{{ title }}</slot>
-        </div>
-        <button v-if="showClose" type="button" class="v-modal__close" aria-label="关闭" @click="api.requestClose"
-          @pointerdown.stop>
-          <slot name="close" v-bind="{ state, api, props }">
-            <i class="ci-close" aria-hidden="true" />
-          </slot>
-        </button>
-      </header>
-
-      <div class="v-modal__body">
-        <slot v-bind="{ state, api, props }" />
+    <header v-if="showHeader" ref="headerRef" class="v-modal__header" :class="{ 'is-draggable': state.canDrag }">
+      <div :id="titleId" class="v-modal__title">
+        <slot name="title" v-bind="{ state, api, props }">{{ title }}</slot>
       </div>
-
-      <footer v-if="showFooter" class="v-modal__footer" @pointerdown.stop>
-        <slot name="footer" v-bind="{ state, api, props }">
-          <Button @click="api.requestClose">取消</Button>
-          <Button theme="info" @click="api.requestClose">确定</Button>
+      <button v-if="showClose" type="button" class="v-modal__close" aria-label="关闭" @click="api.requestClose"
+        @pointerdown.stop>
+        <slot name="close" v-bind="{ state, api, props }">
+          <i class="ci-close" aria-hidden="true" />
         </slot>
-      </footer>
+      </button>
+    </header>
 
-      <div v-if="resizable && variant === 'drawer'" ref="resizeRef" class="v-modal__resize" :class="state.resizeClass"
-        aria-hidden="true" />
+    <div class="v-modal__body">
+      <slot v-bind="{ state, api, props }" />
     </div>
+
+    <footer v-if="showFooter" class="v-modal__footer" @pointerdown.stop>
+      <slot name="footer" v-bind="{ state, api, props }">
+        <Button @click="api.requestClose">取消</Button>
+        <Button theme="info" @click="api.requestClose">确定</Button>
+      </slot>
+    </footer>
+
+    <div v-if="resizable && variant === 'drawer'" ref="resizeRef" class="v-modal__resize" :class="state.resizeClass"
+      aria-hidden="true" />
   </dialog>
 </template>
 
@@ -137,7 +134,6 @@ const slots = defineSlots<{
 
 const refs = {
   rootRef: useTemplateRef<HTMLDialogElement>("rootRef"),
-  panelRef: useTemplateRef<HTMLElement>("panelRef"),
   headerRef: useTemplateRef<HTMLElement>("headerRef"),
   resizeRef: useTemplateRef<HTMLElement>("resizeRef"),
 };

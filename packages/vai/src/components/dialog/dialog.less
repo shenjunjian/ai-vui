@@ -227,37 +227,20 @@
     }
   }
 
-  /**
-   * 内容面板：dialog 变体用 contents 不生成盒；
-   * drawer 变体在下方覆盖为真实定位盒并承担位移动画。
-   */
-  &__panel {
-    display: contents;
-  }
 }
 
-// Drawer：dialog 为全视口透明裁剪壳（不 transform），panel 贴边滑动。
-// 位移若做在 dialog 自身，Top Layer 上的 translate 仍会撑开页面宽高，html overflow 挡不住。
-// position:fixed 保证 close 离开 Top Layer 后的退场动画仍在视口内裁剪，无需延迟 unlock。
+// Drawer 变体：贴边全高 / 全宽；位移与尺寸直接作用在 <dialog> 上，不引入额外 panel 层。
+// 原生 dialog:modal UA 有 max-width/max-height: calc(100% - 2em - 6px)（特异性 0,2,1）；
+// 必须用带元素选择器的规则（dialog.v-drawer-modal，同 0,2,1）并靠源码顺序覆盖，否则贴边留缝。
+// 左右与 placement 上再次写 max-height；上下同样必须覆盖，否则 bottom/top 会悬空约 1em+。
 dialog.v-drawer-modal.v-modal {
   --modal-width: min(360px, 90vw);
   --modal-max-height: 100vh;
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  max-width: none;
-  max-height: none;
   margin: 0;
-  padding: 0;
-  overflow: hidden;
-  border: none;
   border-radius: 0;
-  background: transparent;
-  box-shadow: none;
+  max-width: 100vw;
+  max-height: 100vh;
   transform: none;
-  /* 全视口透明壳会挡住 ::backdrop；穿透后 closedby=any 才能点遮罩关闭 */
-  pointer-events: none;
 
   &[open] {
     transform: none;
@@ -270,109 +253,79 @@ dialog.v-drawer-modal.v-modal {
     }
   }
 
-  .v-modal__panel {
-    display: flex;
-    flex-direction: column;
-    box-sizing: border-box;
-    position: absolute;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    pointer-events: auto;
-    color: var(--modal-color);
-    background-color: var(--modal-bg);
-    border: var(--modal-border-width) solid var(--modal-border);
-    box-shadow: var(--modal-shadow);
-    transition: transform var(--modal-duration) var(--modal-ease);
-  }
-
-  &.is-right .v-modal__panel {
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: var(--modal-width);
-    max-width: 100%;
-    height: auto;
+  &.is-right {
+    inset: 0 0 0 auto;
+    height: 100vh;
+    max-height: 100vh;
     border-right: none;
     transform: translateX(100%);
-  }
 
-  &.is-right[open] .v-modal__panel {
-    transform: translateX(0);
-  }
+    &[open] {
+      transform: translateX(0);
+    }
 
-  &.is-right {
     @starting-style {
-      &[open] .v-modal__panel {
+      &[open] {
         transform: translateX(100%);
       }
     }
   }
 
-  &.is-left .v-modal__panel {
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: var(--modal-width);
-    max-width: 100%;
-    height: auto;
+  &.is-left {
+    inset: 0 auto 0 0;
+    height: 100vh;
+    max-height: 100vh;
     border-left: none;
     transform: translateX(-100%);
-  }
 
-  &.is-left[open] .v-modal__panel {
-    transform: translateX(0);
-  }
+    &[open] {
+      transform: translateX(0);
+    }
 
-  &.is-left {
     @starting-style {
-      &[open] .v-modal__panel {
+      &[open] {
         transform: translateX(-100%);
       }
     }
   }
 
-  &.is-top .v-modal__panel {
-    top: 0;
-    left: 0;
-    right: 0;
-    width: auto;
-    max-width: none;
+  &.is-top {
+    --modal-width: 100%;
+    inset: 0 0 auto 0;
+    width: 100%;
+    max-width: 100vw;
     height: min(360px, 90vh);
+    max-height: 100vh;
     border-top: none;
     transform: translateY(-100%);
-  }
 
-  &.is-top[open] .v-modal__panel {
-    transform: translateY(0);
-  }
+    &[open] {
+      transform: translateY(0);
+    }
 
-  &.is-top {
     @starting-style {
-      &[open] .v-modal__panel {
+      &[open] {
         transform: translateY(-100%);
       }
     }
   }
 
-  &.is-bottom .v-modal__panel {
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: auto;
-    max-width: none;
+  &.is-bottom {
+    --modal-width: 100%;
+    inset: auto 0 0 0;
+    width: 100%;
+    max-width: 100vw;
     height: min(360px, 90vh);
+    max-height: 100vh;
     border-bottom: none;
     transform: translateY(100%);
-  }
 
-  &.is-bottom[open] .v-modal__panel {
-    transform: translateY(0);
-  }
+    &[open] {
+      transform: translateY(0);
+    }
 
-  &.is-bottom {
     @starting-style {
-      &[open] .v-modal__panel {
+      &[open] {
         transform: translateY(100%);
       }
     }
