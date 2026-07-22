@@ -27,6 +27,8 @@ function needsPaddingCompensation(gap: number): boolean {
  * 锁定期间页面宽高不再随子元素进出变化；有经典滚动条时补 padding 防抖。
  */
 function applyDocumentLock() {
+  console.log("applyDocumentLock");
+
   const body = document.body;
   const gap = getScrollbarGap();
   savedScrollX = window.scrollX;
@@ -52,6 +54,7 @@ function applyDocumentLock() {
 }
 
 function restoreDocumentLock() {
+  console.log("restoreDocumentLock");
   const body = document.body;
 
   body.style.overflow = savedBodyOverflow;
