@@ -6,7 +6,7 @@
 
 通用模态框/对话框（含 drawer）。渲染为原生 `<dialog>`，使用 TopLayer、`closedby` Light Dismiss、`requestClose` / `cancel` 等特性。
 
-默认结构：头部（左侧标题、右侧关闭按钮）、可滚动正文、页脚（右侧取消 / 确定）。标题、正文、页脚均有插槽。正文按内容溢出自动出现水平 / 垂直滚动条。
+默认结构：头部（左侧标题、右侧关闭按钮）、可滚动正文、页脚（右侧取消 / 确定）。标题、正文、页脚均有插槽。正文按内容溢出自动出现水平 / 垂直滚动条；打开时通过 `useScrollLock` 锁定文档滚动并补偿滚动条宽度。
 
 支持遮罩、拖拽标题移动、尺寸缩放（dialog 原生 CSS resize；drawer 空闲边手柄）。
 
@@ -85,19 +85,21 @@ interface DialogState {
 | Hook | 用途 |
 | ---- | ---- |
 | `useDrag` | header 拖动：位移、`shouldStart` 跳过交互控件、视口边界钳制；drawer `resizable` 时绑定空闲边手柄改宽/高 |
+| `useScrollLock` | 打开时锁定文档滚动并补偿滚动条宽度；关闭 / 卸载时解锁；多层 Dialog 共享引用计数 |
 
 ## 实现逻辑
 
 1. 根节点为 `<dialog class="v-modal">`，打开时调用 `showModal()`，关闭时调用 `close()`。
 2. `v-model:open` 与 dialog 的 open 状态双向同步；外部设为 `false` 走 `api.close()`（不经拦截）。
 3. 关闭按钮、取消 / 确定、Light Dismiss、Esc 均走 `api.requestClose()` → 原生 `requestClose()` → `cancel` 事件；在 `cancel` 中 `preventDefault` 后异步执行 `before-close`，通过则再 `close()`。
-4. `close` 事件：同步 `open=false`；`destroy-on-close=false` 时保留 inline 位置 / 尺寸，`true` 时卸载 dialog；触发 `closed`。
+4. `close` 事件：`useScrollLock.unlock`；同步 `open=false`；`destroy-on-close=false` 时保留 inline 位置 / 尺寸，`true` 时卸载 dialog；触发 `closed`。
 5. 关闭态 CSS：`display: none`；打开态：`display: flex`。通过 `transition` 的 `display` / `overlay` + `allow-discrete` 与 `@starting-style` 做进出场动画（`destroy-on-close=false` 时 dialog 常驻 DOM）。
 6. `destroy-on-close=true`：整个 `<dialog>` 用 `v-if="dialogMounted"`，关闭后直接不渲染（不做退场离散动画）；再次打开为全新节点与默认位置 / 尺寸。
 7. `variant=drawer`：加 `v-drawer-modal` + `is-{placement}`；忽略 `draggable`；贴边用显式 `inset` + `margin: 0`（覆盖原生 dialog UA 的 inline inset / `margin: auto` 居中，以及 `max-*-size: calc(100% - 2em - 6px)`，避免贴边留缝）；`resizable` 时在空闲边渲染 `v-modal__resize`，由 `useDrag` 在拖动开始记录宽/高，拖动中直接写 `el.style` 宽/高（不经 Vue 状态）；`is-resizing` 类取自 `useDrag` 的 `_.isDragging`。
 8. `draggable`：`useDrag` 绑定 header → dialog；dialog 默认 `margin: auto` 居中；`startDrag` 用当前屏幕位置固化 `margin-left` / `margin-top`，`applyDrag` 按 `rect`/`boundary` 钳制后继续写这两项；发出 drag-*；`is-dragging` 类取自 `useDrag` 的 `_.isDragging`；节点晚就绪（如 `destroy-on-close`）时主动 `init()`。
 9. `resizable` + `variant=dialog`：根节点加 `is-resizable`（`resize: both`），不渲染 resize 手柄；CSS resize 写入的 inline 尺寸在 `destroy-on-close=false` 时随关闭保留。
 10. `auto-focus=false`：`showModal` 后将焦点落到 dialog 根（`tabindex="-1"`）。
+11. 打开：`showModal` 后 `useScrollLock.lock`；正文区 `overscroll-behavior: contain`，避免内部滚到边界穿透到文档。
 
 ## 无障碍（a11y）
 

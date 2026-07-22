@@ -4,6 +4,8 @@ import { INTERACTIVE_SELECTOR } from "../../utils/constant.ts";
 import { callWithGuard } from "../../utils/promiseHelper.ts";
 import { random, clamp } from "../../utils/dataHelper.ts";
 import { useDrag } from "../../hooks/useDrag.ts";
+import { useScrollLock } from "../../hooks/useScrollLock.ts";
+
 
 const MIN_WIDTH = 240;
 const MIN_HEIGHT = 160;
@@ -15,6 +17,7 @@ export default function useVm(ctx: DialogCtx) {
   /** destroyOnClose=false 时始终挂载；true 时仅打开期间挂载整个 dialog */
   const dialogMounted = ref(!props.destroyOnClose || models.open.value);
   const closingGuard = ref(false);
+  const { lock: lockScroll, unlock: unlockScroll } = useScrollLock();
 
   const canDrag = computed(() => props.draggable && props.variant === "dialog");
 
@@ -151,6 +154,7 @@ export default function useVm(ctx: DialogCtx) {
       const wasOpen = dialog.open;
       if (!wasOpen) {
         dialog.showModal();
+        lockScroll();
       }
       models.open.value = true;
       if (!wasOpen) {
@@ -163,6 +167,7 @@ export default function useVm(ctx: DialogCtx) {
   function close() {
     const el = refs.rootRef.value;
     if (!el) {
+      unlockScroll();
       models.open.value = false;
       if (props.destroyOnClose) {
         dialogMounted.value = false;
@@ -202,6 +207,7 @@ export default function useVm(ctx: DialogCtx) {
   }
 
   function handleDialogClose() {
+    unlockScroll();
     models.open.value = false;
     if (props.destroyOnClose) {
       dialogMounted.value = false;

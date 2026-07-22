@@ -1,7 +1,12 @@
-import { describe, expect, test, vi } from "vite-plus/test";
+import { describe, expect, test, vi, afterEach } from "vite-plus/test";
 import { flushPromises, mount } from "@vue/test-utils";
 import { nextTick } from "vue";
 import Dialog from "../dialog.vue";
+import { resetScrollLockForTest } from "../../../hooks/useScrollLock.ts";
+
+afterEach(() => {
+  resetScrollLockForTest();
+});
 
 function mountDialog(props: Record<string, unknown> = {}, slots: Record<string, unknown> = {}) {
   return mount(Dialog, {
@@ -304,6 +309,41 @@ describe("Dialog", () => {
     expect(wrapper.find("dialog").classes()).not.toContain("is-resizing");
     // 结束后仍保留 inline 尺寸，无需同步到 state
     expect(dialog.style.width).toBe("450px");
+  });
+
+  test("opens locks document scroll; closes unlocks", async () => {
+    const html = document.documentElement;
+    const originalInnerWidth = window.innerWidth;
+    Object.defineProperty(window, "innerWidth", {
+      configurable: true,
+      value: html.clientWidth + 16,
+    });
+
+    const wrapper = mount(Dialog, {
+      props: { open: false, title: "滚动锁" },
+      slots: { default: "内容" },
+      attachTo: document.body,
+    });
+    await flushPromises();
+
+    expect(html.style.overflow).toBe("");
+
+    await wrapper.setProps({ open: true });
+    await flushPromises();
+    await nextTick();
+    expect(html.style.overflow).toBe("hidden");
+    expect(document.body.style.paddingRight).toBe("16px");
+
+    await wrapper.setProps({ open: false });
+    await flushPromises();
+    expect(html.style.overflow).toBe("");
+    expect(document.body.style.paddingRight).toBe("");
+
+    wrapper.unmount();
+    Object.defineProperty(window, "innerWidth", {
+      configurable: true,
+      value: originalInnerWidth,
+    });
   });
 
   test("exposes state and api", async () => {

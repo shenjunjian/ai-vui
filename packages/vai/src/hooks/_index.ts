@@ -1,5 +1,6 @@
 export { useTimer } from "./useTimer.ts";
 export { useFocusTrap } from "./useFocusTrap.ts";
+export { useScrollLock } from "./useScrollLock.ts";
 export {
   useDrag,
   type DragCallbackFn,

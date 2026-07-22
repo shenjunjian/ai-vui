@@ -14,6 +14,7 @@ import TextAreaDemo from "./components/text-area-demo.vue";
 import UseDragDemo from "./components/use-drag-demo.vue";
 import UseFocusTrapDemo from "./components/use-focus-trap-demo.vue";
 import UsePopperDemo from "./components/use-popper-demo.vue";
+import UseScrollLockDemo from "./components/use-scroll-lock-demo.vue";
 
 const tab = ref<
   | "button"
@@ -30,6 +31,7 @@ const tab = ref<
   | "use-popper"
   | "use-focus-trap"
   | "use-drag"
+  | "use-scroll-lock"
 >("dialog");
 </script>
 
@@ -83,6 +85,10 @@ const tab = ref<
         @click="tab = 'use-drag'">
         useDrag
       </button>
+      <button type="button" class="site-app__tab" :class="{ 'is-active': tab === 'use-scroll-lock' }"
+        @click="tab = 'use-scroll-lock'">
+        useScrollLock
+      </button>
     </nav>
     <ButtonDemo v-if="tab === 'button'" />
     <LinkDemo v-else-if="tab === 'link'" />
@@ -97,7 +103,8 @@ const tab = ref<
     <DialogDemo v-else-if="tab === 'dialog'" />
     <UsePopperDemo v-else-if="tab === 'use-popper'" />
     <UseFocusTrapDemo v-else-if="tab === 'use-focus-trap'" />
-    <UseDragDemo v-else />
+    <UseDragDemo v-else-if="tab === 'use-drag'" />
+    <UseScrollLockDemo v-else />
   </div>
 </template>
 

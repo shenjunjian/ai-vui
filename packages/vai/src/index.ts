@@ -17,6 +17,7 @@ export type {
 export type { TextAreaAutoSize } from "./components/text-area/text-area.vue";
 export { useTimer } from "./hooks/useTimer.ts";
 export { useFocusTrap } from "./hooks/useFocusTrap.ts";
+export { useScrollLock } from "./hooks/useScrollLock.ts";
 export {
   useDrag,
   type DragCallbackFn,
