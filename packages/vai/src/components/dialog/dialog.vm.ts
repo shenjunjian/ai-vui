@@ -1,14 +1,12 @@
 import { reactive, computed, watch, nextTick, onUnmounted, ref } from "vue";
 import type { DialogCtx } from "./dialog.vue";
+import { INTERACTIVE_SELECTOR } from "../../utils/constant.ts";
 import { callWithGuard } from "../../utils/promiseHelper.ts";
 import { random, clamp } from "../../utils/dataHelper.ts";
 import { useDrag } from "../../hooks/useDrag.ts";
 
 type Point = { x: number; y: number };
 type Size = { width: number; height: number };
-
-const INTERACTIVE_SELECTOR =
-  "button, a, input, textarea, select, [contenteditable]";
 
 export default function useVm(ctx: DialogCtx) {
   const { props, refs, models, emit } = ctx;
@@ -73,8 +71,6 @@ export default function useVm(ctx: DialogCtx) {
     resizeClass,
   });
 
-  const dragDisabled = computed(() => !canDrag.value);
-
   const {
     init: initDrag,
     stop: stopDrag,
@@ -84,7 +80,8 @@ export default function useVm(ctx: DialogCtx) {
     handler: refs.headerRef,
     /** 光标由 header `.is-draggable` CSS 控制 */
     cursor: "",
-    disabled: dragDisabled,
+    disabled: computed(() => !canDrag.value),
+    /** title 插槽可以塞自定义按钮、链接、输入框等，这些节点默认没有 .stop，事件会冒泡到 header，要拦截它 */
     shouldStart(event) {
       const target = event.target as HTMLElement | null;
       return !target?.closest(INTERACTIVE_SELECTOR);
@@ -120,16 +117,6 @@ export default function useVm(ctx: DialogCtx) {
 
   dragState.container = document.documentElement;
 
-  function getDialog(): HTMLDialogElement | null {
-    return refs.rootRef.value;
-  }
-
-  function ensureDialogMounted() {
-    if (!dialogMounted.value) {
-      dialogMounted.value = true;
-    }
-  }
-
   function resetPositionSize() {
     offset.value = { x: 0, y: 0 };
     size.value = null;
@@ -141,9 +128,12 @@ export default function useVm(ctx: DialogCtx) {
   }
 
   function open() {
-    ensureDialogMounted();
+    if (!dialogMounted.value) {
+      dialogMounted.value = true;
+    }
+
     nextTick(() => {
-      const dialog = getDialog();
+      const dialog = refs.rootRef.value;
       if (!dialog) return;
       const wasOpen = dialog.open;
       if (!wasOpen) {
@@ -158,7 +148,7 @@ export default function useVm(ctx: DialogCtx) {
   }
 
   function close() {
-    const el = getDialog();
+    const el = refs.rootRef.value;
     if (!el) {
       models.open.value = false;
       if (props.destroyOnClose) {
@@ -174,7 +164,7 @@ export default function useVm(ctx: DialogCtx) {
   }
 
   function requestClose() {
-    const el = getDialog();
+    const el = refs.rootRef.value;
     if (!el?.open || closingGuard.value) return;
 
     if (typeof el.requestClose === "function") {
@@ -191,7 +181,7 @@ export default function useVm(ctx: DialogCtx) {
     closingGuard.value = true;
     try {
       await callWithGuard(props.beforeClose, () => {
-        getDialog()?.close();
+        refs.rootRef.value?.close();
       });
     } finally {
       closingGuard.value = false;
@@ -222,7 +212,7 @@ export default function useVm(ctx: DialogCtx) {
     event.preventDefault();
     event.stopPropagation();
 
-    const el = getDialog();
+    const el = refs.rootRef.value;
     if (!el) return;
 
     isResizing.value = true;
@@ -281,7 +271,7 @@ export default function useVm(ctx: DialogCtx) {
   watch(
     () => models.open.value,
     (value) => {
-      const el = getDialog();
+      const el = refs.rootRef.value;
       if (value) {
         if (!el?.open) open();
       } else if (el?.open) {

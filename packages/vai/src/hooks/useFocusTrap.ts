@@ -5,18 +5,7 @@ import {
   type MaybeRef,
   type Ref,
 } from "vue";
-
-const FOCUSABLE_SELECTOR = [
-  'input:not([type="hidden"]):not([disabled])',
-  "select:not([disabled])",
-  "textarea:not([disabled])",
-  "button:not([disabled])",
-  "a[href]",
-  "area[href]",
-  "summary",
-  '[tabindex]:not([tabindex="-1"])',
-  '[contenteditable="true"]',
-].join(",");
+import { FOCUSABLE_SELECTOR } from "../utils/constant.ts";
 
 function isVisible(el: HTMLElement): boolean {
   if (el.hasAttribute("hidden") || el.closest("[inert]")) return false;
