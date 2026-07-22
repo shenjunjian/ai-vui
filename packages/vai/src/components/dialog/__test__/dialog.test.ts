@@ -329,20 +329,20 @@ describe("Dialog", () => {
     });
     await flushPromises();
 
-    expect(html.style.overflow).toBe("");
     expect(document.body.style.position).toBe("");
+    expect(document.body.style.paddingRight).toBe("");
 
     await wrapper.setProps({ open: true });
     await flushPromises();
     await nextTick();
-    expect(html.style.overflow).toBe("hidden");
+    expect(document.body.style.overflow).toBe("hidden");
     expect(document.body.style.position).toBe("fixed");
     expect(document.body.style.top).toBe("-200px");
     expect(document.body.style.paddingRight).toBe("16px");
 
     await wrapper.setProps({ open: false });
     await flushPromises();
-    expect(html.style.overflow).toBe("");
+    expect(document.body.style.overflow).toBe("");
     expect(document.body.style.position).toBe("");
     expect(document.body.style.paddingRight).toBe("");
     expect(scrollTo).toHaveBeenCalledWith(0, 200);

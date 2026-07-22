@@ -9,6 +9,18 @@ let savedBodyPosition = "";
 let savedBodyTop = "";
 let savedBodyLeft = "";
 let savedBodyRight = "";
+let savedBodyPaddingRight = "";
+
+function getScrollbarGap(): number {
+  return window.innerWidth - document.documentElement.clientWidth;
+}
+
+/** scrollbar-gutter: stable 时滚动条消失后仍占位，无需再补 padding */
+function needsPaddingCompensation(gap: number): boolean {
+  if (gap <= 0) return false;
+  const gutter = getComputedStyle(document.documentElement).scrollbarGutter;
+  return !gutter || gutter === "auto";
+}
 
 /**
  * 冻结文档视口：overflow hidden + body fixed。
@@ -16,6 +28,7 @@ let savedBodyRight = "";
  */
 function applyDocumentLock() {
   const body = document.body;
+  const gap = getScrollbarGap();
   savedScrollX = window.scrollX;
   savedScrollY = window.scrollY;
 
@@ -24,12 +37,18 @@ function applyDocumentLock() {
   savedBodyTop = body.style.top;
   savedBodyLeft = body.style.left;
   savedBodyRight = body.style.right;
+  savedBodyPaddingRight = body.style.paddingRight;
 
   body.style.overflow = "hidden";
   body.style.position = "fixed";
   body.style.top = `-${savedScrollY}px`;
   body.style.left = `-${savedScrollX}px`;
   body.style.right = "0";
+
+  if (needsPaddingCompensation(gap)) {
+    const current = parseFloat(getComputedStyle(body).paddingRight) || 0;
+    body.style.paddingRight = `${current + gap}px`;
+  }
 }
 
 function restoreDocumentLock() {
@@ -40,12 +59,14 @@ function restoreDocumentLock() {
   body.style.top = savedBodyTop;
   body.style.left = savedBodyLeft;
   body.style.right = savedBodyRight;
+  body.style.paddingRight = savedBodyPaddingRight;
 
   savedBodyOverflow = "";
   savedBodyPosition = "";
   savedBodyTop = "";
   savedBodyLeft = "";
   savedBodyRight = "";
+  savedBodyPaddingRight = "";
 
   window.scrollTo(savedScrollX, savedScrollY);
   savedScrollY = 0;
@@ -59,6 +80,7 @@ export function resetScrollLockForTest() {
   }
   lockCount = 0;
   savedScrollY = 0;
+  savedScrollX = 0;
 }
 
 /**

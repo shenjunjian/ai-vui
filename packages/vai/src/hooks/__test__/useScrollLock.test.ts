@@ -24,14 +24,12 @@ describe("useScrollLock", () => {
     wrappers = [];
     const html = document.documentElement;
     const body = document.body;
-    html.style.overflow = "";
     body.style.overflow = "";
     body.style.paddingRight = "";
     body.style.position = "";
     body.style.top = "";
     body.style.left = "";
     body.style.right = "";
-    body.style.width = "";
     originalInnerWidth = window.innerWidth;
     Object.defineProperty(window, "innerWidth", {
       configurable: true,
@@ -67,16 +65,13 @@ describe("useScrollLock", () => {
       configurable: true,
       value: originalInnerWidth,
     });
-    const html = document.documentElement;
     const body = document.body;
-    html.style.overflow = "";
     body.style.overflow = "";
     body.style.paddingRight = "";
     body.style.position = "";
     body.style.top = "";
     body.style.left = "";
     body.style.right = "";
-    body.style.width = "";
     vi.restoreAllMocks();
   });
 
@@ -90,7 +85,7 @@ describe("useScrollLock", () => {
 
     api.lock();
 
-    expect(document.documentElement.style.overflow).toBe("hidden");
+    expect(document.body.style.overflow).toBe("hidden");
     expect(document.body.style.position).toBe("fixed");
     expect(document.body.style.top).toBe("-420px");
     expect(document.body.style.paddingRight).toBe("16px");
@@ -102,10 +97,9 @@ describe("useScrollLock", () => {
 
     api.lock();
 
-    expect(document.documentElement.style.overflow).toBe("hidden");
+    expect(document.body.style.overflow).toBe("hidden");
     expect(document.body.style.position).toBe("fixed");
     expect(document.body.style.top).toBe("0px");
-    expect(document.body.style.width).toBe("100%");
     expect(document.body.style.paddingRight).toBe("16px");
   });
 
@@ -120,10 +114,24 @@ describe("useScrollLock", () => {
     api.lock();
 
     expect(api.isLocked.value).toBe(true);
-    expect(document.documentElement.style.overflow).toBe("hidden");
     expect(document.body.style.overflow).toBe("hidden");
     expect(document.body.style.position).toBe("fixed");
     expect(document.body.style.paddingRight).toBe("");
+  });
+
+  test("scrollbar-gutter: stable 时不补 padding", () => {
+    const html = document.documentElement;
+    const original = html.style.scrollbarGutter;
+    html.style.scrollbarGutter = "stable";
+    const { api, wrapper } = mountUseScrollLock();
+    wrappers.push(wrapper);
+
+    api.lock();
+
+    expect(document.body.style.position).toBe("fixed");
+    expect(document.body.style.paddingRight).toBe("");
+
+    html.style.scrollbarGutter = original;
   });
 
   test("unlock 恢复样式并 scrollTo", () => {
@@ -138,6 +146,7 @@ describe("useScrollLock", () => {
     api.unlock();
 
     expect(document.body.style.position).toBe("");
+    expect(document.body.style.paddingRight).toBe("");
     expect(window.scrollTo).toHaveBeenCalledWith(0, 280);
   });
 
@@ -191,19 +200,19 @@ describe("useScrollLock", () => {
   });
 
   test("恢复原先已有的 inline overflow / body paddingRight", () => {
-    const html = document.documentElement;
     const body = document.body;
-    html.style.overflow = "scroll";
+    body.style.overflow = "scroll";
     body.style.paddingRight = "8px";
 
     const { api, wrapper } = mountUseScrollLock();
     wrappers.push(wrapper);
 
     api.lock();
-    expect(html.style.overflow).toBe("hidden");
+    expect(body.style.overflow).toBe("hidden");
+    expect(body.style.paddingRight).toBe("24px");
 
     api.unlock();
-    expect(html.style.overflow).toBe("scroll");
+    expect(body.style.overflow).toBe("scroll");
     expect(body.style.paddingRight).toBe("8px");
   });
 });
