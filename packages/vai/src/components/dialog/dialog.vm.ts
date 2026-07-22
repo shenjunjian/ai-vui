@@ -172,7 +172,7 @@ export default function useVm(ctx: DialogCtx) {
     if (el.open) {
       el.close();
     } else {
-      syncClosed();
+      handleDialogClose();
     }
   }
 
@@ -188,7 +188,7 @@ export default function useVm(ctx: DialogCtx) {
     callWithGuard(props.beforeClose, () => close());
   }
 
-  async function handleCancel(event: Event) {
+  async function handleDialogCancel(event: Event) {
     event.preventDefault();
     if (closingGuard.value) return;
     closingGuard.value = true;
@@ -201,16 +201,12 @@ export default function useVm(ctx: DialogCtx) {
     }
   }
 
-  function syncClosed() {
+  function handleDialogClose() {
     models.open.value = false;
     if (props.destroyOnClose) {
       dialogMounted.value = false;
     }
     emit("closed");
-  }
-
-  function handleDialogClose() {
-    syncClosed();
   }
 
   watch(
@@ -288,7 +284,7 @@ export default function useVm(ctx: DialogCtx) {
     open,
     close,
     requestClose,
-    handleCancel,
+    handleDialogCancel,
     handleDialogClose,
   };
 

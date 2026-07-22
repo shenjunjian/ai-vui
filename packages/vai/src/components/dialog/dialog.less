@@ -228,11 +228,15 @@
 }
 
 // Drawer 变体：贴边全高/全宽
+// 原生 dialog UA 仅设 inline inset，纵向靠 margin:auto 居中；贴边必须显式 inset + margin:0，
+// 并覆盖 UA 的 max-width/max-height: calc(100% - 2em - 6px)，否则会留缝。
 .v-drawer-modal.v-modal {
   --modal-width: min(360px, 90vw);
   --modal-max-height: 100vh;
+  margin: 0;
   border-radius: 0;
   max-width: 100vw;
+  max-height: 100vh;
   transform: none;
 
   &[open] {
@@ -247,7 +251,7 @@
   }
 
   &.is-right {
-    margin: 0 0 0 auto;
+    inset: 0 0 0 auto;
     height: 100vh;
     max-height: 100vh;
     border-right: none;
@@ -265,7 +269,7 @@
   }
 
   &.is-left {
-    margin: 0 auto 0 0;
+    inset: 0 auto 0 0;
     height: 100vh;
     max-height: 100vh;
     border-left: none;
@@ -283,11 +287,11 @@
   }
 
   &.is-top {
-    --modal-width: 100vw;
-    width: 100vw;
+    --modal-width: 100%;
+    inset: 0 0 auto 0;
+    width: 100%;
     max-width: 100vw;
     height: min(360px, 90vh);
-    margin: 0;
     border-top: none;
     transform: translateY(-100%);
 
@@ -303,11 +307,11 @@
   }
 
   &.is-bottom {
-    --modal-width: 100vw;
-    width: 100vw;
+    --modal-width: 100%;
+    inset: auto 0 0 0;
+    width: 100%;
     max-width: 100vw;
     height: min(360px, 90vh);
-    margin: auto 0 0;
     border-bottom: none;
     transform: translateY(100%);
 

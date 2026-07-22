@@ -1,32 +1,13 @@
 <template>
-  <dialog
-    v-if="state.dialogMounted"
-    ref="rootRef"
-    class="v-modal"
-    :class="state.rootClass"
-    :closedby="closedby"
-    tabindex="-1"
-    :aria-labelledby="showHeader ? titleId : undefined"
-    @cancel="api.handleCancel"
-    @close="api.handleDialogClose"
-  >
-    <header
-      v-if="showHeader"
-      ref="headerRef"
-      class="v-modal__header"
-      :class="{ 'is-draggable': state.canDrag }"
-    >
+  <dialog v-if="state.dialogMounted" ref="rootRef" class="v-modal" :class="state.rootClass" :closedby="closedby"
+    tabindex="-1" :aria-labelledby="showHeader ? titleId : undefined" @cancel="api.handleDialogCancel"
+    @close="api.handleDialogClose">
+    <header v-if="showHeader" ref="headerRef" class="v-modal__header" :class="{ 'is-draggable': state.canDrag }">
       <div :id="titleId" class="v-modal__title">
         <slot name="title" v-bind="{ state, api, props }">{{ title }}</slot>
       </div>
-      <button
-        v-if="showClose"
-        type="button"
-        class="v-modal__close"
-        aria-label="关闭"
-        @click="api.requestClose"
-        @pointerdown.stop
-      >
+      <button v-if="showClose" type="button" class="v-modal__close" aria-label="关闭" @click="api.requestClose"
+        @pointerdown.stop>
         <slot name="close" v-bind="{ state, api, props }">
           <i class="ci-close" aria-hidden="true" />
         </slot>
@@ -44,13 +25,8 @@
       </slot>
     </footer>
 
-    <div
-      v-if="resizable && variant === 'drawer'"
-      ref="resizeRef"
-      class="v-modal__resize"
-      :class="state.resizeClass"
-      aria-hidden="true"
-    />
+    <div v-if="resizable && variant === 'drawer'" ref="resizeRef" class="v-modal__resize" :class="state.resizeClass"
+      aria-hidden="true" />
   </dialog>
 </template>
 

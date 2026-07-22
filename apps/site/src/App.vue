@@ -30,7 +30,7 @@ const tab = ref<
   | "use-popper"
   | "use-focus-trap"
   | "use-drag"
->("use-drag");
+>("dialog");
 </script>
 
 <template>

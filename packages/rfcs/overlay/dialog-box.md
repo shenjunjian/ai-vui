@@ -94,7 +94,7 @@ interface DialogState {
 4. `close` 事件：同步 `open=false`；`destroy-on-close=false` 时保留 inline 位置 / 尺寸，`true` 时卸载 dialog；触发 `closed`。
 5. 关闭态 CSS：`display: none`；打开态：`display: flex`。通过 `transition` 的 `display` / `overlay` + `allow-discrete` 与 `@starting-style` 做进出场动画（`destroy-on-close=false` 时 dialog 常驻 DOM）。
 6. `destroy-on-close=true`：整个 `<dialog>` 用 `v-if="dialogMounted"`，关闭后直接不渲染（不做退场离散动画）；再次打开为全新节点与默认位置 / 尺寸。
-7. `variant=drawer`：加 `v-drawer-modal` + `is-{placement}`；忽略 `draggable`；`resizable` 时在空闲边渲染 `v-modal__resize`，由 `useDrag` 在拖动开始记录宽/高，拖动中直接写 `el.style` 宽/高（不经 Vue 状态）；`is-resizing` 类取自 `useDrag` 的 `_.isDragging`。
+7. `variant=drawer`：加 `v-drawer-modal` + `is-{placement}`；忽略 `draggable`；贴边用显式 `inset` + `margin: 0`（覆盖原生 dialog UA 的 inline inset / `margin: auto` 居中，以及 `max-*-size: calc(100% - 2em - 6px)`，避免贴边留缝）；`resizable` 时在空闲边渲染 `v-modal__resize`，由 `useDrag` 在拖动开始记录宽/高，拖动中直接写 `el.style` 宽/高（不经 Vue 状态）；`is-resizing` 类取自 `useDrag` 的 `_.isDragging`。
 8. `draggable`：`useDrag` 绑定 header → dialog；dialog 默认 `margin: auto` 居中；`startDrag` 用当前屏幕位置固化 `margin-left` / `margin-top`，`applyDrag` 按 `rect`/`boundary` 钳制后继续写这两项；发出 drag-*；`is-dragging` 类取自 `useDrag` 的 `_.isDragging`；节点晚就绪（如 `destroy-on-close`）时主动 `init()`。
 9. `resizable` + `variant=dialog`：根节点加 `is-resizable`（`resize: both`），不渲染 resize 手柄；CSS resize 写入的 inline 尺寸在 `destroy-on-close=false` 时随关闭保留。
 10. `auto-focus=false`：`showModal` 后将焦点落到 dialog 根（`tabindex="-1"`）。
