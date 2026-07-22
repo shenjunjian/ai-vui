@@ -3,167 +3,223 @@ import {
   onBeforeUnmount,
   onMounted,
   reactive,
+  toValue,
   watch,
-  type Ref,
+  type MaybeRef,
 } from "vue";
 
 export type DragCallbackFn = (state: DragOption) => void;
+
+export interface DragInternalState {
+  isDragging: boolean;
+  /** 按下时的屏幕坐标 */
+  startX: number;
+  startY: number;
+  /** 开始拖动时元素的大小与位置 */
+  rect: DOMRect;
+  /** 开始拖动时边界容器的大小与位置 */
+  boundary: DOMRect;
+  /** 相对起点的实时偏移 */
+  deltaX: number;
+  deltaY: number;
+  /** 调用方在 startDrag 中缓存的自定义字段 */
+  [others: string]: unknown;
+}
+
 export interface DragOption {
-  /** 拖动的元素 */
-  el: null | HTMLElement | Ref<HTMLElement | null>;
-  /** 拖动的拖柄 */
-  handler: null | HTMLElement | Ref<HTMLElement | null>;
-  /** 拖动的拖柄的光标, 默认为‘move', 设置空字符串表示不添加光标 */
+  /** 被拖动的元素 */
+  el: MaybeRef<HTMLElement | null>;
+  /** 拖动手柄；缺省时与 `el` 相同 */
+  handler: MaybeRef<HTMLElement | null>;
+  /** 手柄光标，默认 `move`；空字符串表示不修改 */
   cursor: string;
-  /** 拖动元素的容器边界,默认是body */
-  container: null | HTMLElement;
-  /** ✅ 是否禁用拖动效果 */
-  disabled: boolean | Ref<boolean>;
-  /** 点击拖动开始时，可以记录目标当前的状态值。 */
+  /** 边界参考元素，默认 `document.body`；用于填充 `_.boundary` */
+  container: HTMLElement | null;
+  /** 是否禁用拖动 */
+  disabled: MaybeRef<boolean>;
+  /** 拖动开始：可记录初始 left/top 等 */
   startDrag: DragCallbackFn;
-  /** ✅ 移动时设置位置, 不同场景的定位模式需要不同的设置,比如绝对定位使用 left,top, 也可能使用 translate来设置或margin设置的情况
-   * 所以要暴露一个函数,让用户有权利选择哪个方法去设置
-   */
+  /** 拖动中：根据 `delta*` 写位置（left/top、translate、margin 等由调用方决定） */
   applyDrag: DragCallbackFn;
-  /** 内部状态值 */
-  _: {
-    isDragging: boolean;
-    /** 点击的屏幕坐标 */
-    startX: number;
-    startY: number;
-    /** 元素的大小 */
-    rect: DOMRect;
-    /** 边界的大小 */
-    boundary: DOMRect;
-    deltaX: number;
-    deltaY: number;
-    /** 用户缓存一些变量 */
-    [others: string]: any;
+  /** 拖动结束（pointerup / pointercancel / stop 中途打断） */
+  endDrag: DragCallbackFn;
+  /** 内部状态（每实例独立） */
+  _: DragInternalState;
+}
+
+const noop: DragCallbackFn = () => {};
+
+function createInternalState(): DragInternalState {
+  return {
+    isDragging: false,
+    startX: 0,
+    startY: 0,
+    rect: new DOMRect(),
+    boundary: new DOMRect(),
+    deltaX: 0,
+    deltaY: 0,
   };
 }
 
-/** 默认配置 */
-const defaultOption: Partial<DragOption> = {
-  el: null,
-  handler: null,
-  cursor: "move",
-  container: document.body,
-  disabled: false,
-  applyDrag: () => {},
-  _: {
-    isDragging: false,
-    startX: 0, // 点击的屏幕坐标
-    startY: 0,
-    rect: new DOMRect(), // 元素的大小
-    boundary: new DOMRect(), // 边界的大小
-    /** 实时偏移量 */
-    deltaX: 0,
-    deltaY: 0,
-  },
-};
-/** 通用的拖动逻辑,比如元素在某个容器内拖动。 它区别于dnd的drag and drop行为，它没有释放目标
+function asElement(value: unknown): HTMLElement | null {
+  const el = toValue(value as MaybeRef<HTMLElement | null>);
+  return el instanceof HTMLElement ? el : null;
+}
+
+/**
+ * 通用拖动：在容器坐标系内移动元素。区别于 DnD / useSortable——没有 drop target。
+ * `el` / `handler` 若在挂载时尚未就绪，需在 DOM 可用后主动调用 `init()`。
  */
 export function useDrag(option: Partial<DragOption> = {}) {
-  const state = reactive(
-    Object.assign({}, defaultOption, option)
-  ) as DragOption;
+  const state = reactive({
+    el: option.el ?? null,
+    handler: option.handler ?? null,
+    cursor: option.cursor ?? "move",
+    container: option.container ?? null,
+    disabled: option.disabled ?? false,
+    startDrag: option.startDrag ?? noop,
+    applyDrag: option.applyDrag ?? noop,
+    endDrag: option.endDrag ?? noop,
+    _: createInternalState(),
+  }) as DragOption;
 
   let inited = false;
+  let boundHandler: HTMLElement | null = null;
+  let activePointerId: number | null = null;
 
-  /** 初始化拖动 */
+  function resolveEl(): HTMLElement | null {
+    return asElement(state.el);
+  }
+
+  function resolveHandler(): HTMLElement | null {
+    return asElement(state.handler) ?? resolveEl();
+  }
+
+  function resolveContainer(): HTMLElement {
+    return state.container ?? document.body;
+  }
+
+  function isDisabled(): boolean {
+    return !!toValue(state.disabled);
+  }
+
+  function finishDrag() {
+    if (!state._.isDragging) return;
+
+    resolveEl()?.classList.remove("st-dragging");
+
+    document.removeEventListener("pointermove", onPointerMove);
+    document.removeEventListener("pointerup", onPointerUp);
+    document.removeEventListener("pointercancel", onPointerUp);
+
+    if (boundHandler && activePointerId != null) {
+      try {
+        if (boundHandler.hasPointerCapture(activePointerId)) {
+          boundHandler.releasePointerCapture(activePointerId);
+        }
+      } catch {
+        // 指针已释放时忽略
+      }
+    }
+
+    activePointerId = null;
+    state._.isDragging = false;
+    state.endDrag(state);
+  }
+
+  /** 绑定拖动手柄；幂等。元素未就绪时 warn 并返回，调用方稍后重试。 */
   function init() {
-    if (inited) return;
+    if (inited || isDisabled()) return;
 
-    if (state.el == null || state.handler == null) {
-      console.warn("目标元素和拖动手柄未设置");
+    const el = resolveEl();
+    const handler = resolveHandler();
+    if (!el || !handler) {
+      console.warn("useDrag: el / handler 未就绪，请在 DOM 可用后调用 init()");
       return;
     }
 
-    state.handler.style.cursor = state.cursor;
-    state.handler.addEventListener("pointerdown", onMouseDown);
+    boundHandler = handler;
+    if (state.cursor) {
+      handler.style.cursor = state.cursor;
+    }
+    handler.addEventListener("pointerdown", onPointerDown);
     inited = true;
   }
 
   function stop() {
     if (!inited) return;
 
-    state.handler!.style.cursor = "";
-    state.handler!.removeEventListener("pointerdown", onMouseDown);
+    finishDrag();
 
-    if (state._.isDragging) {
-      document.removeEventListener("pointermove", onMouseMove);
-      document.removeEventListener("pointerup", onMouseUp);
+    if (boundHandler) {
+      if (state.cursor) {
+        boundHandler.style.cursor = "";
+      }
+      boundHandler.removeEventListener("pointerdown", onPointerDown);
     }
+
+    boundHandler = null;
     inited = false;
   }
-  /** 绑定在拖动handler的click事件 */
-  function onMouseDown(e: PointerEvent) {
-    // 只处理左键
-    if (e.button !== 0) return;
 
+  function onPointerDown(e: PointerEvent) {
+    if (e.button !== 0 || isDisabled()) return;
+    if (activePointerId != null) return;
+
+    const el = resolveEl();
+    const handler = boundHandler ?? resolveHandler();
+    if (!el || !handler) return;
+
+    activePointerId = e.pointerId;
     state._.isDragging = true;
     state._.startX = e.clientX;
     state._.startY = e.clientY;
+    state._.deltaX = 0;
+    state._.deltaY = 0;
+    state._.rect = el.getBoundingClientRect();
+    state._.boundary = resolveContainer().getBoundingClientRect();
 
-    // 拖拽过程中,默认为元素和container的大小不会变化
-    state._.rect = state.el!.getBoundingClientRect();
-    state._.boundary = state.container!.getBoundingClientRect();
-
-    state.el!.classList.add("st-dragging");
-
-    // e.preventDefault(); // 阻止默认行为（避免文本选中）， 但也会阻止内部的click， mousedown 等事件的触发
-    state.handler?.setPointerCapture(e.pointerId); // 指针捕获，拖拽，滑块等建议要使用它
+    el.classList.add("st-dragging");
+    handler.setPointerCapture(e.pointerId);
 
     state.startDrag(state);
 
-    // 绑定全局事件
-    document.addEventListener("pointermove", onMouseMove);
-    document.addEventListener("pointerup", onMouseUp);
+    document.addEventListener("pointermove", onPointerMove);
+    document.addEventListener("pointerup", onPointerUp);
+    document.addEventListener("pointercancel", onPointerUp);
   }
 
-  function onMouseMove(e: PointerEvent) {
-    if (!state._.isDragging) return;
+  function onPointerMove(e: PointerEvent) {
+    if (!state._.isDragging || e.pointerId !== activePointerId) return;
 
     state._.deltaX = e.clientX - state._.startX;
     state._.deltaY = e.clientY - state._.startY;
-
-    // 更新位置
     state.applyDrag(state);
   }
 
-  function onMouseUp(e: PointerEvent) {
-    if (!state._.isDragging) return;
-
-    state.el!.classList.remove("st-dragging");
-    // 移除全局事件
-    document.removeEventListener("pointermove", onMouseMove);
-    document.removeEventListener("pointerup", onMouseUp);
-
-    state._.isDragging = false;
+  function onPointerUp(e: PointerEvent) {
+    if (!state._.isDragging || e.pointerId !== activePointerId) return;
+    finishDrag();
   }
 
   watch(
-    () => state.disabled,
+    () => toValue(state.disabled),
     (disabled) => {
-      if (disabled && inited) {
-        stop();
+      if (disabled) {
+        if (inited) stop();
       } else if (!inited) {
         init();
       }
-    }
+    },
   );
 
   onMounted(() => {
     nextTick(() => {
-      if (!state.disabled) {
-        init();
-      }
+      if (!isDisabled()) init();
     });
   });
 
-  onBeforeUnmount(() => {
-    stop();
-  });
+  onBeforeUnmount(stop);
 
   return {
     state,

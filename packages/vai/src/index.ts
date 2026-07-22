@@ -18,6 +18,12 @@ export type { TextAreaAutoSize } from "./components/text-area/text-area.vue";
 export { useTimer } from "./hooks/useTimer.ts";
 export { useFocusTrap } from "./hooks/useFocusTrap.ts";
 export {
+  useDrag,
+  type DragCallbackFn,
+  type DragInternalState,
+  type DragOption,
+} from "./hooks/useDrag.ts";
+export {
   usePopper,
   type Boundary,
   type PopperOption,
